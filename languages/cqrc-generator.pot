@@ -1,0 +1,794 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom QRCode Generator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-08-22 13:01+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.11; wp-6.6.1\n"
+"X-Domain: cqrc-generator"
+
+#: admin/class-cqrc-generator-admin.php:278
+#: admin/class-cqrc-generator-admin.php:279
+#: admin/class-cqrc-generator-admin.php:280
+msgid "#000000"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:268
+#: admin/class-cqrc-generator-admin.php:269
+#: admin/class-cqrc-generator-admin.php:270
+msgid "#005881"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:238
+#: admin/class-cqrc-generator-admin.php:239
+msgid "#0d1766"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:208
+#: admin/class-cqrc-generator-admin.php:209
+#: admin/class-cqrc-generator-admin.php:210
+msgid "#2c4270"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:248
+#: admin/class-cqrc-generator-admin.php:249
+#: admin/class-cqrc-generator-admin.php:250
+msgid "#2ebd38"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:228
+#: admin/class-cqrc-generator-admin.php:229
+#: admin/class-cqrc-generator-admin.php:230
+msgid "#55ACEE"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:240
+msgid "#8224e3"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:218
+msgid "#BF2626"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:258
+#: admin/class-cqrc-generator-admin.php:259
+#: admin/class-cqrc-generator-admin.php:260
+msgid "#e4594c"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:219
+#: admin/class-cqrc-generator-admin.php:220
+msgid "#EE0F0F"
+msgstr ""
+
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:69
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:70
+msgid "About Plugin"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:18
+msgid "About QR Code Generator Plugin"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:50
+msgid "About Us"
+msgstr ""
+
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:59
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:60
+msgid "Add New QR"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:377
+msgid "Add New QR Code"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:41
+msgid ""
+"Additionally, this shortcode enables users to download the QR code by "
+"clicking on it."
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:267
+msgid "ball0"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:227
+msgid "ball11"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:217
+#: admin/class-cqrc-generator-admin.php:257
+msgid "ball14"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:207
+msgid "ball18"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:247
+msgid "ball2"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:237
+msgid "ball4"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:189
+msgid "Balloon Bottom Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:188
+msgid "Balloon Bottom Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:191
+msgid "Balloon Top Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:190
+msgid "Balloon Top Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:193
+msgid "Banner Bottom Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:192
+msgid "Banner Bottom Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:195
+msgid "Banner Top Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:194
+msgid "Banner Top Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:197
+msgid "Box Bottom Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:196
+msgid "Box Bottom Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:199
+msgid "Box Top Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:198
+msgid "Box Top Scan"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:237
+msgid "Circle"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:28
+msgid "Code copied!!!"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:29
+msgid "Copy to clipboard"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:361
+msgid "Database update failed."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:104
+#: admin/partials/cqrc-form.php:131
+#: admin/partials/cqrc-form.php:139
+#: admin/partials/cqrc-form.php:268
+msgid "Default"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:205
+#: admin/class-cqrc-generator-admin.php:215
+#: admin/class-cqrc-generator-admin.php:225
+#: admin/class-cqrc-generator-admin.php:235
+#: admin/class-cqrc-generator-admin.php:245
+#: admin/class-cqrc-generator-admin.php:255
+#: admin/class-cqrc-generator-admin.php:265
+#: admin/class-cqrc-generator-admin.php:274
+#: admin/class-cqrc-generator-admin.php:275
+#: admin/class-cqrc-generator-admin.php:276
+#: admin/class-cqrc-generator-admin.php:277
+msgid "default"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:187
+#: admin/partials/cqrc-form.php:224
+msgid "Default Frame"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:97
+msgid "Default Templates"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:146
+msgid "Delete"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:89
+msgid "Description"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:32
+msgid "Description: "
+msgstr ""
+
+#: admin/partials/cqrc-form.php:286
+msgid "Diamond"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:283
+msgid "Dot"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:274
+msgid "Dots"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:150
+msgid "Download"
+msgstr ""
+
+#: cqrc-generator.php:336
+msgid "Download JPG"
+msgstr ""
+
+#: cqrc-generator.php:337
+msgid "Download PDF"
+msgstr ""
+
+#: cqrc-generator.php:335
+msgid "Download PNG"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:142
+#: admin/partials/class-cqrc-index-page.php:188
+msgid "Edit"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:1852
+msgid "Error fetching image."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:306
+msgid "Eye Ball Color"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:261
+msgid "Eye Balls"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:217
+msgid "Eye Frame"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:254
+msgid "Eye Frame Color"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:105
+#: admin/partials/cqrc-form.php:141
+msgid "Facebook"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:204
+msgid "facebook"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:438
+#: admin/class-cqrc-generator-admin.php:1174
+msgid "Failed to create image from string."
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:445
+#: admin/class-cqrc-generator-admin.php:1181
+msgid "Failed to get image dimensions."
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:433
+#: admin/class-cqrc-generator-admin.php:1169
+msgid "Failed to get QR code image data."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:201
+msgid "Focus Review"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:200
+msgid "Focus Scan"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:53
+msgid ""
+"For more information about our services and how we can assist you, please "
+"visit our website:"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:181
+msgid "Frame"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:266
+msgid "frame0"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:216
+msgid "frame13"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:206
+#: admin/class-cqrc-generator-admin.php:256
+msgid "frame14"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:246
+msgid "frame2"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:226
+#: admin/class-cqrc-generator-admin.php:236
+msgid "frame5"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:280
+msgid "G-Messanger"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:338
+msgid "Generate QR Code"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:228
+#: admin/partials/cqrc-form.php:272
+msgid "Glare"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:227
+#: admin/partials/cqrc-form.php:271
+msgid "Glow"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:110
+#: admin/partials/cqrc-form.php:146
+msgid "Gmail"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:254
+msgid "gmail"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:150
+msgid "Google Calendar"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:151
+msgid "Google Forms"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:152
+msgid "Google Maps"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:153
+msgid "Google Meet"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:147
+msgid "Google Play"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:148
+msgid "Google Plus"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:154
+msgid "Google Sheets"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:155
+msgid "Hangouts Meet"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:273
+msgid "Hexagon"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:353
+msgid "Hide Additional Settings"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:281
+msgid "Horizontal Menu"
+msgstr ""
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.worldwebtechnology.com/"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:108
+#: admin/partials/cqrc-form.php:140
+msgid "Instagram"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:234
+msgid "instagram-circle"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:871
+#: admin/class-cqrc-generator-admin.php:1605
+msgid "Invalid date format in updated_at field."
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:1795
+msgid "Invalid file type."
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:293
+msgid "JPG"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:313
+msgid "Level"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:317
+msgid "Level H"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:319
+msgid "Level M"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:318
+msgid "Level Q"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:111
+#: admin/partials/cqrc-form.php:144
+msgid "LinkedIn"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:264
+msgid "linkedin-circle"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:127
+msgid "Logo"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:84
+msgid "Maximum length is 30 characters & Only Allowed Character."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:79
+msgid "Maximum length is 75 characters."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:92
+msgid "Maximum word count is 100."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:226
+#: admin/partials/cqrc-form.php:270
+msgid "Messanger"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:83
+msgid "Name"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:855
+#: admin/class-cqrc-generator-admin.php:1588
+msgid "No data found for the given ID."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:278
+msgid "Octa"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:279
+msgid "Octa Dots"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:289
+msgid "Octagon"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:239
+#: admin/partials/cqrc-form.php:285
+msgid "Outline"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:294
+msgid "PDF"
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:292
+msgid "PNG"
+msgstr ""
+
+#: cqrc-generator.php:327
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:48
+#: admin/partials/class-wp-wwtgenqr-main-admin.php:49
+msgid "QR Code"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:374
+msgid "QR code generation failed."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:67
+msgid "QR Code Generator"
+msgstr ""
+
+#: cqrc-generator.php:330
+msgid "QR Code is Ready!"
+msgstr ""
+
+#: cqrc-generator.php:320 admin/class-cqrc-generator-admin.php:1810
+msgid "QR code not found."
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:368
+msgid "QR code processed successfully."
+msgstr ""
+
+#: admin/partials/class-cqrc-index-page.php:376
+msgid "QR Codes"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:211
+#: admin/class-cqrc-generator-admin.php:241
+msgid "QR_ECLEVEL_H"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:251
+#: admin/class-cqrc-generator-admin.php:271
+#: admin/class-cqrc-generator-admin.php:281
+msgid "QR_ECLEVEL_M"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:221
+#: admin/class-cqrc-generator-admin.php:231
+#: admin/class-cqrc-generator-admin.php:261
+msgid "QR_ECLEVEL_Q"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:230
+msgid "Qutes"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:238
+msgid "Rectangle"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:284
+msgid "Rectangle Square"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:35
+msgid "Replace \"32\" with the ID of the QR code you want to display."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:339
+msgid "Reset Form"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:1719
+msgid "Security check failed."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:160
+msgid "Select Logo"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:174
+msgid "Select QR Code Color"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:326
+#: admin/partials/cqrc-form.php:353
+msgid "Show Additional Settings"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:156
+msgid "Spotify"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:225
+#: admin/partials/cqrc-form.php:269
+msgid "Square"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:235
+msgid "Square Bold"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:236
+msgid "Square Bold Dots"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:231
+#: admin/partials/cqrc-form.php:275
+msgid "Square Cut"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:234
+msgid "Square dashed"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:229
+msgid "Square Dots"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:233
+msgid "Square lined"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:276
+msgid "Square Lining"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:232
+#: admin/partials/cqrc-form.php:277
+msgid "Square Scrached"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:287
+msgid "Star"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:157
+msgid "Telegram"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"The \"WWT QR Code Generator\" plugin for WordPress is a useful tool that "
+"allows users to create QR codes for their website or specific content. With "
+"this plugin, users can generate QR codes for various purposes, such as "
+"sharing links, promoting products, or providing website information."
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:44
+msgid ""
+"The functionality to track the number of users who have scanned a certain QR "
+"code has been introduced, and the main page for the code allows you to view "
+"the total number of scans."
+msgstr ""
+
+#: cqrc-generator.php:163
+msgid ""
+"The QR code is currently being prepared. Please wait until the process is "
+"complete before scanning. For more details, please contact us or visit our "
+"website"
+msgstr ""
+
+#: cqrc-generator.php:145
+msgid ""
+"The QR Code is no longer accessible or available! For more details, please "
+"contact us or visit our website"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:38
+msgid ""
+"This shortcode will render the QR code associated with the specified ID "
+"directly in the content."
+msgstr ""
+
+#: cqrc-generator.php:331
+msgid ""
+"To use the QR code, scan it with a QR code reader or mobile device. Simply "
+"point your camera at the code and follow the instructions that appear."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:290
+msgid "Triangle"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:107
+#: admin/partials/cqrc-form.php:145
+msgid "Twitter"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:224
+msgid "twitter-circle"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:134
+msgid "Upload"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:78
+msgid "URL"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:24
+msgid "Using the Shortcode"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:288
+msgid "Verified"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:282
+msgid "Verticle Menu"
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:52
+msgid ""
+"We are a service-based company specializing in WordPress website development."
+" Based in India, our mission is to provide high-quality, customized "
+"WordPress solutions to help businesses succeed online."
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:21
+msgid ""
+"Welcome to the QR Code Generator Plugin! This powerful tool allows you to "
+"easily generate and manage QR codes on your WordPress site with just a few "
+"clicks."
+msgstr ""
+
+#: admin/partials/cqrc-form.php:109
+#: admin/partials/cqrc-form.php:143
+msgid "WhatsApp"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:244
+msgid "whatsapp-circle"
+msgstr ""
+
+#. Author of the plugin
+#: admin/partials/cqrc-about-us.php:53
+msgid "World Web Technology"
+msgstr ""
+
+#: cqrc-generator.php:147 cqrc-generator.php:165
+msgid "World Web Technology!"
+msgstr ""
+
+#. Name of the plugin
+msgid "WWT QR Code Generator"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:149
+msgid "Xing"
+msgstr ""
+
+#: cqrc-generator.php:332
+msgid ""
+"You can download the QR code in various formats. Choose the one that best "
+"suits your needs."
+msgstr ""
+
+#: admin/partials/cqrc-about-us.php:26
+msgid ""
+"You can use the following shortcode to display a specific QR code on any "
+"page or post on your website. Simply insert this shortcode into your content:"
+msgstr ""
+
+#: admin/partials/cqrc-form.php:106
+#: admin/partials/cqrc-form.php:142
+msgid "YouTube"
+msgstr ""
+
+#: admin/class-cqrc-generator-admin.php:214
+msgid "youtube-circle"
+msgstr ""

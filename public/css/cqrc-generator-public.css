@@ -1,0 +1,87 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+.wwt-qrcode-container .download-qr-code-column a{
+	text-align: center;
+	font-weight: 500;
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #fff;
+	text-shadow: none;
+	display: inline-block;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 2.15384615;
+	min-height: 30px;
+	margin: 0;
+	padding: 0 10px;
+	cursor: pointer;
+	border-width: 1px;
+	border-style: solid;
+	-webkit-appearance: none;
+	border-radius: 3px;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+.wwt-qrcode-container {
+	text-align: center;
+	margin: 20px auto;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	max-width: 600px;
+}
+.qr-code-showing-preview-image-fronted {
+	margin-bottom: 20px;
+	padding: 10px;
+	border: 2px solid #0073aa;
+	border-radius: 8px;
+	background-color: #fff;
+	display: inline-block;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.qr-code-showing-preview-image-fronted img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	transition: transform 0.3s ease;
+}
+.qr-code-showing-preview-image-fronted img:hover {
+	transform: scale(1.05);
+}
+.qr-code-description {
+	margin-bottom: 20px;
+}
+.qr-code-description h2 {
+	margin: 0;
+	font-size: 1.5em;
+	color: #333;
+}
+.qr-code-description p {
+	font-size: 1em;
+	color: #555;
+}
+.download-qr-code-column {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+}
+.download-buttons-qrcode {
+	text-decoration: none;
+	padding: 10px 20px;
+	font-size: 1em;
+	border: none;
+	border-radius: 4px;
+	color: #fff;
+	background-color: #0073aa;
+	cursor: pointer;
+	transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.download-buttons-qrcode:hover {
+	background-color: #005a87;
+	transform: scale(1.05);
+}
