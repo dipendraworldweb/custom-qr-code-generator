@@ -19,24 +19,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 * @package Generate QR Code
 * @since 1.0.0
 */
-function get_custom_data_from_database($search_term = '' ) {
+function get_custom_data_from_database($search_term = '') {
     global $wpdb;
     $table_name = $wpdb->prefix . 'qrcode_generator';
-    if ( !empty( $search_term )) {
-       $query = "SELECT * FROM {$table_name}";
-       $search_term = esc_sql($wpdb->esc_like($search_term));
-       $query .= " WHERE name LIKE '%{$search_term}%' OR description LIKE '%{$search_term}%'";
-       $data = $wpdb->get_results($query, ARRAY_A); // phpcs:ignore
-    }else{
-       $data = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}qrcode_generator", ARRAY_A ); // phpcs:ignore
+
+    if (!empty($search_term)) {
+        $search_term = esc_sql($wpdb->esc_like($search_term));
+        $query = "SELECT * FROM {$table_name} WHERE name LIKE '%{$search_term}%' OR description LIKE '%{$search_term}%' ORDER BY id DESC"; // Adjust 'id' to the appropriate column for your needs
+        $data = $wpdb->get_results($query, ARRAY_A); // phpcs:ignore
+    } else {
+        $data = $wpdb->get_results("SELECT * FROM {$table_name} ORDER BY id DESC", ARRAY_A); // phpcs:ignore
     }
 
-    if ( false === $data ) {
-        echo 'Error: ' . esc_html( $wpdb->last_error );
+    if (false === $data) {
+        echo 'Error: ' . esc_html($wpdb->last_error);
         return array();
     }
-return $data;
+
+    return $data;
 }
+
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';

@@ -71,7 +71,7 @@ class Scanned_QR_List_Table extends WP_List_Table {
 
     public function process_bulk_action() {
         if ( 'delete' === $this->current_action() ) {
-            if ( ! isset($_REQUEST['_wpnonce']) && ! wp_verify_nonce(sanitize_text_field( wp_unslash($_REQUEST['_wpnonce'], '_wpnonce'))) ) {
+            if ( ! isset($_REQUEST['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field( wp_unslash($_REQUEST['_wpnonce'], '_wpnonce'))) ) {
                 wp_die( esc_html__('Security check failed.', 'custom-qrcode-generator' ) );
             }
             

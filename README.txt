@@ -1,6 +1,6 @@
-=== Custom QRCode Generator ===
+=== Custom QR Code Generator ===
 Contributors:      worldweb
-Plugin Name:       Custom QRCode Generator
+Plugin Name:       Custom QR Code Generator
 Plugin URI:        https://www.worldwebtechnology.com/
 Tags:              QR code, QR Code Wordpress Plugin, QR Code Generator, QR Code shortcodes, QR code in page/post.
 Author:            World Web Technology
@@ -17,7 +17,7 @@ Easily generate customizable QR codes for websites, products, and events with th
 
 == Description ==
 
-The "Custom QRCode Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
+The "Custom QR Code Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
 
 **Main Features**
 - Simple to use and easy to install.

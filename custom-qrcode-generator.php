@@ -13,9 +13,9 @@
  * @package           Cqrc_Generator
  *
  * @wordpress-plugin
- * Plugin Name:       Custom QRCode Generator
+ * Plugin Name:       Custom QR Code Generator
  * Plugin URI:        https://www.worldwebtechnology.com/
- * Description:       The "Custom QRCode Generator" plugin for WordPress is a useful tool that allows users to create QR codes for their website or specific content. With this plugin, users can generate QR codes for various purposes, such as sharing links, promoting products, or providing website information.
+ * Description:       The "Custom QR Code Generator" plugin for WordPress is a useful tool that allows users to create QR codes for their website or specific content. With this plugin, users can generate QR codes for various purposes, such as sharing links, promoting products, or providing website information.
  * Version:           1.0.0
  * Author:            World Web Technology
  * Author URI:        https://www.worldwebtechnology.com/
@@ -120,7 +120,7 @@ function cqrc_template_redirect() {
 	if (get_query_var('qrcode_scan')) {
 		
 		// Verify the nonce before processing further
-		if (!isset($_REQUEST['qrcode_wpnonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['qrcode_wpnonce'])), 'qrcode_scan_nonce')) {
+		if (!isset($_REQUEST['qrcode_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['qrcode_wpnonce'])), 'qrcode_scan_nonce')) {
 			wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qrcode-generator'));
 		}
 		
