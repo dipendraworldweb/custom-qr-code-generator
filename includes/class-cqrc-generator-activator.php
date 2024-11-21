@@ -18,6 +18,7 @@ class Cqrc_Generator_Activator {
     	// Define table names
 		$table_name1 = QRCODE_GENERATOR_TABLE;
 		$table_name2 = QRCODE_INSIGHTS_TABLE; 
+		$table_name3 = QRCODE_SETTING_TABLE; 
 
     	// SQL to create two tables
 		$sql = "CREATE TABLE $table_name1 (
@@ -58,7 +59,19 @@ class Cqrc_Generator_Activator {
 			updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
+
+		$sql3 = "CREATE TABLE $table_name3 (
+			id int(10) NOT NULL AUTO_INCREMENT,
+			title longtext NULL,
+			description longtext NULL,
+			download longtext NULL,
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+			UNIQUE KEY id (id)
+		) $charset_collate;";
+
 		dbDelta($sql);
+		dbDelta($sql3);
 	}
 	private static function perform_activation_checks() {
         // Check for PHP version

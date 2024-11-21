@@ -1,7 +1,7 @@
 === Custom QRCode Generator ===
 Contributors:      worldweb
 Plugin Name:       Custom QRCode Generator
-Plugin URI:        https://www.worldwebtechnology.com/
+Plugin URI:        https://wordpress.org/plugins/custom-qrcode-generator/
 Tags:              QR code, QR Code Wordpress Plugin, QR Code Generator, QR Code shortcodes, QR code in page/post.
 Author:            World Web Technology
 Author URI:        https://www.worldwebtechnology.com/
@@ -11,7 +11,7 @@ Tested up to:      6.6.2
 Stable tag:        1.0.0
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-Version:           1.0.2
+Version:           1.0.0
 
 Easily generate customizable QR codes for websites, products, and events with this user-friendly WordPress plugin.
 
@@ -52,8 +52,32 @@ Replace "32" with the ID of the QR code you want to display.
 = 1. How do I create a QR code? =
 After installing and activating the plugin, navigate to the QR Code Generator menu in the admin dashboard, fill in the required fields, and click "Generate".
 
-= 2. Can I customize the QR codes? =
-Yes, the plugin allows for customization of colors, sizes, and error correction levels.
+= 2. What file formats are supported for QR code output? =
+The plugin currently supports JPG, PNG, PDF format for QR code output.
+
+= 3. How can I integrate the QR code into my website? =
+Use the provided shortcode code to insert the QR code into your web pages.
+
+= 4. Is there a limit to the amount of data that can be encoded in a QR code? =
+QR codes can store a substantial amount of data, but larger amounts of data may lead to more complex QR codes that are harder to scan. The plugin typically handles standard data sizes, but check the documentation for any specific limits.
+
+= 5. How secure is the data encoded in a QR code? =
+The security of the data encoded in a QR code depends on how the QR code is used and shared. The QR code itself does not encrypt the data, so if sensitive information is encoded, consider using additional encryption methods or secure channels.
+
+= 6. Can I use the plugin to generate QR codes in bulk? =
+Yes, the plugin supports generating QR codes in bulk.
+
+= 7. How can I customize the appearance of the QR code beyond color? =
+The plugin may allow customization of color and size, but more advanced styling options such as adding logos or changing shapes may require additional plugins or custom development.
+
+= 8. Is there a way to track QR code scans? =
+Yes, the plugin provides basic tracking capabilities for QR code scans. Specifically, you can track the number of times each QR code is scanned.
+
+= 9. How do I update the plugin to the latest version? =
+Check the plugin’s official website or repository for updates. Follow the update instructions provided, which usually involve downloading the latest version and replacing the existing files.
+
+= 10. How can I get help if I encounter issues with the plugin? =
+For help, refer to the plugin’s support page, consult the user forums, or contact the support team via email or through the platform’s support channels.
 
 == Screenshots ==
 
@@ -62,22 +86,5 @@ Yes, the plugin allows for customization of colors, sizes, and error correction 
 
 == Changelog ==
 
-= 1.0.0: August 09, 2024 =
+= 1.0.0: November 21, 2024 =
 * Initial release.
-
-= 1.0.1: August 22, 2024 =
-* Upgrade languages file.
-
-= 1.0.2: October 03, 2024 =
-* Added a feature for password-protected QR codes.
-* Added import and export functionality for QR codes.
-* Introduced user detail logging from scanned QR codes.
-* Added a search functionality for scanned users and QR codes.
-
-== Support ==
-
-For support, please visit the [support page](https://www.worldwebtechnology.com/support).
-
-== Contributing ==
-
-Contributions are welcome! Please submit issues or pull requests on our [GitHub repo](https://github.com/worldweb/cqrc-generator).

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Custom QRCode Generator
- * Plugin URI:        https://www.worldwebtechnology.com/
+ * Plugin URI:        https://wordpress.org/plugins/custom-qr-code-generator/
  * Description:       The "Custom QRCode Generator" plugin for WordPress is a useful tool that allows users to create QR codes for their website or specific content. With this plugin, users can generate QR codes for various purposes, such as sharing links, promoting products, or providing website information.
  * Version:           1.0.0
  * Author:            World Web Technology
@@ -65,6 +65,10 @@ if ( ! defined( 'QRCODE_GENERATOR_TABLE' ) ) {
 
 if ( ! defined( 'QRCODE_INSIGHTS_TABLE' ) ) {
     define( 'QRCODE_INSIGHTS_TABLE', $wpdb->prefix . 'qrcode_insights' );
+}
+
+if ( ! defined( 'QRCODE_SETTING_TABLE' ) ) {
+    define( 'QRCODE_SETTING_TABLE', $wpdb->prefix . 'qrcode_setting' );
 }
 
 

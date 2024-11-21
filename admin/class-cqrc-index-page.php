@@ -101,7 +101,7 @@ class Custom_List_Table extends WP_List_Table {
     public function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="id[]" value="%s" />',
-            esc_attr( __( $item['id'], 'custom-qrcode-generator' ) )
+            esc_attr($item['id'], 'custom-qrcode-generator' )
         );
     }
 

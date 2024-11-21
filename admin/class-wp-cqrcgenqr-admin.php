@@ -62,7 +62,7 @@ class Cqrc_Generator_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts($hook) {
-		if ( 'toplevel_page_custom-qrcode-generator' == $hook || 'qr-code_page_custom-qrcode-generate-form' == $hook || 'qr-code_page_custom-qrcode-export' == $hook || 'qr-code_page_custom-qrcode-about' == $hook || 'qr-code_page_custom-qrcode-users' == $hook || 'qr-code_page_custom-qrcode-import' == $hook) {
+		if ( 'toplevel_page_custom-qrcode-generator' == $hook || 'qr-code_page_custom-qrcode-generate-form' == $hook || 'qr-code_page_custom-qrcode-export' == $hook || 'qr-code_page_custom-qrcode-about' == $hook || 'qr-code_page_custom-qrcode-users' == $hook || 'qr-code_page_custom-qrcode-import' == $hook || 'qr-code_page_custom-qrcode-default-setting' == $hook) {
 
 			wp_enqueue_style( 'wp-list-table' );
 			wp_enqueue_media();
@@ -125,21 +125,21 @@ class Cqrc_Generator_Admin {
 			array( $this, 'cqrc_qrcode_users_page' )
 		);
 
-    	// Submenu page for "About Plugin".
+    	// Submenu page for "QR Code Default Setting".
 		add_submenu_page(
 			'custom-qrcode-generator',
-			esc_html__( 'About Plugin', 'custom-qrcode-generator' ),
-			esc_html__( 'About Plugin', 'custom-qrcode-generator' ),
+			esc_html__( 'QR Code Setting', 'custom-qrcode-generator' ),
+			esc_html__( 'QR Code Setting', 'custom-qrcode-generator' ),
 			CQRCGEN_LEVEL,
-			'custom-qrcode-about',
-			array( $this, 'cqrc_about_page' )
+			'custom-qrcode-default-setting',
+			array( $this, 'cqrc_qrcode_setting_page' )
 		);
 
 		// Submenu page for "Export QR Codes".
 		add_submenu_page(
 			'custom-qrcode-generator',
-			esc_html__( 'Export QR Codes','custom-qrcode-generator' ),
-			esc_html__( 'Export QR Codes','custom-qrcode-generator' ),
+			esc_html__( 'QR Code Export','custom-qrcode-generator' ),
+			esc_html__( 'QR Code Export','custom-qrcode-generator' ),
 			CQRCGEN_LEVEL,
 			'custom-qrcode-export',
 			array( $this, 'cqrc_export_qr_codes')
@@ -148,11 +148,21 @@ class Cqrc_Generator_Admin {
 		// Submenu page for "Import QR Codes".
 		add_submenu_page(
 			'custom-qrcode-generator',
-			esc_html__( 'Import QR Codes','custom-qrcode-generator' ),
-			esc_html__( 'Import QR Codes','custom-qrcode-generator' ),
+			esc_html__( 'QR Code Import','custom-qrcode-generator' ),
+			esc_html__( 'QR Code Import','custom-qrcode-generator' ),
 			CQRCGEN_LEVEL,
 			'custom-qrcode-import',
 			array( $this, 'cqrc_import_qr_codes')
+		);
+
+    	// Submenu page for "About Plugin".
+		add_submenu_page(
+			'custom-qrcode-generator',
+			esc_html__( 'About Plugin', 'custom-qrcode-generator' ),
+			esc_html__( 'About Plugin', 'custom-qrcode-generator' ),
+			CQRCGEN_LEVEL,
+			'custom-qrcode-about',
+			array( $this, 'cqrc_about_page' )
 		);
 	}
 
@@ -175,6 +185,17 @@ class Cqrc_Generator_Admin {
 
 	public function cqrc_qrcode_users_page() {
 		require_once CQRCGEN_ADMIN_DIR . '/class-cqrc-users-index-page.php';
+	}
+	
+	/**
+	 * About the default QR Code generat setting Page html
+	 *
+	 * @package Generate QR Code
+	 * @since 1.0.0
+	 */
+
+	public function cqrc_qrcode_setting_page() {
+		require_once CQRCGEN_ADMIN_DIR . '/partials/cqrc-default-setting.php';
 	}
 
 	/**
@@ -1717,410 +1738,410 @@ class Cqrc_Generator_Admin {
 					break;
 				}
 			}
-				if ($inEyeArea && $currentColor == 0) {
-					imagesetpixel($qr_image_resource, $x, $y, $whiteColor);
-				} elseif (!$inEyeArea && $currentColor == 0) {
-					imagesetpixel($qr_image_resource, $x, $y, $fgColor);
-				}
+			if ($inEyeArea && $currentColor == 0) {
+				imagesetpixel($qr_image_resource, $x, $y, $whiteColor);
+			} elseif (!$inEyeArea && $currentColor == 0) {
+				imagesetpixel($qr_image_resource, $x, $y, $fgColor);
 			}
 		}
+	}
 
-		$eyeFrame = '';
-		if ( ! empty( $eye_frame_image ) ) {
+	$eyeFrame = '';
+	if ( ! empty( $eye_frame_image ) ) {
 			// Load the custom frame for the eyes.
-			$eyeFrame = imagecreatefrompng( $eye_frame_image );
-		}else{
-			$eye_frame_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-frames/frame0.png';
-			$eyeFrame = imagecreatefrompng( $eye_frame_image );
-		}
+		$eyeFrame = imagecreatefrompng( $eye_frame_image );
+	}else{
+		$eye_frame_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-frames/frame0.png';
+		$eyeFrame = imagecreatefrompng( $eye_frame_image );
+	}
 
 		// Get dimensions of the eye frame.
-		$eyeFrameWidth  = imagesx( $eyeFrame );
-		$eyeFrameHeight = imagesy( $eyeFrame );
+	$eyeFrameWidth  = imagesx( $eyeFrame );
+	$eyeFrameHeight = imagesy( $eyeFrame );
 
 		//Define the desired scale factor for the eye frames (e.g., 1.5 for 150% size).
-		$scaleFactor = 2.1;
+	$scaleFactor = 2.1;
 
 		// Calculate the new dimensions of the eye frame.
-		$scaledEyeFrameWidth  = $eyeFrameWidth * $scaleFactor;
-		$scaledEyeFrameHeight = $eyeFrameHeight * $scaleFactor;
+	$scaledEyeFrameWidth  = $eyeFrameWidth * $scaleFactor;
+	$scaledEyeFrameHeight = $eyeFrameHeight * $scaleFactor;
 
 		// Create a new true color image for the scaled eye frame.
-		$scaledEyeFrame = imagecreatetruecolor( $scaledEyeFrameWidth, $scaledEyeFrameHeight );
+	$scaledEyeFrame = imagecreatetruecolor( $scaledEyeFrameWidth, $scaledEyeFrameHeight );
 
 		//Enable transparency for the new image.
-		imagealphablending( $scaledEyeFrame, false );
-		imagesavealpha( $scaledEyeFrame, true );
+	imagealphablending( $scaledEyeFrame, false );
+	imagesavealpha( $scaledEyeFrame, true );
 
 		// Resize the eye frame to the new dimensions.
-		imagecopyresampled(
-			$scaledEyeFrame,
-			$eyeFrame,
-			0,
-			0,
-			0,
-			0,
-			$scaledEyeFrameWidth,
-			$scaledEyeFrameHeight,
-			$eyeFrameWidth,
-			$eyeFrameHeight
-		);
+	imagecopyresampled(
+		$scaledEyeFrame,
+		$eyeFrame,
+		0,
+		0,
+		0,
+		0,
+		$scaledEyeFrameWidth,
+		$scaledEyeFrameHeight,
+		$eyeFrameWidth,
+		$eyeFrameHeight
+	);
 
 		//Apply color to the eye frame.
-		imagefilter( $scaledEyeFrame, IMG_FILTER_COLORIZE, $qr_eye_frame_color['r'], $qr_eye_frame_color['g'], $qr_eye_frame_color['b'], 0 );
+	imagefilter( $scaledEyeFrame, IMG_FILTER_COLORIZE, $qr_eye_frame_color['r'], $qr_eye_frame_color['g'], $qr_eye_frame_color['b'], 0 );
 
-		$eyeImage = '';
-		if ( ! empty( $eye_image ) ) {
+	$eyeImage = '';
+	if ( ! empty( $eye_image ) ) {
     		// Load the eyeball image.
-			$eyeImage = imagecreatefrompng( $eye_image );
-		}else{
-			$eye_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-balls/ball0.png';
-			$eyeImage = imagecreatefrompng( $eye_image );
+		$eyeImage = imagecreatefrompng( $eye_image );
+	}else{
+		$eye_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-balls/ball0.png';
+		$eyeImage = imagecreatefrompng( $eye_image );
 
-		}
+	}
 
     	// Apply color to the eyeball.
-		imagefilter( $eyeImage, IMG_FILTER_COLORIZE, $qr_eye_rgb['r'], $qr_eye_rgb['g'], $qr_eye_rgb['b'], 0 );
+	imagefilter( $eyeImage, IMG_FILTER_COLORIZE, $qr_eye_rgb['r'], $qr_eye_rgb['g'], $qr_eye_rgb['b'], 0 );
 
     	// Get dimensions of the eyeball image.
-		$eyeImageWidth  = imagesx( $eyeImage );
-		$eyeImageHeight = imagesy( $eyeImage );
-		
+	$eyeImageWidth  = imagesx( $eyeImage );
+	$eyeImageHeight = imagesy( $eyeImage );
+
 		// Define the rotation values for each eye frame image name
-		if (!empty($eye_frame_image)) {
-			$eye_name = basename($eye_frame_image);
-			
-			switch ($eye_name) {
-				case 'frame1.png':
-				$eyeRotations = array(90, 0, 180);
-				break;
-				case 'frame2.png':
-				$eyeRotations = array(90, 0, 0);
-				break;
-				case 'frame3.png':
-				$eyeRotations = array(270, 180, 0);
-				break;
-				case 'frame5.png':
-				$eyeRotations = array(90, 0, 180);
-				break;					
-				case 'frame6.png':
-				$eyeRotations = array(0, 90, 270);
-				break;					
-				case 'frame14.png':
-				$eyeRotations = array(0, 270, 90);
-				break;
-				default:
-				$eyeRotations = array(0, 90, 270);
-				break;
-			}
-		}else{
-			$eyeRotations = array(0, 0, 0);
-		}
-		
-		if (!empty($eye_image)) {
-			$eyeball_name = basename($eye_image);
-			switch ($eyeball_name) {
-				case 'ball1.png':
-				$eyeballRotations = array(90, 0, 180);
-				break;
-				case 'ball2.png':
-				$eyeballRotations = array(90, 0, 180);
-				break;
-				case 'ball3.png':
-				$eyeballRotations = array(270, 180, 0);
-				break;
-				case 'ball6.png':
-				$eyeballRotations = array(90, 0, 180);
-				break;					
-				case 'ball11.png':
-				$eyeballRotations = array(90, 0, 180);
-				break;	
-				case 'ball16.png':
-				$eyeballRotations = array(0, 270, 90);
-				break;
-				case 'ball17.png':
-				$eyeballRotations = array(0, 90, 270);
-				break;	
-				case 'ball18.png':
-				$eyeballRotations = array(0, 0, 0);
-				break;					
-				default:
-				$eyeballRotations = array(0, 0, 0);
-				break;
-			}
-		}else{
-			$eyeballRotations = array(0, 0, 0);
-		}
-		
-    	// Define positions and rotation for the eyes (top-left, top-right, bottom-left).
-		$eyePositions = array(
-			array(
-				'x' => 60,
-				'y' => 60,
-				'rotations' => $eyeRotations[0],
-				'rotation' => $eyeballRotations[0],
-			), 
-			array(
-				'x' => $qr_width - $scaledEyeFrameWidth - 60,
-				'y' => 60,
-				'rotations' => $eyeRotations[1],
-				'rotation' => $eyeballRotations[1],
-			), 
-			array(
-				'x' => 60,
-				'y' => $qr_height - $scaledEyeFrameHeight - 60,
-				'rotations' => $eyeRotations[2],
-				'rotation' => $eyeballRotations[2],
-			), 
-		);
+	if (!empty($eye_frame_image)) {
+		$eye_name = basename($eye_frame_image);
 
-    	// Overlay the eye frames and eyeballs onto the QR code.
-		foreach ( $eyePositions as $position ) {
-        	// Rotate the eye frame
-			$rotatedEyeFrame = imagerotate($scaledEyeFrame, $position['rotations'], 0);
-
-        	// Get the new dimensions of the rotated frame
-			$rotatedEyeFrameWidth = imagesx($rotatedEyeFrame);
-			$rotatedEyeFrameHeight = imagesy($rotatedEyeFrame);
-
-        	// Overlay the rotated eye frame onto the QR code
-			imagecopy(
-				$qr_image_resource,
-				$rotatedEyeFrame,
-				$position['x'],
-				$position['y'],
-				0,
-				0,
-				$rotatedEyeFrameWidth,
-				$rotatedEyeFrameHeight
-			);
-
-       		// Rotate the eye image
-			$rotatedEyeImage = imagerotate($eyeImage, $position['rotation'], 0);
-
-       		// Get the new dimensions of the rotated eyeball
-			$rotatedEyeImageWidth = imagesx($rotatedEyeImage);
-			$rotatedEyeImageHeight = imagesy($rotatedEyeImage);
-
-       		// Calculate the position for the eyeball
-			$eyeBallX = $position['x'] + ( $rotatedEyeFrameWidth - $rotatedEyeImageWidth ) / 2;
-			$eyeBallY = $position['y'] + ( $rotatedEyeFrameHeight - $rotatedEyeImageHeight ) / 2;
-
-       		// Overlay the rotated eyeball onto the QR code
-			imagecopy(
-				$qr_image_resource,
-				$rotatedEyeImage,
-				$eyeBallX,
-				$eyeBallY,
-				0,
-				0,
-				$rotatedEyeImageWidth,
-				$rotatedEyeImageHeight
-			);
-
-       		// Free up memory
-			imagedestroy($rotatedEyeFrame);
-			imagedestroy($rotatedEyeImage);
-		}
-
-   		// Free up memory
-		imagedestroy($eyeImage);
-		// }
-
-		$frame_image_resource = '';
-		if ( ! empty( $frame_image ) ) {
-			// Load the background frame image.
-			$frame_image_resource = imagecreatefrompng( $frame_image );
-		}else{
-			$frame_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/frames/default.png';
-			$frame_image_resource = imagecreatefrompng( $frame_image );
-		}
-		
-		// Get the dimensions of the frame image.
-		$frame_width  = imagesx( $frame_image_resource );
-		$frame_height = imagesy( $frame_image_resource );
-
-		// Calculate the scale factor for the QR code to fit within the frame.
-		$qr_scale = min( $frame_width, $frame_height ) * 0.9 / max( $qr_width, $qr_height );
-
-		// Calculate the scaled dimensions of the QR code.
-		$scaled_qr_width  = $qr_width * $qr_scale;
-		$scaled_qr_height = $qr_height * $qr_scale;
-
-		$frame_images   = basename( $frame_image );
-		$padding_top    = 0;
-		$padding_bottom = 0;
-
-		// Switch-case to set default padding based on frame_image.
-		switch ( $frame_images ) {
-			case 'balloon-bottom.png':
-			$padding_top = -300;
+		switch ($eye_name) {
+			case 'frame1.png':
+			$eyeRotations = array(90, 0, 180);
 			break;
-			case 'balloon-bottom-1.png':
-			$padding_top = -300;
+			case 'frame2.png':
+			$eyeRotations = array(90, 0, 0);
 			break;
-			case 'balloon-top.png':
-			$padding_top = 300;
+			case 'frame3.png':
+			$eyeRotations = array(270, 180, 0);
 			break;
-			case 'balloon-top-2.png':
-			$padding_top = 300;
-			break;
-			case 'banner-bottom.png':
-			$padding_top = -300;
-			break;
-			case 'banner-bottom-3.png':
-			$padding_top = -300;
-			break;
-			case 'banner-top.png':
-			$padding_top = 300;
-			break;
-			case 'banner-top-4.png':
-			$padding_top = 300;
-			break;
-			case 'box-bottom.png':
-			$padding_top = -300;
-			break;
-			case 'box-bottom-5.png':
-			$padding_top = -300;
-			break;
-			case 'box-top.png':
-			$padding_top = 300;
-			break;
-			case 'box-top-6.png':
-			$padding_top = 300;
-			break;
-			case 'focus-8-lite.png':
-			$padding_top = -350;
-			break;
-			case 'focus-lite.png':
-			$padding_top = -350;
-			break;
-			case 'default.png':
-			$padding_top = 0;
+			case 'frame5.png':
+			$eyeRotations = array(90, 0, 180);
+			break;					
+			case 'frame6.png':
+			$eyeRotations = array(0, 90, 270);
+			break;					
+			case 'frame14.png':
+			$eyeRotations = array(0, 270, 90);
 			break;
 			default:
-			$padding_top = 0;
+			$eyeRotations = array(0, 90, 270);
+			break;
+		}
+	}else{
+		$eyeRotations = array(0, 0, 0);
+	}
+
+	if (!empty($eye_image)) {
+		$eyeball_name = basename($eye_image);
+		switch ($eyeball_name) {
+			case 'ball1.png':
+			$eyeballRotations = array(90, 0, 180);
+			break;
+			case 'ball2.png':
+			$eyeballRotations = array(90, 0, 180);
+			break;
+			case 'ball3.png':
+			$eyeballRotations = array(270, 180, 0);
+			break;
+			case 'ball6.png':
+			$eyeballRotations = array(90, 0, 180);
+			break;					
+			case 'ball11.png':
+			$eyeballRotations = array(90, 0, 180);
+			break;	
+			case 'ball16.png':
+			$eyeballRotations = array(0, 270, 90);
+			break;
+			case 'ball17.png':
+			$eyeballRotations = array(0, 90, 270);
+			break;	
+			case 'ball18.png':
+			$eyeballRotations = array(0, 0, 0);
+			break;					
+			default:
+			$eyeballRotations = array(0, 0, 0);
+			break;
+		}
+	}else{
+		$eyeballRotations = array(0, 0, 0);
+	}
+
+    	// Define positions and rotation for the eyes (top-left, top-right, bottom-left).
+	$eyePositions = array(
+		array(
+			'x' => 60,
+			'y' => 60,
+			'rotations' => $eyeRotations[0],
+			'rotation' => $eyeballRotations[0],
+		), 
+		array(
+			'x' => $qr_width - $scaledEyeFrameWidth - 60,
+			'y' => 60,
+			'rotations' => $eyeRotations[1],
+			'rotation' => $eyeballRotations[1],
+		), 
+		array(
+			'x' => 60,
+			'y' => $qr_height - $scaledEyeFrameHeight - 60,
+			'rotations' => $eyeRotations[2],
+			'rotation' => $eyeballRotations[2],
+		), 
+	);
+
+    	// Overlay the eye frames and eyeballs onto the QR code.
+	foreach ( $eyePositions as $position ) {
+        	// Rotate the eye frame
+		$rotatedEyeFrame = imagerotate($scaledEyeFrame, $position['rotations'], 0);
+
+        	// Get the new dimensions of the rotated frame
+		$rotatedEyeFrameWidth = imagesx($rotatedEyeFrame);
+		$rotatedEyeFrameHeight = imagesy($rotatedEyeFrame);
+
+        	// Overlay the rotated eye frame onto the QR code
+		imagecopy(
+			$qr_image_resource,
+			$rotatedEyeFrame,
+			$position['x'],
+			$position['y'],
+			0,
+			0,
+			$rotatedEyeFrameWidth,
+			$rotatedEyeFrameHeight
+		);
+
+       		// Rotate the eye image
+		$rotatedEyeImage = imagerotate($eyeImage, $position['rotation'], 0);
+
+       		// Get the new dimensions of the rotated eyeball
+		$rotatedEyeImageWidth = imagesx($rotatedEyeImage);
+		$rotatedEyeImageHeight = imagesy($rotatedEyeImage);
+
+       		// Calculate the position for the eyeball
+		$eyeBallX = $position['x'] + ( $rotatedEyeFrameWidth - $rotatedEyeImageWidth ) / 2;
+		$eyeBallY = $position['y'] + ( $rotatedEyeFrameHeight - $rotatedEyeImageHeight ) / 2;
+
+       		// Overlay the rotated eyeball onto the QR code
+		imagecopy(
+			$qr_image_resource,
+			$rotatedEyeImage,
+			$eyeBallX,
+			$eyeBallY,
+			0,
+			0,
+			$rotatedEyeImageWidth,
+			$rotatedEyeImageHeight
+		);
+
+       		// Free up memory
+		imagedestroy($rotatedEyeFrame);
+		imagedestroy($rotatedEyeImage);
+	}
+
+   		// Free up memory
+	imagedestroy($eyeImage);
+		// }
+
+	$frame_image_resource = '';
+	if ( ! empty( $frame_image ) ) {
+			// Load the background frame image.
+		$frame_image_resource = imagecreatefrompng( $frame_image );
+	}else{
+		$frame_image = CQRCGEN_ADMIN_DIR . '/assets/qrcode/frames/default.png';
+		$frame_image_resource = imagecreatefrompng( $frame_image );
+	}
+
+		// Get the dimensions of the frame image.
+	$frame_width  = imagesx( $frame_image_resource );
+	$frame_height = imagesy( $frame_image_resource );
+
+		// Calculate the scale factor for the QR code to fit within the frame.
+	$qr_scale = min( $frame_width, $frame_height ) * 0.9 / max( $qr_width, $qr_height );
+
+		// Calculate the scaled dimensions of the QR code.
+	$scaled_qr_width  = $qr_width * $qr_scale;
+	$scaled_qr_height = $qr_height * $qr_scale;
+
+	$frame_images   = basename( $frame_image );
+	$padding_top    = 0;
+	$padding_bottom = 0;
+
+		// Switch-case to set default padding based on frame_image.
+	switch ( $frame_images ) {
+		case 'balloon-bottom.png':
+		$padding_top = -300;
+		break;
+		case 'balloon-bottom-1.png':
+		$padding_top = -300;
+		break;
+		case 'balloon-top.png':
+		$padding_top = 300;
+		break;
+		case 'balloon-top-2.png':
+		$padding_top = 300;
+		break;
+		case 'banner-bottom.png':
+		$padding_top = -300;
+		break;
+		case 'banner-bottom-3.png':
+		$padding_top = -300;
+		break;
+		case 'banner-top.png':
+		$padding_top = 300;
+		break;
+		case 'banner-top-4.png':
+		$padding_top = 300;
+		break;
+		case 'box-bottom.png':
+		$padding_top = -300;
+		break;
+		case 'box-bottom-5.png':
+		$padding_top = -300;
+		break;
+		case 'box-top.png':
+		$padding_top = 300;
+		break;
+		case 'box-top-6.png':
+		$padding_top = 300;
+		break;
+		case 'focus-8-lite.png':
+		$padding_top = -350;
+		break;
+		case 'focus-lite.png':
+		$padding_top = -350;
+		break;
+		case 'default.png':
+		$padding_top = 0;
+		break;
+		default:
+		$padding_top = 0;
+		break;
+	}
+
+		// Calculate the position to center the QR code within the frame.
+	$qr_x = ( $frame_width - $scaled_qr_width ) / 2;
+	$qr_y = ( $frame_height - $scaled_qr_height - $padding_top - $padding_bottom ) / 2 + $padding_top;
+
+		// Resize the QR code image.
+	$resized_qr_image = imagescale( $qr_image_resource, $scaled_qr_width, $scaled_qr_height );
+
+		// Create a new image to hold the merged result (frame with QR code).
+	$merged_image_resource = imagecreatetruecolor( $frame_width, $frame_height );
+
+		// Merge the frame image onto the new image.
+	imagecopy( $merged_image_resource, $frame_image_resource, 0, 0, 0, 0, $frame_width, $frame_height );
+
+		// Merge the resized QR code onto the new image (frame).
+	imagecopy( $merged_image_resource, $resized_qr_image, $qr_x, $qr_y, 0, 0, $scaled_qr_width, $scaled_qr_height );
+		// }
+
+		// Optionally, load and add the logo image.
+	if ( ! empty( $logo_url ) ) {
+		$file_extension = pathinfo( $logo_url, PATHINFO_EXTENSION );
+		switch ( strtolower( $file_extension ) ) {
+			case 'png':
+			$logo_image_resource = imagecreatefrompng( $logo_url );
+			break;
+			case 'jpg':
+			case 'jpeg':
+			$logo_image_resource = imagecreatefromjpeg( $logo_url );
+			break;
+			default:
 			break;
 		}
 
-		// Calculate the position to center the QR code within the frame.
-		$qr_x = ( $frame_width - $scaled_qr_width ) / 2;
-		$qr_y = ( $frame_height - $scaled_qr_height - $padding_top - $padding_bottom ) / 2 + $padding_top;
-
-		// Resize the QR code image.
-		$resized_qr_image = imagescale( $qr_image_resource, $scaled_qr_width, $scaled_qr_height );
-
-		// Create a new image to hold the merged result (frame with QR code).
-		$merged_image_resource = imagecreatetruecolor( $frame_width, $frame_height );
-
-		// Merge the frame image onto the new image.
-		imagecopy( $merged_image_resource, $frame_image_resource, 0, 0, 0, 0, $frame_width, $frame_height );
-
-		// Merge the resized QR code onto the new image (frame).
-		imagecopy( $merged_image_resource, $resized_qr_image, $qr_x, $qr_y, 0, 0, $scaled_qr_width, $scaled_qr_height );
-		// }
-		
-		// Optionally, load and add the logo image.
-		if ( ! empty( $logo_url ) ) {
-			$file_extension = pathinfo( $logo_url, PATHINFO_EXTENSION );
-			switch ( strtolower( $file_extension ) ) {
-				case 'png':
-				$logo_image_resource = imagecreatefrompng( $logo_url );
-				break;
-				case 'jpg':
-				case 'jpeg':
-				$logo_image_resource = imagecreatefromjpeg( $logo_url );
-				break;
-				default:
-				break;
-			}
-
 			// Get the dimensions of the logo image.
-			$logo_width  = imagesx( $logo_image_resource );
-			$logo_height = imagesy( $logo_image_resource );
+		$logo_width  = imagesx( $logo_image_resource );
+		$logo_height = imagesy( $logo_image_resource );
 
+		$logo_padding_top    = 300;
+		$logo_padding_bottom = 50;
+		$frame_images        = basename( $frame_image );
+
+		switch ( $frame_images ) {
+			case 'balloon-bottom.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 50;
+			break;
+			case 'balloon-bottom-1.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 50;
+			break;
+			case 'balloon-top.png':
 			$logo_padding_top    = 300;
 			$logo_padding_bottom = 50;
-			$frame_images        = basename( $frame_image );
-
-			switch ( $frame_images ) {
-				case 'balloon-bottom.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 50;
-				break;
-				case 'balloon-bottom-1.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 50;
-				break;
-				case 'balloon-top.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'balloon-top-2.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'banner-bottom.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 100;
-				break;
-				case 'banner-bottom-3.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 100;
-				break;
-				case 'banner-top.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'banner-top-4.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'box-bottom.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 50;
-				break;
-				case 'box-bottom-5.png':
-				$logo_padding_top    = -200;
-				$logo_padding_bottom = 50;
-				break;
-				case 'box-top.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'box-top-6.png':
-				$logo_padding_top    = 300;
-				$logo_padding_bottom = 50;
-				break;
-				case 'focus-8-lite.png':
-				$logo_padding_top    = -350;
-				$logo_padding_bottom = 50;
-				break;
-				case 'focus-lite.png':
-				$logo_padding_top    = -350;
-				$logo_padding_bottom = 50;
-				break;
-				case 'default.png':
-				$logo_padding_top    = 0;
-				$logo_padding_bottom = 0;
-				break;
-			}
+			break;
+			case 'balloon-top-2.png':
+			$logo_padding_top    = 300;
+			$logo_padding_bottom = 50;
+			break;
+			case 'banner-bottom.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 100;
+			break;
+			case 'banner-bottom-3.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 100;
+			break;
+			case 'banner-top.png':
+			$logo_padding_top    = 300;
+			$logo_padding_bottom = 50;
+			break;
+			case 'banner-top-4.png':
+			$logo_padding_top    = 300;
+			$logo_padding_bottom = 50;
+			break;
+			case 'box-bottom.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 50;
+			break;
+			case 'box-bottom-5.png':
+			$logo_padding_top    = -200;
+			$logo_padding_bottom = 50;
+			break;
+			case 'box-top.png':
+			$logo_padding_top    = 300;
+			$logo_padding_bottom = 50;
+			break;
+			case 'box-top-6.png':
+			$logo_padding_top    = 300;
+			$logo_padding_bottom = 50;
+			break;
+			case 'focus-8-lite.png':
+			$logo_padding_top    = -350;
+			$logo_padding_bottom = 50;
+			break;
+			case 'focus-lite.png':
+			$logo_padding_top    = -350;
+			$logo_padding_bottom = 50;
+			break;
+			case 'default.png':
+			$logo_padding_top    = 0;
+			$logo_padding_bottom = 0;
+			break;
+		}
 
 			// Calculate the size and position of the logo relative to the frame with padding.
-			$logo_size = min( $frame_width, $frame_height ) / 5;
-			$logo_x    = ( $frame_width - $logo_size ) / 2;
-			$logo_y    = ( $frame_height - $logo_size - $logo_padding_top - $logo_padding_bottom ) / 2 + $logo_padding_top;
+		$logo_size = min( $frame_width, $frame_height ) / 5;
+		$logo_x    = ( $frame_width - $logo_size ) / 2;
+		$logo_y    = ( $frame_height - $logo_size - $logo_padding_top - $logo_padding_bottom ) / 2 + $logo_padding_top;
 
 			// Resize the logo image.
-			$resized_logo_image = imagescale( $logo_image_resource, $logo_size, $logo_size );
+		$resized_logo_image = imagescale( $logo_image_resource, $logo_size, $logo_size );
 
 			// Merge the logo onto the new image (frame with QR code).
-			imagecopy( $merged_image_resource, $resized_logo_image, $logo_x, $logo_y, 0, 0, $logo_size, $logo_size );
+		imagecopy( $merged_image_resource, $resized_logo_image, $logo_x, $logo_y, 0, 0, $logo_size, $logo_size );
 
 			// Free memory.
-			imagedestroy( $logo_image_resource );
-			imagedestroy( $resized_logo_image );
-		}
+		imagedestroy( $logo_image_resource );
+		imagedestroy( $resized_logo_image );
+	}
 
 		$existing_imgdata = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $id ) );// phpcs:ignore
 		if ( ! $existing_imgdata ) {
@@ -2291,6 +2312,54 @@ class Cqrc_Generator_Admin {
 			// Redirect after deletion
 			wp_redirect(admin_url('admin.php?page=' . $page));
 			exit;
+		}
+	}
+
+	public function save_qrcode_settings() {
+		global $wpdb;
+		$table_name = QRCODE_SETTING_TABLE;
+
+    	// Check nonce for security
+		if ( ! isset( $_POST['qr_code_setting_data_nonce'] ) || ! wp_verify_nonce( $_POST['qr_code_setting_data_nonce'], 'qr_code_setting_data' ) ) {
+			wp_die( esc_html__('Nonce verification failed.', 'custom-qrcode-generator'));
+		}
+
+    	// Sanitize and prepare data
+		$title = sanitize_text_field($_POST['title']);
+		$description = wp_kses_post($_POST['description']);
+		$serialized_description = serialize($description);
+
+    	// Check if buttons are set and sanitize accordingly
+		$download = isset($_POST['download']) ? array_map('sanitize_text_field', $_POST['download']) : [];
+		$download_string = !empty($download) ? implode(',', $download) : ''; 
+
+    	// Check if settings exist
+		$existing_settings = $wpdb->get_row($wpdb->prepare ("SELECT * FROM $table_name LIMIT 1"));
+		if ($existing_settings) {
+			$update = $wpdb->update(
+				$table_name,
+				array(
+					'title' => $title,
+					'description' => $serialized_description,
+					'download' => $download_string,
+				),
+				array('id' => $existing_settings->id)
+			);
+		} else {
+			$update = $wpdb->insert(
+				$table_name,
+				array(
+					'title' => $title,
+					'description' => $serialized_description,
+					'download' => $download_string,
+				)
+			);
+		}
+
+		if ($update !== false) {
+			wp_send_json_success(__('Settings updated successfully.', 'custom-qrcode-generator'));
+		} else {
+			wp_send_json_error(__('Failed to update settings. Please try again.', 'custom-qrcode-generator'));
 		}
 	}
 }

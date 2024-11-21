@@ -837,4 +837,36 @@ jQuery(document).ready(function($) {
  requiredColumns.forEach(function(column) {
     jQuery('input[name="columns[]"][value="' + column + '"]').prop('disabled', true);
 });
+ $('#submit_qrcode_setting').on('click', function() {
+    var formData = $('#wwt-qrcode-setting-form').serialize();
+
+    $.ajax({
+        type: 'POST',
+        url: wwtQrCodeGenerator.ajax_url,
+        data: formData + '&action=save_qrcode_settings',
+        success: function(response) {
+            // Clear previous messages
+            $('#response-message').empty();
+
+            if (response.success) {
+                $('#response-message').html('<div class="notice notice-success is-dismissible"><p>' + response.data + '</p></div>');
+            } else {
+                $('#response-message').html('<div class="notice notice-error is-dismissible"><p>' + response.data + '</p></div>');
+            }
+
+            // Add dismiss functionality to the notification
+            $('.is-dismissible').on('click', function() {
+                $(this).fadeOut();
+            });
+        },
+        error: function() {
+            $('#response-message').html('<div class="notice notice-error is-dismissible"><p>An error occurred. Please try again.</p></div>');
+
+            // Add dismiss functionality to the notification
+            $('.is-dismissible').on('click', function() {
+                $(this).fadeOut();
+            });
+        }
+    });
+});
 });

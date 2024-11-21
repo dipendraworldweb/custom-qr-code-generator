@@ -26,8 +26,17 @@ function cqrc_register_qrcode_shortcode() {
     add_shortcode( 'cqrc_gen_qrcode_view', 'cqrc_qrcode_shortcode_handler' );
 }
 
-
 function cqrc_qrcode_shortcode_handler( $atts ) {
+    global $wpdb;
+    
+    // Fetch existing settings
+    $table_name = QRCODE_SETTING_TABLE;
+    $settings = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name LIMIT 1"));
+    $title = !empty($settings->title) ? $settings->title : '';
+    $description = !empty($settings->description) ? unserialize($settings->description) : '';
+    $download_options = !empty($settings->download) ? $settings->download : '';
+    $download_options_array = is_array($download_options) ? $download_options : explode(',', $download_options);
+    
     $atts = shortcode_atts( array(
         'id' => '',
     ), $atts, 'cqrc_gen_qrcode_view' );
@@ -51,19 +60,35 @@ function cqrc_qrcode_shortcode_handler( $atts ) {
         <div class="qr-code-showing-preview-image-fronted">
             <img src="<?php echo esc_url( $qr_code_url ); ?>" alt="<?php esc_attr_e( 'QR Code', 'custom-qrcode-generator' ); ?>">
         </div>
-        <div class="qr-code-description">
-            <h2><?php esc_html_e( 'QR Code is Ready!', 'custom-qrcode-generator' ); ?></h2>
-            <p><?php esc_html_e( 'To use the QR code, scan it with a QR code reader or mobile device. Simply point your camera at the code and follow the instructions that appear.', 'custom-qrcode-generator' ); ?></p>
-            <p><?php esc_html_e( 'You can download the QR code in various formats. Choose the one that best suits your needs.', 'custom-qrcode-generator' ); ?></p>
-        </div>
+        <?php if (!empty($title)) : ?>
+            <div class="qr-code-main-title">
+                <h2 class="title"><?php echo esc_html( $title ); ?></h2>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($description)) : ?>
+            <div class="qr-code-description">
+                <?php echo $description; // Output the dynamic description ?>
+            </div>
+        <?php endif; ?>
+        <?php if (in_array('png', $download_options_array) || in_array('jpg', $download_options_array) || in_array('pdf', $download_options_array)) : ?>
         <div class="download-qr-code-column">
-            <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php esc_html_e( 'Download PNG', 'custom-qrcode-generator' ); ?></a>
-            <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php esc_html_e( 'Download JPG', 'custom-qrcode-generator' ); ?></a>
-            <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php esc_html_e( 'Download PDF', 'custom-qrcode-generator' ); ?></a>
+            <?php if (in_array('png', $download_options_array)) : ?>
+                <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php esc_html_e( 'Download PNG', 'custom-qrcode-generator' ); ?></a>
+            <?php endif; ?>
+
+            <?php if (in_array('jpg', $download_options_array)) : ?>
+                <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php esc_html_e( 'Download JPG', 'custom-qrcode-generator' ); ?></a>
+            <?php endif; ?>
+
+            <?php if (in_array('pdf', $download_options_array)) : ?>
+                <a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php esc_html_e( 'Download PDF', 'custom-qrcode-generator' ); ?></a>
+            <?php endif; ?>
         </div>
-    </div>
-    <?php
-    return ob_get_clean();
+    <?php endif; ?>
+</div>
+<?php
+return ob_get_clean();
 }
 
 /**
@@ -110,7 +135,7 @@ function cqrc_qrcode_query_vars($vars) {
 
 function cqrc_qrcode_template_redirect() {
     if (get_query_var('qrcode_scan')) {
-        
+
         // Verify the nonce before processing further
         if (empty($_REQUEST['qrcode_wpnonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['qrcode_wpnonce'])), 'qrcode_scan_nonce')) {
             wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qrcode-generator'));
