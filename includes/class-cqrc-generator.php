@@ -2,31 +2,18 @@
 
 /**
  * The file that defines the core plugin class
- *
- * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the admin area.
- *
  * @link       https://www.worldwebtechnology.com/
- * @since      1.0.0
- *
- * @package    Cqrc_Generator
- * @subpackage Cqrc_Generator/includes
- */
-
-/**
- * The core plugin class.
- *
- * This is used to define internationalization, admin-specific hooks, and
- * public-facing site hooks.
- *
- * Also maintains the unique identifier of this plugin as well as the current
- * version of the plugin.
- *
  * @since      1.0.0
  * @package    Cqrc_Generator
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Cqrc_Generator {
 
 	/**
@@ -60,15 +47,11 @@ class Cqrc_Generator {
 	/**
 	 * Define the core functionality of the plugin.
 	 *
-	 * Set the plugin name and the plugin version that can be used throughout the plugin.
-	 * Load the dependencies, define the locale, and set the hooks for the admin area and
-	 * the public-facing side of the site.
-	 *
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'CQRC_GENERATOR_VERSION ' ) ) {
-			$this->version = CQRC_GENERATOR_VERSION ;
+		if ( defined( 'WWT_QRCODE_GENERATOR_VERSION' ) ) {
+			$this->version = WWT_QRCODE_GENERATOR_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -103,44 +86,64 @@ class Cqrc_Generator {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cqrc-generator-loader.php';
+		require_once CQRCGEN_INCLUDES_DIR. '/class-cqrc-generator-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cqrc-generator-i18n.php';
+		require_once CQRCGEN_INCLUDES_DIR. '/class-cqrc-generator-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cqrc-generator-admin.php';
+		require_once CQRCGEN_ADMIN_DIR . '/class-wp-cqrcgenqr-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cqrc-generator-public.php';
+		
+		/**
+		 * Add require files for qrcode template redirect function 
+		 */
+		require_once CQRCGEN_INCLUDES_DIR. '/qrcode-functions.php';
+		require_once CQRCGEN_INCLUDES_DIR. '/user-functions.php';
+		require_once CQRCGEN_INCLUDES_DIR. '/error-functions.php';
+		
+		require_once( CQRCGEN_INCLUDES_DIR . '/vendor/autoload.php' );
+		/**
+		 * Add wordpress list table.
+		 */
+		if ( ! class_exists( 'WP_List_Table' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+		}
+		
+		if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		}
+		
+		// Include required files if not already included.
+		require_once(ABSPATH . 'wp-admin/includes/media.php');
+		require_once(ABSPATH . 'wp-admin/includes/file.php');
+		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		
+		// Include WordPress upgrade functions
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$this->loader = new Cqrc_Generator_Loader();
-
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Cqrc_Generator_i18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
 	private function set_locale() {
-
 		$plugin_i18n = new Cqrc_Generator_i18n();
-
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -154,8 +157,12 @@ class Cqrc_Generator {
 
 		$plugin_admin = new Cqrc_Generator_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'genqr_admin_menu' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_generator_form_handle' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_handle_qr_code_delete_action' );
+		$this->loader->add_action( 'wp_ajax_cqrc_handle_qrurl_insert_record', $plugin_admin, 'cqrc_handle_qrurl_insert_record' );
 
 	}
 
@@ -170,8 +177,8 @@ class Cqrc_Generator {
 
 		$plugin_public = new Cqrc_Generator_Public( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'init', $plugin_public, 'cqrc_handle_qr_code_download' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
 
@@ -214,5 +221,4 @@ class Cqrc_Generator {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

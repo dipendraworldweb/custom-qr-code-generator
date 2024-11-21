@@ -1,0 +1,38 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ * admin-style
+ */
+
+.form-buttons { display: flex; align-items: center; gap: 25px; margin-top: 20px; }
+.form-buttons p { margin: 0; padding: 0; }
+.additional-settings { display: none; }
+#logo_fields { display: flex; gap: 5px; }
+td.download.column-download .download-buttons-qrcode a { color: white; }
+.download-qr-code-column { display: flex; gap: 5px; flex-direction: column; text-align: center; font-weight: 500; }
+.plugin-descriptions { background-color: #f9f9f9; border-left: 4px solid #0073aa; padding: 15px; margin-bottom: 20px; }
+.shortcode-info { background-color: #f0f0f0; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+.shortcode-example { background-color: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin: 10px 0; font-family: monospace; }
+.about-us-company-details { background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
+.about-us-company-details p { margin: 0 0 10px; }
+.about-us-company-details a { color: #0073aa; text-decoration: none; }
+.about-us-company-details a:hover { text-decoration: underline; }
+.shortcode-info ul { list-style-type: disc; padding-left: 20px; }
+.shortcode-info ul li, .shortcode-notes-desctiption { font-weight: bold; }
+.shortcode-info .shortcode-example { display: flex; align-items: center; }
+#toplevel_page_custom-qrcode-generator .wp-menu-image:before { content: ''; background-image: url('../qrcode/dashicon/qrscan.svg'); background-size: 20px 20px; background-repeat: no-repeat; background-position: center; display: inline-block; width: 20px; height: 20px; text-indent: -9999px; filter: brightness(0) saturate(100%) invert(73%) sepia(7%) saturate(136%) hue-rotate(169deg) brightness(92%) contrast(91%); }
+#qrcode-loader:before { content: ""; display: block; position: absolute; top: 50%; left: 50%; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 6px solid #ccc; border-top-color: #ff6a00; animation: loader-spin .8s linear infinite; }
+#download-popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9998; }
+#download-popup { position: relative; top: -50%; left: 50%; transform: translate(-50%, -50%); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); z-index: 9999; max-width: 90%; width: 400px; text-align: center; }
+#download-popup h2 { margin-top: 0; font-size: 18px; font-weight: bold; }
+.download-buttons { margin: 20px 0; }
+.download-buttons .button { margin: 5px; padding: 10px 20px; border-radius: 4px; font-size: 14px; text-decoration: none; }
+.button-primary { background-color: #0073aa; color: #fff; }
+.button-secondary { background-color: #ccc; color: #333; }
+#close-popup { padding: 0px; border: none; border-radius: 4px; background-color: #ff0000; color: #fff; cursor: pointer; position: absolute; top: 2px; right: 2px; border-radius: 60px; width: 29px; height: 25px; }
+#close-popup:hover { background-color: #cc0000; }
+span.required-lables { color: red; font-weight: bold; }
+#qrcode-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; justify-content: center; align-items: center; }
+td.shortcode.column-shortcode span.shortcode { cursor: pointer; }
+@keyframes loader-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#toggle-password i { transition: color 0.3s; } #toggle-password:hover i {color: #0073aa; }

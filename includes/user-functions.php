@@ -28,17 +28,17 @@ function get_user_location($ip) {
         $location_data = json_decode(wp_remote_retrieve_body($response), true);
 
         // Check if the response has valid data
-        if (isset($location_data['ip'])) {
+        if (!empty($location_data['ip'])) {
             $details = [
                 'IP' => $location_data['ip'],
-                'Hostname' => isset($location_data['hostname']) ? $location_data['hostname'] : 'N/A',
-                'City' => isset($location_data['city']) ? $location_data['city'] : 'N/A',
-                'Region' => isset($location_data['region']) ? $location_data['region'] : 'N/A',
-                'Country' => isset($location_data['country']) ? $location_data['country'] : 'N/A',
-                'Location' => isset($location_data['loc']) ? $location_data['loc'] : 'N/A',
-                'Organization' => isset($location_data['org']) ? $location_data['org'] : 'N/A',
-                'Postal' => isset($location_data['postal']) ? $location_data['postal'] : 'N/A',
-                'Timezone' => isset($location_data['timezone']) ? $location_data['timezone'] : 'N/A',
+                'Hostname' => !empty($location_data['hostname']) ? $location_data['hostname'] : 'N/A',
+                'City' => !empty($location_data['city']) ? $location_data['city'] : 'N/A',
+                'Region' => !empty($location_data['region']) ? $location_data['region'] : 'N/A',
+                'Country' => !empty($location_data['country']) ? $location_data['country'] : 'N/A',
+                'Location' => !empty($location_data['loc']) ? $location_data['loc'] : 'N/A',
+                'Organization' => !empty($location_data['org']) ? $location_data['org'] : 'N/A',
+                'Postal' => !empty($location_data['postal']) ? $location_data['postal'] : 'N/A',
+                'Timezone' => !empty($location_data['timezone']) ? $location_data['timezone'] : 'N/A',
             ];
 
             // Format the details into a comma-separated string
@@ -61,8 +61,7 @@ function get_user_location($ip) {
 
 //Function to get the user device and his type.
 function get_device_type() {
-    // $user_agent = $_SERVER['HTTP_USER_AGENT'];
-    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
+    $user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
     if (preg_match('/Mobile|Android|iPhone|iPad/', $user_agent)) {
         return 'Mobile';
     }

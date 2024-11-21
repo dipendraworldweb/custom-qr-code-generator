@@ -1,15 +1,4 @@
 <?php
-
-/**
- * Fired during plugin activation
- *
- * @link       https://www.worldwebtechnology.com/
- * @since      1.0.0
- *
- * @package    Cqrc_Generator
- * @subpackage Cqrc_Generator/includes
- */
-
 /**
  * Fired during plugin activation.
  *
@@ -21,23 +10,16 @@
  * @author     World Web Technology <biz@worldwebtechnology.com>
  */
 class Cqrc_Generator_Activator {
-
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
 	public static function activate() {
 		global $wpdb;
+		self::perform_activation_checks();
 		$charset_collate = $wpdb->get_charset_collate();
 
-    // Define table names
-		$table_name1 = $wpdb->prefix . 'qrcode_generator';
-		$table_name2 = $wpdb->prefix . 'qrcode_insights'; 
+    	// Define table names
+		$table_name1 = QRCODE_GENERATOR_TABLE;
+		$table_name2 = QRCODE_INSIGHTS_TABLE; 
 
-    // SQL to create two tables
+    	// SQL to create two tables
 		$sql = "CREATE TABLE $table_name1 (
 			id int(10) NOT NULL AUTO_INCREMENT,
 			user_id varchar(255) NULL,
@@ -76,10 +58,47 @@ class Cqrc_Generator_Activator {
 			updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 			UNIQUE KEY id (id)
 		) $charset_collate;";
-
-    // Include WordPress upgrade functions
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta($sql);
 	}
+	private static function perform_activation_checks() {
+        // Check for PHP version
+		if ( version_compare( PHP_VERSION, '7.4', '<' ) ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			self::display_activation_error( 'PHP version 7.4 or higher is required. Please upgrade your PHP version.' );
+		}
 
+        // Check for WordPress version
+		if ( version_compare( get_bloginfo( 'version' ), '6.0', '<' ) ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			self::display_activation_error( 'WordPress version 6.0 or higher is required. Please upgrade your WordPress version.' );
+		}
+
+        // Check if GD Image Library is enabled
+		if ( !extension_loaded( 'gd' ) && !function_exists( 'gd_info' ) ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			self::display_activation_error( 'GD Library is not installed/enabled. Please refer to the <a href="https://www.php.net/manual/en/book.image.php" target="_blank">PHP documentation</a>.' );
+		}
+	}
+
+	private static function display_activation_error( $message ) {
+    	// A helper method to display custom error messages
+		$plugins_page_url = admin_url( 'plugins.php' );
+
+	    // Prepare the message for translation
+		$translated_message = esc_html( $message );
+
+	    // Create the HTML for the error message
+		$message_html = sprintf(
+			'<div style="text-align: center;">
+			<p>%s</p>
+			<p><a href="%s" class="button button-primary">%s</a></p>
+			</div>',
+			$translated_message,
+			esc_url( $plugins_page_url ),
+			esc_html__( 'Return to Plugins Page', 'custom-qrcode-generator' )
+		);
+
+	    // Display the error message and stop execution
+		wp_die( wp_kses_post( $message_html ) );
+	}
 }
