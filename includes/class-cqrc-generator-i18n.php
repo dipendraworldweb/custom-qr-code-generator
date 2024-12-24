@@ -18,9 +18,8 @@ class Cqrc_Generator_i18n {
 	 * @since    1.0.0
 	 */
 	public function load_plugin_textdomain() {
-
 		load_plugin_textdomain(
-			'custom-qrcode-generator',
+			'custom-qr-code-generator',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

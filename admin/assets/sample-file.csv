@@ -1,0 +1,2 @@
+id,url,name,description,template_name,download,download_content,upload_logo,default_logo_name,qr_code_color,frame_name,eye_frame_name,qr_eye_frame_color,eye_balls_name,qr_eye_color,qrcode_level,password
+,https://www.google.com/,Demo,qrcode description,default,"png,jpg,pdf","Download PNG,Download JPG,Download PDF",default,default,#000000,default,frame0,#000000,ball0,#000000,QR_ECLEVEL_M,

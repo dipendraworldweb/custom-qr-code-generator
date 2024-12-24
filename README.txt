@@ -1,13 +1,13 @@
-=== Custom QRCode Generator ===
+=== Custom QR Code Generator ===
 Contributors:      worldweb
-Plugin Name:       Custom QRCode Generator
-Plugin URI:        https://wordpress.org/plugins/custom-qrcode-generator/
+Plugin Name:       Custom QR Code Generator
+Plugin URI:        https://loancalc.worldwebtechnology.com/custom-qr-code-generator-document/
 Tags:              QR code, QR Code Wordpress Plugin, QR Code Generator, QR Code shortcodes, QR code in page/post.
 Author:            World Web Technology
 Author URI:        https://www.worldwebtechnology.com/
 Requires at least: 5.6
-Requires PHP:      7.2
-Tested up to:      6.6.2
+Requires PHP:      7.4
+Tested up to:      6.7
 Stable tag:        1.0.0
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -17,7 +17,9 @@ Easily generate customizable QR codes for websites, products, and events with th
 
 == Description ==
 
-The "Custom QRCode Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
+The "Custom QR Code Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
+
+This plugin uses the Chillerlan PHP QR Code library.
 
 **Main Features**
 - Simple to use and easy to install.
@@ -28,10 +30,10 @@ The "Custom QRCode Generator" plugin for WordPress is a powerful tool that allow
 - Log user details from scanned QR codes.
 
 **Best Used For**
-- Sharing website links.
-- Product promotions and marketing campaigns.
-- Event information and contact sharing.
-- Special offers and discounts.
+- Sharing Website Links.
+- Product Information.
+- Event Details.
+- Payment Information.
 
 == Installation Instructions ==
 
@@ -47,6 +49,11 @@ To display a specific QR code on any page or post on your website, use the follo
 
 Replace "32" with the ID of the QR code you want to display.
 
+== Third party library ==
+
+1. PHP QR Code library. 
+   - The plugin uses the PHP QR Code generator library. [GIT](https://github.com/chillerlan/php-qrcode).
+   
 == Frequently Asked Questions ==
 
 = 1. How do I create a QR code? =
@@ -81,10 +88,22 @@ For help, refer to the plugin’s support page, consult the user forums, or cont
 
 == Screenshots ==
 
-1. Screenshot of the QR Code Generator interface.
-2. Example of a generated QR code.
+1. Qr Code Generation Form
+2. Qr Code Additional Settings
+3. Generated QR Code Backend Listing
+4. All Scanned Records Backend Listing
+5. Export QR Codes Feature with Fields Selection
+6. Import QR Code Feature with Sample CSV File
+7. Basic Introduction of the plugin
+8. Frontend View of the Shortcode with Download QR Code Buttons
 
-== Changelog ==
+== External Services ==
 
-= 1.0.0: November 21, 2024 =
-* Initial release.
+This plugin utilizes the following external services for analytics and user information:
+
+1. IPinfo
+   - To retrieve user location data based on their IP address. This includes details such as city, region, country, and organization.
+   - For more information, please refer to their [Privacy Policy](https://ipinfo.io/privacy-policy) and [Terms of Service](https://ipinfo.io/terms-of-service).
+
+2. User Agent Detection
+   - To determine the type of device (Mobile or Desktop) that the user is using.

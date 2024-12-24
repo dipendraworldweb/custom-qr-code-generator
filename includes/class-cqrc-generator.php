@@ -55,8 +55,7 @@ class Cqrc_Generator {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'custom-qrcode-generator';
-
+		$this->plugin_name = 'custom-qr-code-generator';
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
@@ -95,42 +94,42 @@ class Cqrc_Generator {
 		require_once CQRCGEN_INCLUDES_DIR. '/class-cqrc-generator-i18n.php';
 
 		/**
+		 * Add require files for qrcode template redirect function 
+		 */
+		require_once CQRCGEN_INCLUDES_DIR. '/qrcode-functions.php';
+		
+		/**
+		 * Added DOM PDF and PHP QRCode Library
+		 * through composer.
+		 */
+		require_once CQRCGEN_DIR. '/vendor/autoload.php';
+
+		/**
+		 * Add wordpress list table.
+		 */
+		if ( ! class_exists( 'WP_List_Table' ) ) {
+			require_once ABSPATH. 'wp-admin/includes/class-wp-list-table.php';
+		}
+		
+		if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+			require_once ABSPATH. 'wp-admin/includes/file.php';
+		}
+		
+		// Include required files if not already included.
+		require_once ABSPATH. 'wp-admin/includes/media.php';
+		require_once ABSPATH. 'wp-admin/includes/file.php';
+		require_once ABSPATH. 'wp-admin/includes/image.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once CQRCGEN_ADMIN_DIR . '/class-wp-cqrcgenqr-admin.php';
+		require_once CQRCGEN_ADMIN_DIR. '/class-cqrc-generator-admin.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cqrc-generator-public.php';
-		
-		/**
-		 * Add require files for qrcode template redirect function 
-		 */
-		require_once CQRCGEN_INCLUDES_DIR. '/qrcode-functions.php';
-		require_once CQRCGEN_INCLUDES_DIR. '/user-functions.php';
-		require_once CQRCGEN_INCLUDES_DIR. '/error-functions.php';
-		
-		require_once( CQRCGEN_INCLUDES_DIR . '/vendor/autoload.php' );
-		/**
-		 * Add wordpress list table.
-		 */
-		if ( ! class_exists( 'WP_List_Table' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-		}
-		
-		if ( ! function_exists( 'request_filesystem_credentials' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/file.php' );
-		}
-		
-		// Include required files if not already included.
-		require_once(ABSPATH . 'wp-admin/includes/media.php');
-		require_once(ABSPATH . 'wp-admin/includes/file.php');
-		require_once(ABSPATH . 'wp-admin/includes/image.php');
-		
-		// Include WordPress upgrade functions
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		require_once CQRCGEN_PUBLIC_DIR. '/class-cqrc-generator-public.php';
 
 		$this->loader = new Cqrc_Generator_Loader();
 	}
@@ -154,17 +153,14 @@ class Cqrc_Generator {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
 		$plugin_admin = new Cqrc_Generator_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'genqr_admin_menu' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'cqrc_admin_menu' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_generator_form_handle' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_handle_qr_code_delete_action' );
 		$this->loader->add_action( 'wp_ajax_cqrc_handle_qrurl_insert_record', $plugin_admin, 'cqrc_handle_qrurl_insert_record' );
-		$this->loader->add_action( 'wp_ajax_save_qrcode_settings', $plugin_admin, 'save_qrcode_settings' );
-
 	}
 
 	/**
@@ -175,12 +171,13 @@ class Cqrc_Generator {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new Cqrc_Generator_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'init', $plugin_public, 'cqrc_handle_qr_code_download' );
+		$this->loader->add_action( 'init', $plugin_public, 'cqrc_register_qrcode_shortcode' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-
+		$this->loader->add_action( 'template_redirect', $plugin_public, 'cqrc_qrcode_template_redirect' );
+		$this->loader->add_filter( 'query_vars', $plugin_public, 'cqrc_qrcode_query_vars' );
 	}
 
 	/**

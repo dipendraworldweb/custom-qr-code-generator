@@ -20,9 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 * @since 1.0.0
 */
 /**
-* Custom_List_Table
+* Cqrc_Custom_List_Table
 */
-class Custom_List_Table extends WP_List_Table {
+class Cqrc_Custom_List_Table extends WP_List_Table {
 
     /**
     * __construct
@@ -72,13 +72,13 @@ class Custom_List_Table extends WP_List_Table {
 
         if ( 'delete' === $this->current_action() ) {
             if (empty($_REQUEST['_qrcode_bulk_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_qrcode_bulk_nonce'])), 'qrcode_bulk_action')) {
-                wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qrcode-generator'));
+                wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator'));
             }
             
             $delete_ids = ( !empty( $_POST['id'] ) ) ? array_map( 'absint', $_POST['id'] ) : array();
             if ( ! empty( $delete_ids ) ) {
                 foreach ( $delete_ids as $id ) {
-                    self::delete_qr( $id );
+                    self::cqrc_delete_qr( $id );
                 }
             }
         }
@@ -90,7 +90,7 @@ class Custom_List_Table extends WP_List_Table {
     * @param  mixed $item item.
     */
     public function column_qrcode( $item ) {
-        return '<img src="' . esc_url( $item['qr_code'] ) . '" alt="QR Code" style="max-width: 100px; height: auto;" />';
+        return '<img src="' . esc_url( $item['qr_code'] ) . '" alt="QR Code" style="max-width: 100px; height: auto;" />'; // phpcs:ignore
     }
 
     /**
@@ -101,7 +101,7 @@ class Custom_List_Table extends WP_List_Table {
     public function column_cb( $item ) {
         return sprintf(
             '<input type="checkbox" name="id[]" value="%s" />',
-            esc_attr($item['id'], 'custom-qrcode-generator' )
+            esc_attr($item['id'], 'custom-qr-code-generator' )
         );
     }
 
@@ -111,7 +111,7 @@ class Custom_List_Table extends WP_List_Table {
         // Generate actions.
         $actions = array(
             'edit' => sprintf(
-                '<a href="%s">' . __( 'Edit', 'custom-qrcode-generator' ) . '</a>',
+                '<a href="%s">' . __( 'Edit', 'custom-qr-code-generator' ) . '</a>',
                 esc_url( add_query_arg(
                     array(
                         'page' => 'custom-qrcode-generate-form',
@@ -122,10 +122,10 @@ class Custom_List_Table extends WP_List_Table {
                 ) )
             ),
             'delete' => sprintf(
-                '<a href="%s" class="submitdelete" onclick="return confirm(\'Are you sure you want to delete this record?\');">' . __( 'Delete', 'custom-qrcode-generator' ) . '</a>',
+                '<a href="%s" class="submitdelete" onclick="return confirm(\'Are you sure you want to delete this record?\');">' . __( 'Delete', 'custom-qr-code-generator' ) . '</a>',
                 esc_url( add_query_arg(
                     array(
-                        'page' => 'custom-qrcode-generator',
+                        'page' => 'custom-qr-code-generator',
                         'action' => 'delete',
                         'id' => $item['id'],
                         '_qr_code_nonce_action' => wp_create_nonce('qr_code_nonce_action'),
@@ -134,7 +134,7 @@ class Custom_List_Table extends WP_List_Table {
                 ) )
             ),
             'download' => sprintf(
-                '<a href="#" class="qrcode-download-link-trigger" data-id="%d" data-name="%s">' . __( 'Download', 'custom-qrcode-generator' ) . '</a>',
+                '<a href="#" class="qrcode-download-link-trigger" data-id="%d" data-name="%s">' . __( 'Download', 'custom-qr-code-generator' ) . '</a>',
                 $item['id'],
                 esc_attr( $item['name'] )
             ),
@@ -142,25 +142,34 @@ class Custom_List_Table extends WP_List_Table {
 
         // Add actions HTML after the name.
         return sprintf(
-            __( '%s<br><div class="row-actions">%s</div>', 'custom-qrcode-generator' ),
+            /* translators: %1$s: The name of the item; %2$s: The actions available for the item*/
+            __( '%1$s<br><div class="row-actions">%2$s</div>', 'custom-qr-code-generator' ),
             $name,
             implode(' | ', $actions)
         );
     }
     
     public function column_description( $item ) {
-        $description = esc_html( $item['description'] );
+        $unserialize_desc = $item['description'];
+        if ( is_serialized( $unserialize_desc ) && is_serialized_string( $unserialize_desc ) ) {
+            $unserialize_desc = maybe_unserialize( $unserialize_desc );
+        }
+
+        // Strip HTML tags to get plain text
+        $description = wp_strip_all_tags( $unserialize_desc );
+
+        // Set the word limit
         $word_limit = 20;
-        
+
         // Explode the description into an array of words
         $words = explode( ' ', $description );
-        
+
         // Limit the number of words
         if ( count( $words ) > $word_limit ) {
             $words = array_slice( $words, 0, $word_limit );
             $description = implode( ' ', $words ) . '...';
         }
-        
+
         return $description;
     }
     
@@ -181,7 +190,7 @@ class Custom_List_Table extends WP_List_Table {
         return sprintf(
             '<a href="%s" class="page-title-action">%s</a>',
             esc_url( $edit_url ),
-            __( 'Edit', 'custom-qrcode-generator' )
+            __( 'Edit', 'custom-qr-code-generator' )
         );
     }
 
@@ -212,18 +221,24 @@ class Custom_List_Table extends WP_List_Table {
     public function column_shortcode( $item ) {
         // Generate the shortcode with the ID, ensuring it's properly escaped.
         $shortcode = sprintf('[cqrc_gen_qrcode_view id="%d"]', esc_attr($item['id']));
-
+        $copy_text = esc_html( 'Code copied!!!', 'custom-qr-code-generator' );
+        
         // Prepare the translatable text for the shortcode.
         $translatable_shortcode = sprintf(
-            __('%s', 'custom-qrcode-generator'), 
+            /* translators: %s: The shortcode of the item */
+            __('%s', 'custom-qr-code-generator'), // phpcs:ignore.
             esc_html($shortcode)
         );
 
-        // Return the span element with the onclick event to copy the shortcode to the clipboard.
-        return sprintf(
-            '<span class="shortcode" onclick="copyToClipboard(\'%s\')">%s</span>',
-            esc_js($shortcode),
-            esc_html($translatable_shortcode)
+         // Return the span element with the onclick event to copy the shortcode to the clipboard.
+ 		return sprintf(
+            '<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
+	            <pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+            esc_attr($item['id']),
+            esc_attr($shortcode),
+            esc_html($translatable_shortcode),
+            esc_attr($item['id']),
+            esc_html($copy_text)
         );
     }
 
@@ -244,21 +259,25 @@ class Custom_List_Table extends WP_List_Table {
 
         return $sortable_columns;
     }
-    public function get_custom_data_from_database($search_term = '', $orderby = 'id', $order = 'desc') {
+    
+    public function cqrc_get_custom_data_from_database($search_term = '', $orderby = 'id', $order = 'desc') {
         global $wpdb;
-        $table_name = QRCODE_GENERATOR_TABLE;
+        $table_name = esc_sql( QRCODE_GENERATOR_TABLE );
+        // phpcs:disable
 
         // Escape orderby and order to prevent SQL injection.
         $orderby = esc_sql($orderby);
         $order = esc_sql($order);
 
-        // Build the basic query.
-        $query = "SELECT * FROM {$table_name}";
-
         // Add search filter if a search term is provided.
         if (!empty($search_term)) {
-            $search_term = esc_sql($wpdb->esc_like($search_term));
-            $query .= " WHERE name LIKE '%{$search_term}%' OR description LIKE '%{$search_term}%'";
+            $search_term = '%' . $wpdb->esc_like($search_term) . '%';
+            $query = $wpdb->prepare("SELECT * FROM {$table_name} WHERE name LIKE %s OR description LIKE %s",
+                $search_term,
+                $search_term 
+            );
+        }else{
+            $query = esc_sql("SELECT * FROM {$table_name}");
         }
 
         // Append the ORDER BY clause to the query.
@@ -267,6 +286,7 @@ class Custom_List_Table extends WP_List_Table {
         // Fetch and return the data.
         $data = $wpdb->get_results($query, ARRAY_A); // phpcs:ignore
 
+        // phpcs:enable
         if (false === $data) {
             echo 'Error: ' . esc_html($wpdb->last_error);
             return array();
@@ -274,6 +294,7 @@ class Custom_List_Table extends WP_List_Table {
 
         return $data;
     }
+    
     /**
     * Prepare_items
     */
@@ -286,7 +307,7 @@ class Custom_List_Table extends WP_List_Table {
 
         // Fetch data with sorting.
         $search_term = !empty($_REQUEST['s']) ? sanitize_text_field(wp_unslash(trim($_REQUEST['s']))) : ''; // phpcs:ignore
-        $data = $this->get_custom_data_from_database($search_term, $orderby, $order);
+        $data = $this->cqrc_get_custom_data_from_database($search_term, $orderby, $order);
 
         $columns = $this->get_columns();
         $hidden = array();
@@ -347,11 +368,11 @@ class Custom_List_Table extends WP_List_Table {
             <a class="button button-primary download-buttons-qrcode" href="%s" download="qrcode.pdf">%s</a>
             </div>',
             $download_png_url,
-            esc_html__( 'PNG', 'custom-qrcode-generator' ),
+            esc_html__( 'PNG', 'custom-qr-code-generator' ),
             $download_jpg_url,
-            esc_html__( 'JPG', 'custom-qrcode-generator' ),
+            esc_html__( 'JPG', 'custom-qr-code-generator' ),
             $download_pdf_url,
-            esc_html__( 'PDF', 'custom-qrcode-generator' )
+            esc_html__( 'PDF', 'custom-qr-code-generator' )
         );
     }
 
@@ -360,10 +381,10 @@ class Custom_List_Table extends WP_List_Table {
     *
     * @param int $id qrcode ID.
     */
-    public static function delete_qr( $id ) {
+    public static function cqrc_delete_qr( $id ) {
         global $wpdb;
-        $table_name = QRCODE_GENERATOR_TABLE;
-        $insights_table = QRCODE_INSIGHTS_TABLE; 
+        $table_name = esc_sql( QRCODE_GENERATOR_TABLE );
+        $insights_table = esc_sql( QRCODE_INSIGHTS_TABLE );
 
         // Step 1: Retrieve the QR Code Data.
         $qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT qr_code, id AS qrid FROM $table_name WHERE ID = %d", $id )); // phpcs:ignore
@@ -399,18 +420,18 @@ class Custom_List_Table extends WP_List_Table {
     }
 }
 
-// Create an instance of the Custom_List_Table and prepare items.
-$wp_list_table = new Custom_List_Table();
+// Create an instance of the Cqrc_Custom_List_Table and prepare items.
+$wp_list_table = new Cqrc_Custom_List_Table();
 $wp_list_table->prepare_items();
 
 ?>
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php esc_html_e( 'QR Codes', 'custom-qrcode-generator' ); ?></h1>
-    <a href="<?php echo ( esc_url( site_url() ) . '/wp-admin/admin.php?page=custom-qrcode-generate-form' ); ?>" class="page-title-action"><?php esc_html_e( 'Add New QR Code', 'custom-qrcode-generator' ); ?></a>
-    <a href="<?php echo esc_url( admin_url( 'admin.php?page=custom-qrcode-export' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Export QR Codes', 'custom-qrcode-generator' ); ?></a>
-    <a href="<?php echo esc_url( admin_url( 'admin.php?page=custom-qrcode-import' ) ); ?>" class="page-title-action"><?php esc_html_e( 'Import QR Codes', 'custom-qrcode-generator' ); ?></a>
+    <h1 class="wp-heading-inline"><?php esc_html_e( 'QR Codes', 'custom-qr-code-generator' ); ?></h1>
+    <a href="<?php echo add_query_arg( 'page', 'custom-qrcode-generate-form', admin_url( 'admin.php' ) ); // phpcs:ignore?>" class="page-title-action"><?php esc_html_e( 'Add New QR Code', 'custom-qr-code-generator' ); ?></a>
+    <a href="<?php echo add_query_arg( 'page', 'custom-qrcode-export', admin_url( 'admin.php' ) ); // phpcs:ignore?>" class="page-title-action"><?php esc_html_e( 'Export QR Codes', 'custom-qr-code-generator' ); ?></a>
+    <a href="<?php echo add_query_arg( 'page', 'custom-qrcode-import', admin_url( 'admin.php' ) ); // phpcs:ignore?>" class="page-title-action"><?php esc_html_e( 'Import QR Codes', 'custom-qr-code-generator' ); ?></a>
     <form method="post" id="qr-listing-form">
-      <input type="hidden" name="page" value="custom-qrcode-generator">
+      <input type="hidden" name="page" value="custom-qr-code-generator">
       <?php
       wp_nonce_field( 'qrcode_bulk_action', '_qrcode_bulk_nonce' );
       $wp_list_table->search_box( 'Search', 'search_id' );

@@ -35,10 +35,8 @@ class Cqrc_Generator_Loader {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
 		$this->actions = array();
 		$this->filters = array();
-
 	}
 
 	/**
@@ -63,7 +61,6 @@ class Cqrc_Generator_Loader {
 	 * @access   private
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
-
 		$hooks[] = array(
 			'hook'          => $hook,
 			'component'     => $component,
@@ -71,9 +68,7 @@ class Cqrc_Generator_Loader {
 			'priority'      => $priority,
 			'accepted_args' => $accepted_args
 		);
-
 		return $hooks;
-
 	}
 
 	/**
@@ -82,15 +77,11 @@ class Cqrc_Generator_Loader {
 	 * @since    1.0.0
 	 */
 	public function run() {
-
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
-
 		foreach ( $this->actions as $hook ) {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
-
 	}
-
 }

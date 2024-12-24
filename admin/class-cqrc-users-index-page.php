@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define the main class
-class Scanned_QR_List_Table extends WP_List_Table {
+class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 
 	private $per_page = 10;
 
@@ -30,29 +30,29 @@ class Scanned_QR_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'            => '<input type="checkbox" />',
-			'user_ip_address' => __('User IP Address', 'custom-qrcode-generator'),
-			'device_type'   => __('Device Type', 'custom-qrcode-generator'),
-			'location'      => __('Location', 'custom-qrcode-generator'),
-			'qrid'          => __('QR Code ID', 'custom-qrcode-generator'),
-			'created_at'    => __('Created At', 'custom-qrcode-generator'),
+			'user_ip_address' => __('User IP Address', 'custom-qr-code-generator'),
+			'device_type'   => __('Device Type', 'custom-qr-code-generator'),
+			'location'      => __('Location', 'custom-qr-code-generator'),
+			'qrid'          => __('QR Code ID', 'custom-qr-code-generator'),
+			'created_at'    => __('Created At', 'custom-qr-code-generator'),
 		);
 	}
 
 	public function get_bulk_actions() {
 		return array(
-			'delete' => __('Delete', 'custom-qrcode-generator'),
+			'delete' => __('Delete', 'custom-qr-code-generator'),
 		);
 	}
 
 	public function process_bulk_action() {
 		if ( 'delete' === $this->current_action() ) {
-			if ( empty($_REQUEST['_wpnonce']) || ! wp_verify_nonce(sanitize_text_field( wp_unslash($_REQUEST['_wpnonce'], '_wpnonce'))) ) {
-				wp_die( esc_html__('Security check failed.', 'custom-qrcode-generator' ) );
+			if ( empty($_REQUEST['_wpnonce']) && ! wp_verify_nonce(sanitize_text_field( wp_unslash($_REQUEST['_wpnonce'], '_wpnonce'))) ) {
+				wp_die( esc_html__('Security check failed.', 'custom-qr-code-generator' ) );
 			}
 			
 			$delete_ids = !empty( $_POST['id'] ) ? array_map( 'absint', $_POST['id'] ) : array();
 			foreach ( $delete_ids as $id ) {
-				self::delete_qr( $id );
+				self::cqrc_delete_qr( $id );
 			}
 		}
 	}
@@ -81,12 +81,11 @@ class Scanned_QR_List_Table extends WP_List_Table {
 
         	// Check for the presence of the 'Response' key
 			if (!empty($data_array['Response'])) {
-				$output .= '<strong>' . esc_html__('Status:', 'custom-qrcode-generator') . '</strong> Private<br>';
+				$output .= '<strong>' . esc_html__('Status:', 'custom-qr-code-generator') . '</strong> Private<br>';
 			}
 
         	// Loop through the array and format the output
 			foreach ($data_array as $key => $value) {
-            	// Skip 'Response' and 'IP' keys
 				if ($key !== 'Response' && $key !== 'IP') {
 					$output .= sprintf('<strong>%s:</strong> %s<br>', esc_html($key), esc_html($value));
 				}
@@ -95,20 +94,31 @@ class Scanned_QR_List_Table extends WP_List_Table {
 		}
 
     	// Return an error message if JSON decoding fails
-		return esc_html__('Error decoding JSON.', 'custom-qrcode-generator');
+		return esc_html__('Error decoding JSON.', 'custom-qr-code-generator');
 	}
-	public function get_custom_data_from_database($search_term = '') {
+	
+	public function cqrc_get_custom_data_from_database($search_term = '') {
 		global $wpdb;
-		$table_name = QRCODE_INSIGHTS_TABLE; 
+		$table_name = esc_sql( QRCODE_INSIGHTS_TABLE ); 
+		// phpcs:disable
+		
 		if ( !empty( $search_term )) {
-			$query = "SELECT * FROM {$table_name}";
-			$search_term = esc_sql($wpdb->esc_like($search_term));
-			$query .= " WHERE user_ip_address LIKE '%{$search_term}%' OR device_type LIKE '%{$search_term}%' OR location LIKE '%{$search_term}%'";
+			// Prepare the search term for LIKE queries
+			$search_term = '%' . $wpdb->esc_like($search_term) . '%';
+
+        	// Prepare the SQL query with placeholders
+			$query = $wpdb->prepare(
+				"SELECT * FROM {$table_name} WHERE user_ip_address LIKE %s OR device_type LIKE %s OR location LIKE %s",
+				$search_term,
+				$search_term,
+				$search_term
+			);
 			$data = $wpdb->get_results($query, ARRAY_A); // phpcs:ignore
 		} else {
 			$data = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A ); // phpcs:ignore
 		}
-
+		
+		// phpcs:enable
 		if ( false === $data ) {
 			echo 'Error: ' . esc_html( $wpdb->last_error );
 			return array();
@@ -120,8 +130,8 @@ class Scanned_QR_List_Table extends WP_List_Table {
 		$this->process_bulk_action();
 
     	// Get custom data from the database, with optional search term
-		$search_term = !empty( $_REQUEST['s'] ) ? sanitize_text_field(wp_unslash( trim( $_REQUEST['s'] ) ) ) : '';
-		$data = $this->get_custom_data_from_database($search_term);
+		$search_term = !empty( $_REQUEST['s'] ) ? sanitize_text_field(wp_unslash( trim( $_REQUEST['s'] ) ) ) : ''; // phpcs:ignore
+		$data = $this->cqrc_get_custom_data_from_database($search_term);
 
     	// Sorting logic
 		usort( $data, array( &$this, 'usort_reorder' ) );
@@ -150,11 +160,10 @@ class Scanned_QR_List_Table extends WP_List_Table {
 		);
 	}
 
-
 	public function usort_reorder( $a, $b ) {
     	// If no sort, default to sorting by ID.
-		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'id';
-		$order = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'asc';
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'id'; // phpcs:ignore
+		$order = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'asc'; // phpcs:ignore
 
     	// If columns are date fields or other special fields, ensure proper comparison.
 		switch ($orderby) {
@@ -173,11 +182,10 @@ class Scanned_QR_List_Table extends WP_List_Table {
 		return ( 'desc' === $order ) ? $result : -$result;
 	}
 
-
 	public function column_cb($item) {
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
-			esc_attr( __( $item['id'], 'custom-qrcode-generator' ) )
+			esc_attr( __( $item['id'], 'custom-qr-code-generator' ) ) // phpcs:ignore.
 		);
 	}
 
@@ -190,13 +198,13 @@ class Scanned_QR_List_Table extends WP_List_Table {
 		);
 	}
 
-	public static function delete_qr($id) {
+	public static function cqrc_delete_qr($id) {
 		global $wpdb;
-		$generator_table = QRCODE_GENERATOR_TABLE;
-		$insights_table = QRCODE_INSIGHTS_TABLE;
-
-        $qr_info = $wpdb->get_row($wpdb->prepare("SELECT qrid FROM $insights_table WHERE id = %d", $id)); // phpcs:ignore
-
+		$generator_table = esc_sql( QRCODE_GENERATOR_TABLE );
+		$insights_table = esc_sql( QRCODE_INSIGHTS_TABLE );
+        $qr_info = $wpdb->get_row($wpdb->prepare("SELECT qrid FROM {$insights_table} WHERE id = %d", $id));  // phpcs:ignore
+        
+        // phpcs:ignore
         if ($qr_info) {
         	$qrid = $qr_info->qrid;
             $wpdb->delete($insights_table, array('id' => $id)); // phpcs:ignore
@@ -207,15 +215,14 @@ class Scanned_QR_List_Table extends WP_List_Table {
 
 // Render the admin page
 echo '<div class="wrap">';
-echo '<h1>' . esc_html__('Scanned Data Overview', 'custom-qrcode-generator') . '</h1>';
+echo '<h1>' . esc_html__('Scanned Data Overview', 'custom-qr-code-generator') . '</h1>';
 
-$scanned_qr_list_table = new Scanned_QR_List_Table();
+$scanned_qr_list_table = new Cqrc_Scanned_QR_List_Table();
 $scanned_qr_list_table->prepare_items();
 
 echo '<form method="post" id="qr-listing-details">';
-echo '<input type="hidden" name="page" value="custom-qrcode-generator">';
+echo '<input type="hidden" name="page" value="custom-qr-code-generator">';
 $scanned_qr_list_table->search_box( 'Search', 'search_id' );
 $scanned_qr_list_table->display();
 echo '</form>';
 echo '</div>';
-?>
