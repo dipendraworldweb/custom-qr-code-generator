@@ -47,6 +47,7 @@ if ( $qr_id > 0 ) {
 		$download_text_png = isset($download_content['png']) ? $download_content['png'] : '';
 		$download_text_jpg = isset($download_content['jpg']) ? $download_content['jpg'] : '';
 		$download_text_pdf = isset($download_content['pdf']) ? $download_content['pdf'] : '';
+		$show_desc_in_pdf = isset($download_content['show_desc_in_pdf']) ? $download_content['show_desc_in_pdf'] : '';
 
 		if ( is_serialized( $qr_data['description'] ) ) {
 			$qrcode_description = maybe_unserialize( $qr_data['description'] );
@@ -79,6 +80,7 @@ if ( $qr_id > 0 ) {
 	$download_text_png = 'Download PNG';
 	$download_text_jpg = '';
 	$download_text_pdf = '';
+	$show_desc_in_pdf = '';
 }
 
 $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
@@ -160,7 +162,12 @@ $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
 				<tr valign="top" class="download-text-pdf" style="display: none;">
 					<th scope="row"><?php esc_html_e( 'Download Button Text - PDF', 'custom-qr-code-generator' ); ?></th>
 					<td>
-						<input type="text" name="download_text_pdf" value="<?php echo esc_attr( isset( $download_text_pdf ) ? $download_text_pdf : esc_html__( 'Download PDF', 'custom-qr-code-generator' ) ); ?>" class="regular-text" placeholder="Enter text for PDF download button"/><br><span id="download_text_pdf_error" class="error-message" style="color: red; display: none;"></span>
+						<input type="text" name="download_text_pdf" value="<?php echo esc_attr( isset( $download_text_pdf ) ? $download_text_pdf : esc_html__( 'Download PDF', 'custom-qr-code-generator' ) ); ?>" class="regular-text" placeholder="Enter text for PDF download button"/><br>
+						<label id="visible-description-option">
+							<input type="checkbox" name="show_desc_in_pdf" id="show_desc_in_pdf" value="yes" <?php checked( $show_desc_in_pdf, 'yes' ); ?>> 
+							<?php esc_html_e( 'Display the description in the PDF.', 'custom-qr-code-generator' ); ?>
+						</label><br>
+						<span id="download_text_pdf_error" class="error-message" style="color: red; display: none;"></span>
 					</td>
 				</tr>
 				<tr valign="top" class="additional-settings">
@@ -186,25 +193,19 @@ $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
 								}
 								?>
 							</select>
-							<!-- <input type="file" id="upload_logo" name="upload_logo" accept=".png,.jpg,.jpeg" > -->
 							<button type="button" id="upload_logo_button" class="button" <?php echo ( 'upload' === $logo_option ? 'style="display: inline;"' : '' ); ?>><?php esc_html_e( 'Select Logo', 'custom-qr-code-generator' ); ?></button>
-							<?php
-							if ( 'upload' === $logo_option && ! empty( $logo_option ) ) {
-								echo '<img id="logo_previews" src="' . esc_url($default_logo_name) . '" alt="Logo Preview" width="30px">'; // phpcs:ignore
-							}
-
-							?>
 							<?php // phpcs:disable ?>
-							<img id="logo_preview" src="" alt="Logo Preview" width="30px">
+							<img id="logo_preview" src="<?php echo esc_url( $default_logo_name ); ?>" alt="Logo Preview" width="30px">
 							<?php // phpcs:enable ?>
-							<input type="hidden" name="upload_logo_url" id="upload_logo_url" value="">
+							<?php $logo_url = (filter_var($default_logo_name, FILTER_VALIDATE_URL) ? esc_url($default_logo_name) : ''); ?>
+							<input type="hidden" name="upload_logo_url" id="upload_logo_url" value="<?php echo esc_url( $logo_url ); ?>">
 						</div>
 					</td>
 				</tr>
 				<tr valign="top" class="additional-settings">
 					<th scope="row"><?php esc_html_e( 'Select QR Code Color', 'custom-qr-code-generator' ); ?></th>
 					<td>
-						<input type="text" id="qr_color_picker" name="qr_code_color" value="<?php echo ( !empty( $qr_code_color ) ? esc_attr( $qr_code_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_1" data-alpha="true" />
+						<input type="text" name="qr_code_color" value="<?php echo ( !empty( $qr_code_color ) ? esc_attr( $qr_code_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_1" data-alpha="true" />
 					</td>
 				</tr>
 				<tr valign="top" class="additional-settings">
@@ -251,7 +252,7 @@ $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
 				<tr valign="top" class="additional-settings">
 					<th scope="row"><?php esc_html_e( 'Eye Frame Color', 'custom-qr-code-generator' ); ?></th>
 					<td>
-						<input type="text" id="qr_color_picker" name="qr_eye_frame_color" value="<?php echo ( !empty( $qr_eye_frame_color ) ? esc_attr( $qr_eye_frame_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_2" data-alpha="true" />
+						<input type="text" name="qr_eye_frame_color" value="<?php echo ( !empty( $qr_eye_frame_color ) ? esc_attr( $qr_eye_frame_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_2" data-alpha="true" />
 					</td>
 				</tr>
 				<tr valign="top" class="additional-settings">
@@ -279,7 +280,7 @@ $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
 				<tr valign="top" class="additional-settings">
 					<th scope="row"><?php esc_html_e( 'Eye Ball Color', 'custom-qr-code-generator' ); ?></th>
 					<td>
-						<input type="text" id="qr_color_picker" name="qr_eye_color" value="<?php echo ( !empty( $qr_eye_color ) ? esc_attr( $qr_eye_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_3" data-alpha="true" />
+						<input type="text" name="qr_eye_color" value="<?php echo ( !empty( $qr_eye_color ) ? esc_attr( $qr_eye_color ) : '#000000' ); ?>" class="wp-color-picker qr_color_picker_3" data-alpha="true" />
 					</td>
 				</tr>
 				<tr valign="top" class="additional-settings">
@@ -334,7 +335,7 @@ $default_image = CQRCGEN_ADMIN_URL. '/assets/qrcode/dashicon/google-intro.png';
 			</button>
 		</div>
 		<div class="col-md-3" style="padding-left: 20px;width: 30%;display: block;position: sticky !important;top: 50px !important;height: 100%;">
-			<h2><?php esc_html_e( 'QR Code Previous', 'custom-qr-code-generator' ); ?></h2>
+			<h2><?php esc_html_e( 'QR Code Preview', 'custom-qr-code-generator' ); ?></h2>
 			<?php if ( !empty( $qrcode ) && ! empty( $qrcode ) ) { // phpcs:disable ?>
 				<img src="<?php echo esc_url( $qrcode ); ?>" width="50%" id="qrcode_default">
 			<?php } ?>

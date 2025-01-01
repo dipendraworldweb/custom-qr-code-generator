@@ -352,11 +352,10 @@ class Cqrc_Generator_Admin {
 								foreach ( $template_field_options as $option_value => $label ) {
 									echo sprintf(
 										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+										<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 										esc_attr( $tp ),
 										esc_attr( $option_value ),
 										esc_html( $label ),
-										esc_attr( $tp ),
 										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 									);
 									$tp++;
@@ -381,39 +380,40 @@ class Cqrc_Generator_Admin {
 							foreach ( $upload_type_options as $option_value => $label ) {
 								echo sprintf(
 									'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-									<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+									<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 									esc_attr( $ulg ),
 									esc_attr( $option_value ),
 									esc_html( $label ),
-									esc_attr( $ulg ),
 									esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 								);
 								$ulg++;
 							}
 							?>
+							<p style="color: #f00; font-weight:500;"><?php echo esc_html( 'For the "Upload" option above, only the following image formats are accepted: JPG, PNG, and WebP. Please note that animated WebP files are not supported. Ensure that you use either a non-animated WebP image or one of the other supported formats.', 'custom-qr-code-generator' ); ?></p>
 							<hr class="site-hr-tag">
 							<h4><?php echo esc_html( 'Field Id:', 'custom-qr-code-generator' ); ?><pre id="shortcode-code"><code>default_logo_name</code></pre></h4>
 							<p><?php echo esc_html( 'Locate the field id inside the sample csv file and paste any value you copy from the below available options.', 'custom-qr-code-generator' ); ?></p>
 							<h5><?php echo esc_html( 'The', 'custom-qr-code-generator' ); ?><pre id="shortcode-code"><code>upload_logo</code></pre><?php echo esc_html( ' field must be set as ', 'custom-qr-code-generator' ); ?><pre id="shortcode-code"><code>default</code></pre><?php echo esc_html( ' to use the options below.', 'custom-qr-code-generator' ); ?></h5>
-							<?php
-							$logo_field_options = cqrc_get_logo_field_options();
-							if( ! empty( $logo_field_options ) ) {
+							<div class="main-option">
+								<?php
+								$logo_field_options = cqrc_get_logo_field_options();
+								if( ! empty( $logo_field_options ) ) {
 									// Loop through the options array
-								$lg = 0;
-								foreach ( $logo_field_options as $option_value => $label ) {
-									echo sprintf(
-										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
-										esc_attr( $lg ),
-										esc_attr( $option_value ),
-										esc_html( $label ),
-										esc_attr( $lg ),
-										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
-									);
-									$lg++;
+									$lg = 0;
+									foreach ( $logo_field_options as $option_value => $label ) {
+										echo sprintf(
+											'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
+											<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+											esc_attr( $lg ),
+											esc_attr( $option_value ),
+											esc_html( $label ),
+											esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
+										);
+										$lg++;
+									}
 								}
-							}
-							?>
+								?>
+							</div>
 						</div>
 						<?php
 						break;
@@ -431,11 +431,10 @@ class Cqrc_Generator_Admin {
 								foreach ( $frame_field_options as $option_value => $label ) {
 									echo sprintf(
 										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+										<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 										esc_attr( $fr ),
 										esc_attr( $option_value ),
 										esc_html( $label ),
-										esc_attr( $fr ),
 										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 									);
 									$fr++;
@@ -459,11 +458,10 @@ class Cqrc_Generator_Admin {
 								foreach ( $eye_frame_field_options as $option_value => $label ) {
 									echo sprintf(
 										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+										<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 										esc_attr( $ef ),
 										esc_attr( $option_value ),
 										esc_html( $label ),
-										esc_attr( $ef ),
 										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 									);
 									$ef++;
@@ -487,11 +485,10 @@ class Cqrc_Generator_Admin {
 								foreach ( $eye_balls_field_options as $option_value => $label ) {
 									echo sprintf(
 										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+										<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 										esc_attr( $eb ),
 										esc_attr( $option_value ),
 										esc_html( $label ),
-										esc_attr( $eb ),
 										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 									);
 									$eb++;
@@ -515,11 +512,10 @@ class Cqrc_Generator_Admin {
 								foreach ( $level_field_options as $option_value => $label ) {
 									echo sprintf(
 										'<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-										<pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+										<pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
 										esc_attr( $lv ),
 										esc_attr( $option_value ),
 										esc_html( $label ),
-										esc_attr( $lv ),
 										esc_html( 'Code copied!!!', 'custom-qr-code-generator' )
 									);
 									$lv++;
@@ -613,24 +609,23 @@ class Cqrc_Generator_Admin {
 					// Initialize an array to store errors for this line
 					$line_errors = [];
 
-                	// Validation for name
-					$name = $data['name'];
+					$name = trim($data['name']);
 					if (empty($name)) {
-						$line_errors[] = esc_html__('Name field cannot be empty. Please enter a valid name.', 'custom-qr-code-generator');
-					} elseif (strlen($name) > 30) {
-						$line_errors[] = esc_html__('Name should not exceed 30 characters.', 'custom-qr-code-generator');
+						$line_errors[] = esc_html__('Please enter a name.', 'custom-qr-code-generator');
 					} elseif (!preg_match("/^[A-Za-z\s]+$/", $name)) {
 						$line_errors[] = esc_html__('Name should contain only alphabetic characters and spaces.', 'custom-qr-code-generator');
+					} elseif (strlen($name) > 30) {
+						$line_errors[] = esc_html__('Name should not exceed 30 characters.', 'custom-qr-code-generator');
 					}
 
-                    // Validation for URL
-					$url = $data['url'];
+				    // Trim and validate the URL
+					$url = trim($data['url']);
 					if (empty($url)) {
-						$line_errors[] = esc_html__('URL field cannot be empty. Please enter a valid URL.', 'custom-qr-code-generator');
-					} elseif (strlen($url) < 16 || strlen($url) > 80) {
-						$line_errors[] = esc_html__('URL must be between 16 and 80 characters.', 'custom-qr-code-generator');
+						$line_errors[] = esc_html__('Please enter a URL.', 'custom-qr-code-generator');
 					} elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
 						$line_errors[] = esc_html__('Please enter a valid URL.', 'custom-qr-code-generator');
+					} elseif (strlen($url) < 16 || strlen($url) > 80) {
+						$line_errors[] = esc_html__('URL must be between 16 and 80 characters.', 'custom-qr-code-generator');
 					} else {
 						$data['url'] = esc_url_raw($url);
 					}
@@ -658,42 +653,197 @@ class Cqrc_Generator_Admin {
 
 					if (!empty($download_content)) {
 						$download_items = array_map('trim', explode(',', $download_content));
-						$line_errors = [];
+						// $line_errors = [];
 
 						foreach ($download_items as $index => $item) {
 						    // Check length
-						    if (strlen($item) > 15) {
-						        $line_errors[] = sprintf(
-						        	/* translators: %s: The actual item value */
-						            esc_html__('\'%s\' - Text must be between 0 and 15 characters long.', 'custom-qr-code-generator'), 
-						            esc_html($item)
-						        );
-						    }
-						    
+							if (strlen($item) > 15) {
+								$line_errors[] = sprintf(
+									/* translators: %s: The actual item value */
+									esc_html__('\'%s\' - Text must be between 0 and 15 characters long.', 'custom-qr-code-generator'), 
+									esc_html($item)
+								);
+							}
+
 						    // Check for alphabetic characters and spaces
-						    if (!preg_match("/^[A-Za-z\s]+$/", $item)) {
-						        $line_errors[] = sprintf(
-						        	/* translators: %s: The actual item value */
-						            esc_html__('\'%s\' - Please enter only alphabetic characters and spaces between words.', 'custom-qr-code-generator'), 
-						            esc_html($item)
-						        );
-						    }
+							if (!preg_match("/^[A-Za-z\s]+$/", $item)) {
+								$line_errors[] = sprintf(
+									/* translators: %s: The actual item value */
+									esc_html__('\'%s\' - Please enter only alphabetic characters and spaces between words.', 'custom-qr-code-generator'), 
+									esc_html($item)
+								);
+							}
 						}
 					}
 
 					if (!empty($download)) {
-					    $line_errors = [];
-					    $downloaditems = array_map('trim', explode(',', $download));
-					    foreach ($downloaditems as $index => $item) {
+						// $line_errors = [];
+						$downloaditems = array_map('trim', explode(',', $download));
+						foreach ($downloaditems as $index => $item) {
 					        // Check if the format is valid
-					        if (!in_array(strtolower(trim($item)), $staticData)) {
-					            $line_errors[] = sprintf(
-					                /* translators: %s: The actual item value */
-					                esc_html__('\'%s\' - Invalid format at the download field!', 'custom-qr-code-generator'), 
-					                esc_html($item)
-					            );
-					        }
-					    }
+							if (!in_array(strtolower(trim($item)), $staticData)) {
+								$line_errors[] = sprintf(
+									/* translators: %s: The actual item value */
+									esc_html__('\'%s\' - Invalid format at the download field!', 'custom-qr-code-generator'), 
+									esc_html($item)
+								);
+							}
+						}
+					}
+
+
+                    // Check if default_logo is set to 'upload' and if default_logo_name is a valid URL
+					if ($data['upload_logo'] === 'upload' && !empty($data['default_logo_name'])) {
+						$image_url = $data['default_logo_name'];
+                        // Validate the URL
+						if (!filter_var($image_url, FILTER_VALIDATE_URL)) {
+							$error_messages[] = esc_html__('Invalid URL provided for the logo.', 'custom-qr-code-generator');
+							$skipped_records++;
+							$skipped_ids[] = 'Line ' . ($line_number + 2);
+							continue;
+						}
+
+                        // Extract the filename from the URL
+						$filename = basename(wp_parse_url($image_url, PHP_URL_PATH));
+						$temp_name = pathinfo($image_url);
+						$file_extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+                        // Check if the file extension is one of the acceptable types
+						$acceptable_extensions = ['jpeg', 'jpg', 'png', 'webp'];
+						if (!in_array($file_extension, $acceptable_extensions)) {
+							$error_messages[] = sprintf(
+								/* translators: %s: The actual filename */
+								esc_html__('\'%s\' - Invalid image type! Only JPEG, JPG, PNG, WebP are acceptable.', 'custom-qr-code-generator'), 
+								esc_html($filename)
+							);
+							$skipped_records++;
+							$skipped_ids[] = 'Line ' . ($line_number + 2);
+							continue;
+						}
+
+						// Check if the image URL is accessible
+						$headers = @get_headers($image_url);
+						if (!$headers || strpos($headers[0], '200') === false) {
+							$error_messages[] = sprintf(
+								/* translators: %s: The actual filename */
+								esc_html__('Image not found or inaccessible: %s', 'custom-qr-code-generator'),
+								esc_html($image_url)
+							);
+							$skipped_records++;
+							$skipped_ids[] = 'Line ' . ($line_number + 2);
+							continue;
+						}
+
+    					// Additional error handling for WebP images
+						if ($file_extension === 'webp') {
+							$logo_image_resource = @imagecreatefromwebp($image_url);
+							if ($logo_image_resource === false) {
+								$error_messages[] = sprintf(
+									/* translators: %s: The actual filename */
+									esc_html__('Error: Animated WebP files cannot be read. Please use a non-animated WebP image or another supported format for %s.', 'custom-qr-code-generator'),
+									esc_html($filename)
+								);
+								$skipped_records++;
+								$skipped_ids[] = 'Line ' . ($line_number + 2);
+								continue;
+							}
+						}
+
+						// Verify that the domain or host of the image URL matches that of the existing website.
+						$current_site_url = home_url();
+						$siteUrl = wp_parse_url($current_site_url, PHP_URL_HOST);
+						$inputurl = wp_parse_url($image_url, PHP_URL_HOST);
+
+						if ($siteUrl === $inputurl) {
+							$data['default_logo_name'] = $image_url;
+						}else{
+							$upload_dir = wp_upload_dir();
+
+                            // Create a directory structure based on year and month
+							$year_month_dir = $upload_dir['path'];
+
+                            // Create the directory if it doesn't exist
+							if (!is_dir($year_month_dir)) {
+								wp_mkdir_p($year_month_dir);
+							}
+
+                            // Download the image data
+							$image_data = @file_get_contents($image_url); // phpcs:ignore
+							if ($image_data === false) {
+								$error_messages[] = sprintf(
+									/* translators: %s: The actual filename */
+									esc_html__('Failed to download image from %s.', 'custom-qr-code-generator'),
+									esc_html($image_url)
+								);
+								$skipped_records++;
+								$skipped_ids[] = 'Line ' . ($line_number + 2);
+								continue;
+							}
+
+                            // Parse the URL to get the query parameters
+							$url_parts = wp_parse_url($image_url);
+							$query_params = [];
+							if (isset($url_parts['query'])) {
+								parse_str($url_parts['query'], $query_params);
+							}
+
+                            // Create a new filename using the first parameter key-value pair
+							$new_filename = $temp_name['filename'];
+							foreach ($query_params as $key => $value) {
+								$new_filename .= '-' . sanitize_file_name($value);
+							}
+							$new_filename .= '.' . $file_extension;
+
+                            // Set the file path with the new filename
+							$file = $year_month_dir . '/' . $new_filename;
+
+                            // Save the image data to the file
+							if (!file_exists($file)) {
+								$result = @file_put_contents($file, $image_data); // phpcs:ignore
+								if ($result === false) {
+									$error_messages[] = sprintf(
+										/* translators: %s: The actual filename */
+										esc_html__('Failed to save image to %s.', 'custom-qr-code-generator'),
+										esc_html($file)
+									);
+									$skipped_records++;
+									$skipped_ids[] = 'Line ' . ($line_number + 2);
+									continue;
+								}
+
+                                // Check the file type
+								$wp_filetype = wp_check_filetype($new_filename, null);
+
+                                // Prepare the attachment array
+								$attachment = array(
+									'post_mime_type' => $wp_filetype['type'],
+									'post_title' => sanitize_file_name($new_filename),
+									'post_content' => '',
+									'post_status' => 'inherit'
+								);
+
+                                // Insert the attachment
+								$attach_id = wp_insert_attachment($attachment, $file);
+
+                                // Generate attachment metadata and update it
+								if (!is_wp_error($attach_id)) {
+									$attach_data = wp_generate_attachment_metadata($attach_id, $file);
+									wp_update_attachment_metadata($attach_id, $attach_data);
+								} else {
+									$error_messages[] = sprintf(
+										/* translators: %s: The actual filename */
+										esc_html__('Failed to insert attachment for %s.', 'custom-qr-code-generator'),
+										esc_html($new_filename)
+									);
+									$skipped_records++;
+									$skipped_ids[] = 'Line ' . ($line_number + 2);
+									continue;
+								}
+							}
+
+                            // Update the 'default_logo_name' value with the new URL
+							$data['default_logo_name'] = $upload_dir['url'] . '/' . $new_filename;
+						}
 					}
 
 					// If this line has errors, accumulate them in $error_messages
@@ -703,7 +853,7 @@ class Cqrc_Generator_Admin {
 						$skipped_ids[] = 'Line ' . ($line_number + 2);
 						continue;
 					}
-					
+
 					$existing_entry = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE id = %d", $id)); // phpcs:ignore
 
 					if ( $existing_entry ) {
@@ -793,6 +943,34 @@ class Cqrc_Generator_Admin {
 	}
 
 	/**
+	 * CB function to check if the WebP image is animated.
+	 *
+	 * @package Generate QR Code
+	 * @since 1.0.0
+	 */
+
+	public function check_animated_webp() {
+		if (empty($_REQUEST['_ajax_nonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_ajax_nonce'])), 'qr_code_nonce')) {
+			wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator'));
+		}
+
+		if (isset($_POST['image_url'])) {
+			$image_url = !empty($_POST['image_url']) ? sanitize_url(wp_unslash($_POST['image_url'])) : '';
+			$file_extension = pathinfo($image_url, PATHINFO_EXTENSION);
+			
+			if ($file_extension === 'webp') {
+				$logo_image_resource = @imagecreatefromwebp($image_url);
+				if ($logo_image_resource === false) {
+					wp_send_json_success([ 'message' => 'is_animated']);
+				} else {
+					wp_send_json_success([ 'message' => 'non-animated']);
+				}
+			}
+		}
+		wp_send_json_error();
+	}
+
+	/**
 	 * Listing Page html
 	 *
 	 * @package Generate QR Code
@@ -845,10 +1023,12 @@ class Cqrc_Generator_Admin {
 		$download_text_png = !empty($_POST['download_text_png']) ? sanitize_text_field(wp_unslash( $_POST['download_text_png'])) : '';
 		$download_text_jpg = !empty($_POST['download_text_jpg']) ? sanitize_text_field(wp_unslash( $_POST['download_text_jpg'])) : '';
 		$download_text_pdf = !empty($_POST['download_text_pdf']) ? sanitize_text_field(wp_unslash( $_POST['download_text_pdf'])) : '';
+		$show_desc_in_pdf = !empty($_POST['show_desc_in_pdf']) ? sanitize_text_field(wp_unslash( $_POST['show_desc_in_pdf'])) : '';
 		$download_texts = [
 			'png' => $download_text_png,
 			'jpg' => $download_text_jpg,
-			'pdf' => $download_text_pdf
+			'pdf' => $download_text_pdf,
+			'show_desc_in_pdf' => $show_desc_in_pdf
 		];
 
 		$download_texts_json = wp_json_encode($download_texts);
@@ -1542,6 +1722,9 @@ class Cqrc_Generator_Admin {
 				case 'png':
 				$logo_image_resource = imagecreatefrompng( $logo_url );
 				break;
+				case 'webp':
+				$logo_image_resource = imagecreatefromwebp( $logo_url );
+				break;
 				case 'jpg':
 				case 'jpeg':
 				$logo_image_resource = imagecreatefromjpeg( $logo_url );
@@ -1723,6 +1906,7 @@ class Cqrc_Generator_Admin {
 			$download_text_png   = ! empty( $_POST['download_text_png'] ) ? sanitize_text_field(wp_unslash( $_POST['download_text_png'])) : '';
 			$download_text_jpg   = ! empty( $_POST['download_text_jpg'] ) ? sanitize_text_field(wp_unslash( $_POST['download_text_jpg'])) : '';
 			$download_text_pdf   = ! empty( $_POST['download_text_pdf'] ) ? sanitize_text_field(wp_unslash( $_POST['download_text_pdf'])) : '';
+			$show_desc_in_pdf   = ! empty( $_POST['show_desc_in_pdf'] ) ? sanitize_text_field(wp_unslash( $_POST['show_desc_in_pdf'])) : '';
 			$logo_option         = ! empty( $_POST['logo_option'] ) ? sanitize_text_field( wp_unslash( $_POST['logo_option'] ) ) : '';
 			$default_logo        = ! empty( $_POST['default_logo'] ) ? sanitize_text_field( wp_unslash( $_POST['default_logo'] ) ) : '';
 			$upload_logo_url     = ! empty( $_POST['upload_logo_url'] ) ? sanitize_text_field( wp_unslash( $_POST['upload_logo_url'] ) ) : '';
@@ -1737,7 +1921,8 @@ class Cqrc_Generator_Admin {
 			$download_texts      = [
 				'png'            => $download_text_png,
 				'jpg'            => $download_text_jpg,
-				'pdf'            => $download_text_pdf
+				'pdf'            => $download_text_pdf,
+				'show_desc_in_pdf'            => $show_desc_in_pdf
 			];
 			$download_texts_json = wp_json_encode( $download_texts );
 			$framepath           = '';
@@ -1776,7 +1961,7 @@ class Cqrc_Generator_Admin {
 			}
 			
 			if ( 'default' === $logo_option ) {
-				if( basename( $default_logo ) == 'default.png' ) {
+				if( basename( $default_logo ) == 'default' ) {
 					$logopath = $default_logo;
 				}
 				elseif ( '' !== $default_logo ) {
@@ -1791,7 +1976,8 @@ class Cqrc_Generator_Admin {
 					$logopath = $uploaded_logo;
 				}
 			}
-
+			$logopathstore = ($logo_option === 'default') ? basename($default_logo) : (($logo_option === 'upload') ? $upload_logo_url : '');
+			
 			$data = array(
 				'user_id'            => $u_id,
 				'name'               => $name,
@@ -1800,7 +1986,7 @@ class Cqrc_Generator_Admin {
 				'logo_type'          => 'PNG',
 				'url'                => $urls,
 				'template_name'      => $template_name,
-				'default_logo_name'  => $default_logo,
+				'default_logo_name'  => $logopathstore,
 				'frame_name'         => $default_frame,
 				'eye_frame_name'     => $eye_frame_name,
 				'eye_balls_name'     => $eye_balls_name,
@@ -1995,23 +2181,23 @@ class Cqrc_Generator_Admin {
 		global $wpdb;
 		$table_name = esc_sql( QRCODE_GENERATOR_TABLE );
 		if ( ! empty( $data['url'] ) && ! empty( $data['name'] ) ) {
-
 			$qrid          	    = ! empty( $data['id'] ) ? sanitize_text_field( wp_unslash( $data['id'] ) ) : '';
 			$urls               = ! empty( $data['url'] ) ? sanitize_text_field( wp_unslash($data['url'])) : '';
 			$name               = ! empty( $data['name'] ) ? sanitize_text_field( wp_unslash( $data['name'] ) ) : '';
 			$ser_description    = ! empty( $data['description'] ) ? wp_kses_post( wp_unslash( $data['description'] ) ) : '';
 			$template_name      = ! empty( $data['template_name'] ) ? sanitize_text_field( wp_unslash( $data['template_name'] ) ) : '';
+			$advance_settings   = ( ! empty( $template_name ) && 'default' !== $template_name ) ? $this->cqrc_get_qrcode_settings( $template_name ) : array();
 			$download           = ! empty( $data['download'] ) ? sanitize_text_field( wp_unslash( $data['download'] ) ) : '';
 			$download_content   = ! empty( $data['download_content'] ) ? sanitize_text_field( wp_unslash( $data['download_content'] ) ) : '';
 			$logo_option        = ! empty( $data['upload_logo'] ) ? sanitize_text_field( wp_unslash( $data['upload_logo'] ) ) : '';
 			$default_logo       = ! empty( $data['default_logo_name'] ) ? $data['default_logo_name'] : ''; // phpcs:ignore
-			$qr_code_color      = ! empty( $data['qr_code_color'] ) ? sanitize_hex_color( wp_unslash($data['qr_code_color'] )) : '';
+			$qr_code_color      = ! empty( $data['qr_code_color'] ) ? sanitize_hex_color( wp_unslash( $data['qr_code_color'] ) ) : '';
 			$default_frame      = ! empty( $data['frame_name'] ) ? sanitize_text_field( wp_unslash( $data['frame_name'] ) ) : '';
 			$eye_frame_name     = ! empty( $data['eye_frame_name'] ) ? sanitize_text_field( wp_unslash( $data['eye_frame_name'] ) ) : '';
 			$qr_eye_frame_color = ! empty( $data['qr_eye_frame_color'] ) ? sanitize_hex_color( wp_unslash($data['qr_eye_frame_color'] )) : '';
 			$eye_balls_name     = ! empty( $data['eye_balls_name'] ) ? sanitize_text_field( wp_unslash( $data['eye_balls_name'] ) ) : '';
 			$qr_eye_color       = ! empty( $data['qr_eye_color'] ) ? sanitize_hex_color( wp_unslash($data['qr_eye_color'] )) : '';
-			$qrcode_level       = ! empty( $data['qrcode_level'] ) ? sanitize_text_field( wp_unslash( $data['qrcode_level'] ) ) : 'QR_ECLEVEL_M';
+			$qrcode_level       = ! empty( $data['qrcode_level'] ) ? sanitize_text_field( wp_unslash( $data['qrcode_level'] ) ) : '';
 			$password           = ! empty( $data['password'] ) ? sanitize_text_field( wp_unslash( $data['password'] ) ) : '';
 			$framepath          = '';
 			$eye_framepath      = '';
@@ -2020,6 +2206,7 @@ class Cqrc_Generator_Admin {
 			$uploaded_logo      = '';
 			$logopath           = '';
 			$description        = maybe_unserialize( $ser_description );
+
 
 			if( 'default' == $default_frame ) {
 				$framepath = '';
@@ -2091,6 +2278,59 @@ class Cqrc_Generator_Admin {
 						}
 					}
 				}
+			}
+
+			//grab advanced setting from template settings only if those are empty
+			if( ! empty( $advance_settings ) ) {
+				if( ( empty( $logo_option ) || ( ! empty( $logo_option ) && 'default' === $logo_option ) ) && empty( $default_logo ) ) {
+					$default_logo = $advance_settings['default_logo'];
+					$logopath     = CQRCGEN_ADMIN_DIR . '/assets/qrcode/logos/' . basename( $default_logo ) . '.png';
+				}
+
+				if( empty( $qr_code_color ) ) {
+					$qr_code_color = $advance_settings['qr_code_color'];
+				}
+
+				if( empty( $default_frame ) ) {
+					$default_frame = $advance_settings['default_frame'];
+				}
+
+				if( empty( $eye_frame_name ) ) {
+					$eye_frame_name = $advance_settings['eye_frame_name'];
+				}
+
+				if( empty( $qr_eye_frame_color ) ) {
+					$qr_eye_frame_color = $advance_settings['qr_eye_frame_color'];
+				}
+
+				if( empty( $eye_balls_name ) ) {
+					$eye_balls_name = $advance_settings['eye_balls_name'];
+				}
+
+				if( empty( $qr_eye_color ) ) {
+					$qr_eye_color = $advance_settings['qr_eye_color'];
+				}
+
+				if( empty( $qrcode_level ) ) {
+					$qrcode_level = $advance_settings['qrcode_level'];
+				}
+			}
+
+			//still empty set it default
+			if( empty( $qr_code_color ) ) {
+				$qr_code_color = '#000000';
+			}
+
+			if( empty( $qr_code_color ) ) {
+				$qr_code_color = '#000000';
+			}
+
+			if( empty( $qr_code_color ) ) {
+				$qr_code_color = '#000000';
+			}
+
+			if( empty( $qrcode_level ) ) {
+				$qrcode_level = 'QR_ECLEVEL_M';
 			}
 
 			$datas = array(
@@ -2279,10 +2519,10 @@ class Cqrc_Generator_Admin {
 		$table_name            = esc_sql( QRCODE_GENERATOR_TABLE );
 		
 		// QR Code Black & White Combination Fixes.
-		switch ( $qr_code_color ) {
+		switch ($qr_code_color) {
 			case '#ffffff':
 			$qr_code_bg_color = 0;
-			$qr_eye_color     = '#ffffff';
+			$qr_eye_color = '#ffffff';
 			break;
 			case '#000000':
 			$qr_code_bg_color = 16777215;
@@ -2292,10 +2532,14 @@ class Cqrc_Generator_Admin {
 			$qr_code_bg_color = 16777215;
 		}
 
-		$qr_eye_frame_color = $this->cqrc_hex_to_rgb( $qr_eye_frame_color );
-		
+		    // Ensure colors are valid
+		$qr_eye_frame_color = $this->cqrc_hex_to_rgb($qr_eye_frame_color);
+		$qr_code_colors = [];
 		if ($qr_code_color !== '') {
-			$qr_code_colors = $this->cqrc_hex_to_rgb( $qr_code_color );
+			$qr_code_colors = $this->cqrc_hex_to_rgb($qr_code_color);
+			if ($qr_code_colors === false) {
+				wp_die(esc_html__('Invalid QR code color format.', 'custom-qr-code-generator'));
+			}
 		}
 
 		$qr_eye_rgb = $this->cqrc_hex_to_rgb( $qr_eye_color );
@@ -2740,6 +2984,9 @@ class Cqrc_Generator_Admin {
 			case 'jpeg':
 			$logo_image_resource = imagecreatefromjpeg( $logo_url );
 			break;
+			case 'webp':
+			$logo_image_resource = imagecreatefromwebp( $logo_url );
+			break;
 			default:
 			break;
 		}
@@ -2976,7 +3223,7 @@ class Cqrc_Generator_Admin {
 			$insights_table = esc_sql( QRCODE_INSIGHTS_TABLE ); 
 
     		// Step 1: Retrieve the QR Code Data.
-			$qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT qr_code, id AS qrid FROM $table_name WHERE ID = %d", $id ) ); // phpcs:ignore
+			$qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT qr_code, id AS qrid, default_logo_name FROM $table_name WHERE ID = %d", $id ) ); // phpcs:ignore
 
 			$qr_code_rows = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE ID = %d", $id )); // phpcs:ignore
 			if ( ! $qr_code_row ) {
@@ -2991,6 +3238,7 @@ class Cqrc_Generator_Admin {
 
 			$qr_code = $qr_code_row->qr_code;
 			$qrid = $qr_code_rows->id;
+			$default_logo_name = $qr_code_row->default_logo_name;
 
     		// Step 2: Find Matching Media Posts.
 			$media_posts = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE guid = %s AND post_type = 'attachment'", $qr_code ) ); // phpcs:ignore
@@ -3001,6 +3249,28 @@ class Cqrc_Generator_Admin {
 					wp_delete_post( $media_post->ID, true );
 				}
 			}
+
+
+			// Step 4: Delete the image file if it exists and the media post.
+			if ( ! empty( $default_logo_name ) ) {
+				$upload_dir = wp_upload_dir();
+				$filename = basename(wp_parse_url($default_logo_name, PHP_URL_PATH));
+				$file_path = $upload_dir['path'] . '/' . $filename;
+
+            	// Check if the file exists and delete it
+				if ( file_exists( $file_path ) ) {
+					wp_delete_file( $file_path );
+
+                // Now delete the media post associated with this file
+                $media_posts = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_type = 'attachment'", $filename )); // phpcs:ignore
+
+                if ( $media_posts ) {
+                	foreach ( $media_posts as $media_post ) {
+                		wp_delete_post( $media_post->ID, true );
+                	}
+                }
+            }
+        }
 
     		// Step 4: Delete Records from qrcode_insights where qrid matches
 			$wpdb->delete( $insights_table, array( 'qrid' => $qrid ), array( '%d' ) );// phpcs:ignore

@@ -63,6 +63,7 @@ class Cqrc_Generator_Activator {
                 device_type longtext NULL,
                 location longtext NULL,
                 qrid varchar(255) NULL,
+				qr_usage_count varchar(255) NULL,
                 created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                 UNIQUE KEY id (id)

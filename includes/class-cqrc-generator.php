@@ -161,6 +161,7 @@ class Cqrc_Generator {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_generator_form_handle' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_handle_qr_code_delete_action' );
 		$this->loader->add_action( 'wp_ajax_cqrc_handle_qrurl_insert_record', $plugin_admin, 'cqrc_handle_qrurl_insert_record' );
+		$this->loader->add_action( 'wp_ajax_check_animated_webp', $plugin_admin, 'check_animated_webp' );
 	}
 
 	/**

@@ -34,6 +34,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 			'device_type'   => __('Device Type', 'custom-qr-code-generator'),
 			'location'      => __('Location', 'custom-qr-code-generator'),
 			'qrid'          => __('QR Code ID', 'custom-qr-code-generator'),
+			'qr_usage_count'   => __('QR Scan Count', 'custom-qr-code-generator'),
 			'created_at'    => __('Created At', 'custom-qr-code-generator'),
 		);
 	}
@@ -62,6 +63,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 			case 'user_ip_address':
 			case 'device_type':
 			case 'qrid':
+			case 'qr_usage_count':
 			case 'created_at':
 			return esc_html($item[$column_name]);
 			case 'location':
@@ -194,6 +196,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 			'user_ip_address' => array('user_ip_address', false),
 			'device_type'     => array('device_type', false),
 			'qrid'            => array('qrid', false),
+			'qr_usage_count'  => array('qr_usage_count', false),
 			'created_at'      => array('created_at', false),
 		);
 	}

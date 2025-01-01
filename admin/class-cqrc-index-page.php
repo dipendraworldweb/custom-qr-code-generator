@@ -231,13 +231,12 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
         );
 
          // Return the span element with the onclick event to copy the shortcode to the clipboard.
- 		return sprintf(
+        return sprintf(
             '<div class="shortcode-list-cqrc"><span class="shortcode" id="copy-code-icon-%d" data-clipboard-text="%s">
-	            <pre id="shortcode-code"><code>%s</code><span id="copy-message-%d" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
+            <pre id="shortcode-code"><code>%s</code><span class="message" style="display: none; color: green; margin-left: 10px;">%s</span></pre><span id="copy-code-icons" class="dashicons dashicons-admin-page" style="cursor: pointer; font-size: 20px; margin-left: 10px;  margin-right: 20px;" title="Copy to clipboard"></span></span></div>',
             esc_attr($item['id']),
             esc_attr($shortcode),
             esc_html($translatable_shortcode),
-            esc_attr($item['id']),
             esc_html($copy_text)
         );
     }
@@ -363,6 +362,7 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
         // Return the HTML for the download buttons
         return sprintf(
             '<div class="download-qr-code-column">
+			 <div id="qrcode-loader" style="display: none;"></div>
             <a class="button button-primary download-buttons-qrcode" href="%s" download="qrcode.png">%s</a>
             <a class="button button-primary download-buttons-qrcode" href="%s" download="qrcode.jpg">%s</a>
             <a class="button button-primary download-buttons-qrcode" href="%s" download="qrcode.pdf">%s</a>
@@ -387,7 +387,7 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
         $insights_table = esc_sql( QRCODE_INSIGHTS_TABLE );
 
         // Step 1: Retrieve the QR Code Data.
-        $qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT qr_code, id AS qrid FROM $table_name WHERE ID = %d", $id )); // phpcs:ignore
+        $qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT qr_code, id AS qrid, default_logo_name FROM $table_name WHERE ID = %d", $id )); // phpcs:ignore
         $qr_code_rows = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE ID = %d", $id )); // phpcs:ignore
         if ( ! $qr_code_row ) {
             return;
@@ -400,6 +400,7 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
 
         $qr_code = $qr_code_row->qr_code;
         $qrid = $qr_code_rows->id;
+        $default_logo_name = $qr_code_row->default_logo_name;
 
         // Step 2: Find Matching Media Posts.
         $media_posts = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE guid = %s AND post_type = 'attachment'",  $qr_code )); // phpcs:ignore
@@ -409,6 +410,27 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
             foreach ( $media_posts as $media_post ) {
             // true for force delete, false for trash.
                 wp_delete_post( $media_post->ID, true );
+            }
+        }
+
+        // Step 4: Delete the image file if it exists and the media post.
+        if ( ! empty( $default_logo_name ) ) {
+            $upload_dir = wp_upload_dir();
+            $filename = basename(wp_parse_url($default_logo_name, PHP_URL_PATH));
+            $file_path = $upload_dir['path'] . '/' . $filename;
+            
+            // Check if the file exists and delete it
+            if ( file_exists( $file_path ) ) {
+                wp_delete_file( $file_path );
+
+                // Now delete the media post associated with this file
+                $media_posts = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_title = %s AND post_type = 'attachment'", $filename )); // phpcs:ignore
+
+                if ( $media_posts ) {
+                    foreach ( $media_posts as $media_post ) {
+                        wp_delete_post( $media_post->ID, true );
+                    }
+                }
             }
         }
 

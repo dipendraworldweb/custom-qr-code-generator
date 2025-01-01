@@ -1,2 +1,0 @@
-id,url,name,description,template_name,download,download_content,upload_logo,default_logo_name,qr_code_color,frame_name,eye_frame_name,qr_eye_frame_color,eye_balls_name,qr_eye_color,qrcode_level,created_at,updated_at,qr_code,total_scans
-1,https://trello.com/,admin,,whatsapp-circle,"png,jpg,pdf","Download PNG,vfgf",default,whatsapp-circle,#2ebd38,default,frame2,#2ebd38,ball2,#2ebd38,QR_ECLEVEL_M,"2024-12-23 16:01:44","2024-12-23 16:24:01",http://localhost/wordpress/wp-content/uploads/2024/12/wwt-qrcode-1.png,

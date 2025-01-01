@@ -1,74 +1,82 @@
-"use strict";
+    "use strict";
 
-// Validate Name field
-function validateInputsName() {
-    var isValid = true;
-    var name = jQuery('#qrcode_name').val();
-    var nameRegex = /^[A-Za-z\s]+$/;
+    // Validate Name field
+    function validateInputsName() {
+        var isValid = true;
+        var name = jQuery('#qrcode_name').val();
+        var nameRegex = /^[A-Za-z\s]+$/;
 
-    if (name === '') {
-        jQuery('#name_error').text("Name field cannot be empty. Please enter a valid name.").show();
-        isValid = false;
-    } else if (name.length > 30) {
-        jQuery('#name_error').text("Name should not exceed 30 characters.").show();
-        isValid = false;
-    } else if (!nameRegex.test(name)) {
-        jQuery('#name_error').text("Please enter only alphabetic characters and spaces.").show();
-        isValid = false;
-    } else {
-        jQuery('#name_error').hide();
+        if (name === '') {
+            jQuery('#name_error').text("Please enter Name.").show();
+            isValid = false;
+        } else if (name.length > 30) {
+            jQuery('#name_error').text("Name should not exceed 30 characters.").show();
+            isValid = false;
+        } else if (!nameRegex.test(name)) {
+            jQuery('#name_error').text("Please enter only alphabetic characters and spaces.").show();
+            isValid = false;
+        } else {
+            jQuery('#name_error').hide();
+        }
+
+        // Disable or enable button based on validation
+        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', !isValid);
     }
 
-    // Disable or enable button based on validation
-    jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', !isValid);
-}
+    // Function to Validate Name field on Load
+    function validateInputsNameLoad() {
+        if (name === '') {
+            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
+        } else if (name.length > 30) {
+            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
+        } else if (!nameRegex.test(name)) {
+            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
+        } else {
+         jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', false);
+     }
+ }
 
-// Function to Validate Name field on Load
-function validateInputsNameLoad() {
-    if (name === '') {
-        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-    } else if (name.length > 30) {
-        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-    } else if (!nameRegex.test(name)) {
-        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-    } else {
-       jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', false);
-   }
-}
-
-// Function to validate the Logo
-function toggleLogoFields() {
+    // Function to validate the Logo
+ function toggleLogoFields() {
     var $customLogoOption = jQuery('#custom_logo_option');
     var $uploadLogoOption = jQuery('#upload_logo_option');
     var $defaultLogoSelect = jQuery('#default_logo');
     var $uploadLogoInput = jQuery('#upload_logo_button');
     var $logoPreview = jQuery('#logo_preview');
-    var $logoPreviews = jQuery('#logo_previews');
-
+    var $logoUrl = jQuery('#upload_logo_url').val();
     if ($customLogoOption.is(':checked')) {
         $defaultLogoSelect.show();
         $uploadLogoInput.hide();
-        $logoPreview.show();
-
-        if ($logoPreviews.length) {
-            $logoPreviews.hide();
+        $logoPreview.prop( 'src', '' ).hide();
+        if( $defaultLogoSelect.val() == 'default' ) {
+            $logoPreview.hide();
+        }
+        else {
+            updateLogoPreview();
+                // $logoPreview.show();
         }
     } else if ($uploadLogoOption.is(':checked')) {
         $defaultLogoSelect.hide();
         $uploadLogoInput.show();
-        $logoPreview.hide();
-
-        if ($logoPreviews.length) {
-            $logoPreviews.show();
+        if( $logoUrl !== '' ) {
+            $logoPreview.prop( 'src', $logoUrl ).show();
+        }
+        else {
+            $logoPreview.prop( 'src', '' ).hide();
         }
     }
 
-    if ($defaultLogoSelect.val() == 'default') {
+    if ( $defaultLogoSelect.is(':checked') && $defaultLogoSelect.val() == 'default' ) {
         $logoPreview.hide();
+    }
+
+        // Check if both options are available and call the function
+    if ($customLogoOption.is(':checked') || $uploadLogoOption.is(':checked')) {
+        WwtPreviousQrcodeTemplate();
     }
 }
 
-// Function to Preview the Logo
+    // Function to Preview the Logo
 function updateLogoPreview() {
     var selectedLogo = jQuery('#default_logo').val();
     var $imgPreview = jQuery('#logo_preview');
@@ -97,10 +105,12 @@ function updateLogoPreview() {
     };
 
     var logoFileName = logoMap[selectedLogo] || '';
-    $imgPreview.attr('src', pluginLogoImagePath + logoFileName).toggle(logoFileName !== '');
+    if( logoFileName !== null && logoFileName !== '' ) {
+        $imgPreview.attr('src', pluginLogoImagePath + logoFileName).toggle(logoFileName !== '');
+    }
 }
 
-// Function to validate the Template
+    // Function to validate the Template
 function updateTemplatePreview() {
     var selectedTemplate = jQuery('#template_name').val();
     var $templatePreview = jQuery('#template_preview');
@@ -121,7 +131,7 @@ function updateTemplatePreview() {
     $templatePreview.attr('src', pluginTemplateImagePath + templateFileName).toggle(templateFileName !== '');
 }
 
-// Function to validate the QR Frames
+    // Function to validate the QR Frames
 function updateFramePreview() {
     var selectedFrame = jQuery('#default_frame').val();
     var $framePreview = jQuery('#frame_preview');
@@ -149,7 +159,7 @@ function updateFramePreview() {
     $framePreview.attr('src', pluginFrameImagePath + frameFileName).toggle(frameFileName !== '');
 }
 
-// Function to validate the Eye Frames
+    // Function to validate the Eye Frames
 function updateEyeFramePreview() {
     var selectedEyeFrame = jQuery('#eye_frame_name').val();
     var $eyeFramePreview = jQuery('#eye_frame_preview');
@@ -178,7 +188,7 @@ function updateEyeFramePreview() {
     $eyeFramePreview.attr('src', pluginEyeFrameImagePath + eyeFrameFileName).toggle(selectedEyeFrame !== 'default');
 }
 
-// Function to validate the Eye Balls
+    // Function to validate the Eye Balls
 function updateEyeBallsPreview() {
     var selectedEyeBall = jQuery('#eye_balls_name').val();
     var $eyeBallsPreview = jQuery('#eye_balls_preview');
@@ -214,7 +224,7 @@ function updateEyeBallsPreview() {
     $eyeBallsPreview.attr('src', pluginEyeBallsImagePath + eyeBallsFileName).toggle(selectedEyeBall !== 'default');
 }
 
-// Function to limit.
+    // Function to limit.
 function debounce(func, wait) {
     var timeout;
     return function() {
@@ -226,7 +236,7 @@ function debounce(func, wait) {
     };
 }
 
-// Function to QR Template Preview
+    // Function to QR Template Preview
 function WwtPreviousQrcodeTemplate() {
     var loader = jQuery('#qrcode-loader');
     var qrcode_name = jQuery('#qrcode_name').val();
@@ -243,11 +253,17 @@ function WwtPreviousQrcodeTemplate() {
     var qr_code_color = jQuery('.qr_color_picker_1').val();
     var qr_eye_frame_color = jQuery('.qr_color_picker_2').val();
     var qr_eye_color = jQuery('.qr_color_picker_3').val();
-    
-    // if url value is empty then return true.
+
+        // if url value is empty then return true.
     if (url == '') {
         return true;
     }
+
+    if ( default_logo === 'default' && template_name !== '' && template_name !== 'default' && logo_option === 'default' ) {
+        var template_settings = getQRCodeSettingByTemplate( template_name );
+        jQuery( 'select[name="default_logo"]' ).val( template_settings.default_logo ).trigger( 'change' );
+    }
+
     var nonce = wwtQrCodeGenerator.nonce;
     if (template_name.length > 0) {
         loader.show();
@@ -278,8 +294,8 @@ function WwtPreviousQrcodeTemplate() {
                     loader.hide();
                     jQuery('#qrcode_image').show();
                     jQuery('#qrcode_default').hide();
-                    
-                    // Add a cache-busting query parameter to the URL
+
+                        // Add a cache-busting query parameter to the URL
                     var uniqueUrl = response.data.url_data + '?t=' + new Date().getTime();
                     jQuery('#qrcode_image').attr('src', uniqueUrl);
                 } else {
@@ -293,12 +309,12 @@ function WwtPreviousQrcodeTemplate() {
     }
 }
 
-// Function to get the download URL
+    // Function to get the download URL
 function getDownloadUrl(id, type) {
     return `${wwtQrCodeGenerator.downloadUrl}?action=download_qr&id=${id}&type=${type}&custom=custom_popup`;
 }
 
-// Function to remove the popup
+    // Function to remove the popup
 function closePopup() {
     jQuery('#download-popup, #download-popup-overlay').remove();
 }
@@ -307,9 +323,9 @@ function countWords(str) {
     return str.trim().split(/\s+/).length;
 }
 
-// Function to validate the Password Field
+    // Function to validate the Password Field
 function validatePassword(password) {
-    // Reset colors and icons
+        // Reset colors and icons
     jQuery('#password-error-uppercase, #password-error-lowercase, #password-error-digit, #password-error-special').css('color', 'red');
     jQuery('#icon-uppercase, #icon-lowercase, #icon-digit, #icon-special').removeClass('fa-check').addClass('fa-times').css('color', 'red');
 
@@ -358,16 +374,16 @@ function validatePassword(password) {
     return hasErrors;
 }
 
-// Function to Disable for Required Field.
+    // Function to Disable for Required Field.
 function toggleButtonState(isDisabled) {
     jQuery('.form-buttons p.submit input#submit').prop('disabled', isDisabled);
 }
 
-// Function to Disable the Template Option.
+    // Function to Disable the Template Option.
 function toggleTemplateSelect() {
     var urlValue = jQuery('#qrcode_url').val();
-    
-    // Ensure urlValue is a string before calling .trim(), and check if it's empty
+
+        // Ensure urlValue is a string before calling .trim(), and check if it's empty
     if (String(urlValue).trim() === '') {
         jQuery('#template_name').prop('disabled', true);
     } else {
@@ -375,7 +391,7 @@ function toggleTemplateSelect() {
     }
 }
 
-// Use jQuery to select checkboxes and set the checked status
+    // Use jQuery to select checkboxes and set the checked status
 function toggleCheckboxes(selectAllCheckbox) {
     jQuery('input[name="columns[]"]').each(function() {
         if (!jQuery(this).prop('disabled')) {
@@ -384,7 +400,7 @@ function toggleCheckboxes(selectAllCheckbox) {
     });
 }
 
-// Use jQuery to check if all checkboxes are checked
+    // Use jQuery to check if all checkboxes are checked
 function updateSelectAll() {
     const allChecked = jQuery('input[name="columns[]"]:not(:disabled)').length === jQuery('input[name="columns[]"]:not(:disabled):checked').length;
     jQuery('#select-all').prop('checked', allChecked);
@@ -410,14 +426,14 @@ function toggleDownloadTextFields() {
     }
 }
 
-// URL validation function using regex
+    // URL validation function using regex
 function validateUrl(url) {
     var urlPattern = /^(https?:\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;%=]*)?$/;
     return urlPattern.test(url);
 }
 
-var regexvalidation = /^[A-Za-z]+(\s[A-Za-z]+)*$/;
 function validateInput(input, errorElement) {
+    var regexvalidation = /^[A-Za-z]+(\s[A-Za-z]+)*$/;
     var value = jQuery(input).val();
     if (value) {
         var value = jQuery(input).val().trim();
@@ -448,493 +464,639 @@ function checkAllFields() {
     }
 }
 
+function getQRCodeSettingByTemplate( template_name = 'default' ) {
+    var settings = {};
+    switch ( template_name ) {
+        case 'facebook':
+            settings = {
+                default_logo: 'facebook',
+                default_frame: 'default',
+                eye_frame_name: 'frame14',
+                eye_balls_name: 'ball16',
+                qr_code_color: '#2c4270',
+                qr_eye_color: '#2c4270',
+                qr_eye_frame_color: '#2c4270',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'youtube-circle':
+            settings = {
+                default_logo: 'youtube-circle',
+                default_frame: 'default',
+                eye_frame_name: 'frame13',
+                eye_balls_name: 'ball14',
+                qr_code_color: '#BF2626',
+                qr_eye_color: '#EE0F0F',
+                qr_eye_frame_color: '#EE0F0F',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'twitter-circle':
+            settings = {
+                default_logo: 'twitter-circle',
+                default_frame: 'default',
+                eye_frame_name: 'frame5',
+                eye_balls_name: 'ball11',
+                qr_code_color: '#55ACEE',
+                qr_eye_color: '#55ACEE',
+                qr_eye_frame_color: '#55ACEE',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'instagram-circle':
+            settings = {
+                default_logo: 'instagram-circle',
+                default_frame: 'default',
+                eye_frame_name: 'frame5',
+                eye_balls_name: 'ball4',
+                qr_code_color: '#0d1766',
+                qr_eye_color: '#0d1766',
+                qr_eye_frame_color: '#8224e3',
+                qrcode_level: 'QR_ECLEVEL_H'
+            };
+            break;
+        case 'whatsapp-circle':
+            settings = {
+                default_logo: 'whatsapp-circle',
+                default_frame: 'default',
+                eye_frame_name: 'frame2',
+                eye_balls_name: 'ball2',
+                qr_code_color: '#2ebd38',
+                qr_eye_color: '#2ebd38',
+                qr_eye_frame_color: '#2ebd38',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'gmail':
+            settings = {
+                default_logo: 'gmail',
+                default_frame: 'default',
+                eye_frame_name: 'frame14',
+                eye_balls_name: 'ball14',
+                qr_code_color: '#e4594c',
+                qr_eye_color: '#e4594c',
+                qr_eye_frame_color: '#e4594c',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'linkedin-circle':
+            settings = {
+                default_logo: 'linkedin-circle',
+                default_frame: 'default',
+                eye_frame_name: 'frame0',
+                eye_balls_name: 'ball0',
+                qr_code_color: '#005881',
+                qr_eye_color: '#005881',
+                qr_eye_frame_color: '#005881',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'default':
+            settings = {
+                default_logo: 'default',
+                default_frame: 'default',
+                eye_frame_name: 'default',
+                eye_balls_name : 'default',
+                qr_code_color: '#000000',
+                qr_eye_color: '#000000',
+                qr_eye_frame_color: '#000000',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+    }
+    return settings;
+}
+
 jQuery(document).ready(function($) {
-    var imgPreviews = jQuery('#default_logo').val();
+    var imgPreviews = jQuery('#default_logo:checked').val();
     var eye_frame_name = jQuery('#eye_frame_name').val();
     var eye_balls_name = jQuery('#eye_balls_name').val();
-    var default_frame = jQuery('#default_frame').val();
     var logo_preview = jQuery('#logo_preview');
-    var frame_preview = jQuery('#frame_preview');
     var eye_frame_preview = jQuery('#eye_frame_preview');
     var eye_balls_preview = jQuery('#eye_balls_preview');
 
-    if (imgPreviews == 'default') {
-       logo_preview.hide();
-   }
-   if (eye_frame_name == 'default') {
-       eye_frame_preview.hide();
-   }   
-   if (eye_balls_name == 'default') {
-       eye_balls_preview.hide();
-   }
-
-   jQuery('#template_name').on('change', function() {
-
-    var value = jQuery(this).val();
-    var settings = {};
-
-    switch (value) {
-    case 'facebook':
-        settings = {
-            default_logo: 'facebook',
-            default_frame: 'default',
-            eye_frame_name: 'frame14',
-            eye_balls_name: 'ball16',
-            qr_code_color: '#2c4270',
-            qr_eye_color: '#2c4270',
-            qr_eye_frame_color: '#2c4270',
-            qrcode_level: 'QR_ECLEVEL_M'
-        };
-        break;
-    case 'youtube-circle':
-        settings = {
-            default_logo: 'youtube-circle',
-            default_frame: 'default',
-            eye_frame_name: 'frame13',
-            eye_balls_name: 'ball14',
-            qr_code_color: '#BF2626',
-            qr_eye_color: '#EE0F0F',
-            qr_eye_frame_color: '#EE0F0F',
-            qrcode_level: 'QR_ECLEVEL_Q'
-        };
-        break;
-    case 'twitter-circle':
-        settings = {
-            default_logo: 'twitter-circle',
-            default_frame: 'default',
-            eye_frame_name: 'frame5',
-            eye_balls_name: 'ball11',
-            qr_code_color: '#55ACEE',
-            qr_eye_color: '#55ACEE',
-            qr_eye_frame_color: '#55ACEE',
-            qrcode_level: 'QR_ECLEVEL_Q'
-        };
-        break;
-    case 'instagram-circle':
-        settings = {
-            default_logo: 'instagram-circle',
-            default_frame: 'default',
-            eye_frame_name: 'frame5',
-            eye_balls_name: 'ball4',
-            qr_code_color: '#0d1766',
-            qr_eye_color: '#0d1766',
-            qr_eye_frame_color: '#8224e3',
-            qrcode_level: 'QR_ECLEVEL_H'
-        };
-        break;
-    case 'whatsapp-circle':
-        settings = {
-            default_logo: 'whatsapp-circle',
-            default_frame: 'default',
-            eye_frame_name: 'frame2',
-            eye_balls_name: 'ball2',
-            qr_code_color: '#2ebd38',
-            qr_eye_color: '#2ebd38',
-            qr_eye_frame_color: '#2ebd38',
-            qrcode_level: 'QR_ECLEVEL_M'
-        };
-        break;
-    case 'gmail':
-        settings = {
-            default_logo: 'gmail',
-            default_frame: 'default',
-            eye_frame_name: 'frame14',
-            eye_balls_name: 'ball14',
-            qr_code_color: '#e4594c',
-            qr_eye_color: '#e4594c',
-            qr_eye_frame_color: '#e4594c',
-            qrcode_level: 'QR_ECLEVEL_Q'
-        };
-        break;
-    case 'linkedin-circle':
-        settings = {
-            default_logo: 'linkedin-circle',
-            default_frame: 'default',
-            eye_frame_name: 'frame0',
-            eye_balls_name: 'ball0',
-            qr_code_color: '#005881',
-            qr_eye_color: '#005881',
-            qr_eye_frame_color: '#005881',
-            qrcode_level: 'QR_ECLEVEL_M'
-        };
-        break;
-    case 'default':
-        settings = {
-            default_logo: 'default',
-            default_frame: 'default',
-            eye_frame_name: 'default',
-            eye_balls_name: 'default',
-            qr_code_color: '#000000',
-            qr_eye_color: '#000000',
-            qr_eye_frame_color: '#000000',
-            qrcode_level: 'QR_ECLEVEL_M'
-        };
-        break;
+    if ( imgPreviews !== null && imgPreviews == 'default') {
+        logo_preview.hide();
     }
 
-        // Apply settings
-    $.each(settings, function(key, value) {
-        var element = jQuery(`select[name="${key}"], input[name="${key}"]`);
-        element.val(value).trigger('change');
-    });
-});
+    if (eye_frame_name == 'default') {
+        eye_frame_preview.hide();
+    }
 
-   // Bind validation to focusout event on inputs
-   jQuery('#qrcode_url').on('focusout', function() {
-    var url = jQuery(this).val();
-    
-    if (url != '') {
-        if (url.length < 16) {
-            jQuery('#url_error').text("URL must be at least 16 characters long.").show();
-        } else if (url.length > 80) {
-            jQuery('#url_error').text("URL must not exceed 80 characters.").show();
-        } else if (validateUrl(url)) {
-            jQuery('#url_error').hide();
-        } else {
-            jQuery('#url_error').text("Please enter a valid URL.").show();
+    if (eye_balls_name == 'default') {
+        eye_balls_preview.hide();
+    }
+
+    jQuery('#template_name').on('change', function() {
+
+        var value = jQuery(this).val();
+        var settings = {};
+        var uploadLogoUrl = jQuery('#upload_logo_url').val();
+
+            // Check if the "logo_option" radio button is checked and get its value
+        var logoOption = jQuery('input[name="logo_option"]:checked').val();
+
+            // If "default" is selected, set uploadLogoUrl to an empty string
+        if (logoOption === 'default') {
+            uploadLogoUrl = '';
+            jQuery('#upload_logo_url').val('');
+            jQuery('#logo_preview').attr('src', '' );
         }
-    } else {
-        validateInputsName();
-        jQuery('#url_error').text("Please enter URL.").show();
-        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-    }
-});
 
-   jQuery('#qrcode_name').on('focusout', function() {
-    validateInputsName();
-});
-   // Bind the functions to the relevant events
-   jQuery('#custom_logo_option, #upload_logo_option').change(toggleLogoFields);
-   jQuery('#default_logo').change(updateLogoPreview);
-   jQuery('#template_name').change(updateTemplatePreview);
-   jQuery('#default_frame').change(updateFramePreview);
-   jQuery('#eye_frame_name').change(updateEyeFramePreview);
-   jQuery('#eye_balls_name').change(updateEyeBallsPreview);
+        switch (value) {
+        case 'facebook':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'facebook' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame14',
+                eye_balls_name: 'ball16',
+                qr_code_color: '#2c4270',
+                qr_eye_color: '#2c4270',
+                qr_eye_frame_color: '#2c4270',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'youtube-circle':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'youtube-circle' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame13',
+                eye_balls_name: 'ball14',
+                qr_code_color: '#BF2626',
+                qr_eye_color: '#EE0F0F',
+                qr_eye_frame_color: '#EE0F0F',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'twitter-circle':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'twitter-circle' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame5',
+                eye_balls_name: 'ball11',
+                qr_code_color: '#55ACEE',
+                qr_eye_color: '#55ACEE',
+                qr_eye_frame_color: '#55ACEE',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'instagram-circle':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'instagram-circle' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame5',
+                eye_balls_name: 'ball4',
+                qr_code_color: '#0d1766',
+                qr_eye_color: '#0d1766',
+                qr_eye_frame_color: '#8224e3',
+                qrcode_level: 'QR_ECLEVEL_H'
+            };
+            break;
+        case 'whatsapp-circle':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'whatsapp-circle' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame2',
+                eye_balls_name: 'ball2',
+                qr_code_color: '#2ebd38',
+                qr_eye_color: '#2ebd38',
+                qr_eye_frame_color: '#2ebd38',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'gmail':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'gmail' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame14',
+                eye_balls_name: 'ball14',
+                qr_code_color: '#e4594c',
+                qr_eye_color: '#e4594c',
+                qr_eye_frame_color: '#e4594c',
+                qrcode_level: 'QR_ECLEVEL_Q'
+            };
+            break;
+        case 'linkedin-circle':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'linkedin-circle' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'frame0',
+                eye_balls_name: 'ball0',
+                qr_code_color: '#005881',
+                qr_eye_color: '#005881',
+                qr_eye_frame_color: '#005881',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        case 'default':
+            settings = {
+                default_logo: (uploadLogoUrl === '') ? 'default' : 'default',
+                default_frame: 'default',
+                eye_frame_name: 'default',
+                eye_balls_name : 'default',
+                qr_code_color: '#000000',
+                qr_eye_color: '#000000',
+                qr_eye_frame_color: '#000000',
+                qrcode_level: 'QR_ECLEVEL_M'
+            };
+            break;
+        }
 
-    // Initialize visibility and preview
-   toggleLogoFields();
-   updateLogoPreview();
-   updateTemplatePreview();
-   updateFramePreview();
-   updateEyeFramePreview();
-   updateEyeBallsPreview();
-   validateInputsNameLoad();
+            // Apply settings
+        $.each(settings, function(key, value) {
+            var element = jQuery(`select[name="${key}"], input[name="${key}"]`);
+            element.val(value).trigger('change');
+        });
 
-   var loader = $('#qrcode-loader');
-   $('#qrcode_default').show();
-
-    // Debounced version of WwtPreviousQrcodeTemplate
-   var debouncedWwtPreviousQrcodeTemplate = debounce(WwtPreviousQrcodeTemplate, 500);
-
-   jQuery('input[name="qrcode_url"]').on('focusout', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('select[name="template_name"]').on('change', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('select[name="qrcode_level"]').on('change', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('#default_logo').on('change', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('#default_frame').on('change', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('#eye_frame_name').on('change', debouncedWwtPreviousQrcodeTemplate);
-   jQuery('#eye_balls_name').on('change', debouncedWwtPreviousQrcodeTemplate);
-
-   jQuery('.wp-color-picker').wpColorPicker({
-    change: function(event, ui) {
-        debouncedWwtPreviousQrcodeTemplate();
-    }
-});
-
-   var mediaUploader;
-   jQuery('#upload_logo_button').click(function(e) {
-    e.preventDefault();
-
-        // If the media uploader already exists, open it.
-    if (mediaUploader) {
-        mediaUploader.open();
-        return;
-    }
-
-        // Create a new media uploader instance
-    mediaUploader = wp.media({
-        title: 'Select or Upload Logo',
-        button: {
-            text: 'Use this logo'
-        },
-        multiple: false
+        if ( logoOption === 'upload' && uploadLogoUrl !== '' ) {
+            jQuery( '#logo_preview' ).attr( 'src', uploadLogoUrl ).show();
+        }
     });
 
-        // Handle the media selection
-    mediaUploader.on('select', function() {
-        var attachment = mediaUploader.state().get('selection').first().toJSON();
-        var fileSize = attachment.filesizeInBytes;
-            var maxFileSize = 5242880; // 5MB in bytes
+        // Bind validation to focusout event on inputs
+    jQuery('#qrcode_url').on('focusout', function() {
+        var url = jQuery(this).val();
+
+        if (url != '') {
+                // First check if the URL is valid
+            if (!validateUrl(url)) {
+                jQuery('#url_error').text("Please enter a valid URL.").show();
+            } else if (url.length < 16) {
+                jQuery('#url_error').text("URL must be at least 16 characters long.").show();
+            } else if (url.length > 80) {
+                jQuery('#url_error').text("URL must not exceed 80 characters.").show();
+            } else {
+                jQuery('#url_error').hide();
+            }
+        } else {
+            validateInputsName();
+            jQuery('#url_error').text("Please enter URL.").show();
+            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
+        }
+    });
+
+    jQuery('#qrcode_name').on('focusout', function() {
+        validateInputsName();
+    });
+
+        // Bind the functions to the relevant events
+    jQuery('#custom_logo_option, #upload_logo_option').change(toggleLogoFields);
+    jQuery('#default_logo').change(updateLogoPreview);
+    jQuery('#template_name').change(updateTemplatePreview);
+    jQuery('#default_frame').change(updateFramePreview);
+    jQuery('#eye_frame_name').change(updateEyeFramePreview);
+    jQuery('#eye_balls_name').change(updateEyeBallsPreview);
+
+        // Initialize visibility and preview
+    toggleLogoFields();
+    updateLogoPreview();
+    updateTemplatePreview();
+    updateFramePreview();
+    updateEyeFramePreview();
+    updateEyeBallsPreview();
+        // validateInputsNameLoad();
+
+    var loader = $('#qrcode-loader');
+    $('#qrcode_default').show();
+
+        // Debounced version of WwtPreviousQrcodeTemplate
+    var debouncedWwtPreviousQrcodeTemplate = debounce(WwtPreviousQrcodeTemplate, 500);
+
+    jQuery('input[name="qrcode_url"]').on('focusout', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('select[name="template_name"]').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('select[name="qrcode_level"]').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('#default_logo').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('#default_frame').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('#eye_frame_name').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('#eye_balls_name').on('change', debouncedWwtPreviousQrcodeTemplate);
+
+    jQuery('.wp-color-picker').wpColorPicker({
+        change: function(event, ui) {
+            debouncedWwtPreviousQrcodeTemplate();
+        }
+    });
+
+    var mediaUploader;
+    jQuery('#upload_logo_button').click(function(e) {
+        e.preventDefault();
+
+                // If the media uploader already exists, open it.
+        if (mediaUploader) {
+            mediaUploader.open();
+            return;
+        }
+
+                // Create a new media uploader instance
+        mediaUploader = wp.media({
+            title: 'Select or Upload Logo',
+            button: {
+                text: 'Use this logo'
+            },
+            multiple: false
+        });
+
+                // Handle the media selection
+        mediaUploader.on('select', function() {
+            var attachment = mediaUploader.state().get('selection').first().toJSON();
+            var fileSize = attachment.filesizeInBytes;
+            var maxFileSize = 5242880;
             var fileType = attachment.mime;
 
-            var allowedMimeTypes = ['image/jpeg', 'image/png'];
+            var allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-            // Validate file type
+                    // Validate file type
             if (!allowedMimeTypes.includes(fileType)) {
-                alert('Only JPG and PNG files are allowed.');
+                alert('Only JPG, PNG and WebP files are allowed.');
                 return;
             }
 
-            // Validate file size
+                    // Validate file size
             if (fileSize > maxFileSize) {
                 alert('Maximum file size exceeded (5MB).');
                 return;
             }
+                // Check if the file is a WebP image and validate if it's animated
+            var nonce = wwtQrCodeGenerator.nonce;
+            if (fileType === 'image/webp') {
+                $.ajax({
+                    url: wwtQrCodeGenerator.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'check_animated_webp',
+                        image_url: attachment.url,
+                        _ajax_nonce: nonce
+                    },
+                    success: function(response) {
 
-            // If validation passes, update the field and preview image
-            jQuery('#upload_logo_url').val(attachment.url);
-            jQuery('#logo_preview').attr('src', attachment.url).show();
-            jQuery('#logo_previews').hide();
+                        // Check if the response data indicates the image is animated
+                        if (response.data.message === 'is_animated') {
+                            alert('Error: Animated WebP files cannot be read. Please use a non-animated WebP image or another supported format');
+                            return;
+                        }
 
-            // Call the WwtPreviousQrcodeTemplate() function
-            WwtPreviousQrcodeTemplate();
+                        // If the image is not animated, continue with the regular process
+                        jQuery('#upload_logo_url').val(attachment.url);
+                        jQuery('#logo_preview').attr('src', attachment.url).show();
+                        WwtPreviousQrcodeTemplate();
+                    }
+                });
+            } else {
+                    // If it's not a WebP image, proceed with the normal flow
+                jQuery('#upload_logo_url').val(attachment.url);
+                jQuery('#logo_preview').attr('src', attachment.url).show();
+                WwtPreviousQrcodeTemplate();
+            }
+        });
+        mediaUploader.open();
+    });
+
+        // Handle the click event on download links
+    $(document).on('click', '.qrcode-download-link-trigger', function(e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        var qrId = $this.data('id');
+        var qrName = $this.data('name');
+
+                // Create the popup HTML
+        var popupHtml = `
+            <div id="download-popup-overlay"></div>
+            <div id="download-popup">
+            <div id="qrcode-loader" style="display: none;"></div>
+            <button id="close-popup" class="button button-secondary">X</button>
+            <h2>Download QR Code: ${qrName}</h2>
+            <div class="download-buttons">
+            <a class="button button-primary" id="download-pngimage" href="${getDownloadUrl(qrId, 'png')}" download="qrcode.png">PNG</a>
+            <a class="button button-primary" id="download-jpgimage" href="${getDownloadUrl(qrId, 'jpg')}" download="qrcode.jpg">JPG</a>
+            <a class="button button-primary" id="download-pdfimage" href="${getDownloadUrl(qrId, 'pdf')}" download="qrcode.pdf">PDF</a>
+            </div>
+            </div>
+        `;
+
+                // Append the popup HTML to the body
+        $('body').append(popupHtml);
+                // Handle the close button click
+        $(document).on('click', '#close-popup', function() {
+            closePopup();
         });
 
-    mediaUploader.open();
-});
-
-    // Handle the click event on download links
-   $(document).on('click', '.qrcode-download-link-trigger', function(e) {
-    e.preventDefault();
-
-    var $this = $(this);
-    var qrId = $this.data('id');
-    var qrName = $this.data('name');
-
-        // Create the popup HTML
-    var popupHtml = `
-    <div id="download-popup-overlay"></div>
-    <div id="download-popup">
-    <button id="close-popup" class="button button-secondary">X</button>
-    <h2>Download QR Code: ${qrName}</h2>
-    <div class="download-buttons">
-    <a class="button button-primary" href="${getDownloadUrl(qrId, 'png')}" download="qrcode.png">PNG</a>
-    <a class="button button-primary" href="${getDownloadUrl(qrId, 'jpg')}" download="qrcode.jpg">JPG</a>
-    <a class="button button-primary" href="${getDownloadUrl(qrId, 'pdf')}" download="qrcode.pdf">PDF</a>
-    </div>
-    </div>
-    `;
-
-        // Append the popup HTML to the body
-    $('body').append(popupHtml);
-        // Handle the close button click
-    $(document).on('click', '#close-popup', function() {
-        closePopup();
-    });
-
-        // Close popup when clicking outside the popup
-    $(document).on('click', '#download-popup-overlay', function() {
-        closePopup();
-    });
-
-        // Close popup when pressing the Escape key
-    $(document).on('keydown', function(e) {
-        if (e.key === 'Escape') {
+                // Close popup when clicking outside the popup
+        $(document).on('click', '#download-popup-overlay', function() {
             closePopup();
-        }
-    });
-});
+        });
 
-   var $toggleButton = $('#toggle-settings');
-   var $settingsElements = $('.additional-settings');
-   var isVisible = false;
-
-   $toggleButton.on('click', function() {
-        // Validate the input fields
-    var url = $('#qrcode_url').val().trim();
-    var name = $('#qrcode_name').val().trim();
-
-        // Error message elements
-    var $urlError = $('#url_error');
-    var $nameError = $('#name_error');
-
-        // Clear previous error messages
-    $urlError.hide();
-    $nameError.hide();
-
-        // Reset error texts
-    $urlError.text('');
-    $nameError.text('');
-
-    var hasError = false;
-
-        // Check for empty fields
-    if (!url) {
-        $urlError.text('Please fill up the required field!').show();
-        hasError = true;
-    }
-    if (!name) {
-        $nameError.text('Please fill up the required field!').show();
-        hasError = true;
-    }
-
-        // If there are errors, stop execution
-    if (hasError) {
-        return;
-    }
-
-        // Toggle settings if all fields are filled
-    isVisible = !isVisible;
-    $settingsElements.each(function() {
-        $(this).toggle(isVisible);
-    });
-
-    $toggleButton.text(isVisible ? 'Hide Additional Settings' : 'Show Additional Settings');
-});
-
-
-   $('.site-show-hide-password-ed>label, .site-show-hide-password-ed').on('click', function() {
-    var passwordInput = $('#password');
-    var passwordFieldType = passwordInput.attr('type');
-
-    if (passwordFieldType === 'password') {
-        passwordInput.attr('type', 'text');
-        $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-    } else {
-        passwordInput.attr('type', 'password');
-        $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-    }
-});
-   validatePassword($('#password').val());
-   $('#password').on('input', function() {
-    var password = $(this).val();
-    password = password.replace(/\s+/g, '');
-
-    if (password.length > 10) {
-        password = password.substring(0, 10);
-    }
-
-    $(this).val(password);
-    var hasErrors = validatePassword(password);
-    if (password.length === 0) {
-        toggleButtonState(false);
-    } else {
-        toggleButtonState(hasErrors);
-    }
-});
-
-   toggleTemplateSelect();
-   $('#qrcode_url').on('input', function() {
-     toggleTemplateSelect();
- });
-
-   $('#export-qrcode-report').on('click', function(event) {
-    const checkboxes = $('input[name="columns[]"]');
-    const errorMessageDiv = $('#error-message');
-    const anyChecked = checkboxes.is(':checked');
-
-        // If no checkbox is checked, show an error message
-    if (!anyChecked) {
-        event.preventDefault();
-        errorMessageDiv.text('Please select at least one column to export.');
-        errorMessageDiv.show();
-    } else {
-        errorMessageDiv.hide();
-    }
-});
-   $("#copy-code-icon").on("click", function () {
-     var e = $("#shortcode-code").text(),
-     o = $("<textarea>").val(e).appendTo("body");
-     o.select(), document.execCommand("copy"), o.remove(), $("#copy-message").show().fadeOut(2e3);
- });
-   $('#qr-listing-details').on('submit', function(e) {
-    if ($('select[name="action"]').val() === 'delete') {
-        if (!confirm('Are you sure you want to delete the selected QR codes?')) {
-            e.preventDefault();
-        }
-    }
-});
-   const requiredColumns = ['id', 'user_id', 'name', 'qr_code', 'url'];
-   requiredColumns.forEach(function(column) {
-    jQuery('input[name="columns[]"][value="' + column + '"]').prop('disabled', true);
-});
-   $('#wwt-qrcode-generate-form').on('submit', function(event) {
-       tinyMCE.triggerSave();
-   });
-
-   $('#submit_qrcode_setting').on('click', function() {
-    // Ensure that content from TinyMCE is saved, even when in Visual mode.
-    tinyMCE.triggerSave();
-
-    var formData = $('#wwt-qrcode-setting-form').serialize();
-
-    $.ajax({
-        type: 'POST',
-        url: wwtQrCodeGenerator.ajax_url,
-        data: formData + '&action=cqrc_save_settings',
-        success: function(response) {
-                // Clear previous messages
-            $('#response-message').empty();
-
-            if (response.success) {
-                $('#response-message').html('<div class="notice notice-success is-dismissible"><p>' + response.data + '</p></div>');
-            } else {
-                $('#response-message').html('<div class="notice notice-error is-dismissible"><p>' + response.data + '</p></div>');
+                // Close popup when pressing the Escape key
+        $(document).on('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
             }
+        });
+    });
 
-                // Add dismiss functionality to the notification
-            $('.is-dismissible').on('click', function() {
-                $(this).fadeOut();
-            });
-        },
-        error: function() {
-            $('#response-message').html('<div class="notice notice-error is-dismissible"><p>An error occurred. Please try again.</p></div>');
+    var $toggleButton = $('#toggle-settings');
+    var $settingsElements = $('.additional-settings');
+    var isVisible = false;
 
-                // Add dismiss functionality to the notification
-            $('.is-dismissible').on('click', function() {
-                $(this).fadeOut();
-            });
+    $toggleButton.on('click', function() {
+            // Validate the input fields
+        var url = $('#qrcode_url').val().trim();
+        var name = $('#qrcode_name').val().trim();
+
+            // Error message elements
+        var $urlError = $('#url_error');
+        var $nameError = $('#name_error');
+
+            // Clear previous error messages
+        $urlError.hide();
+        $nameError.hide();
+
+            // Reset error texts
+        $urlError.text('');
+        $nameError.text('');
+
+        var hasError = false;
+
+            // Check for empty fields
+        if (!url) {
+            $urlError.text('Please enter URL!').show();
+            hasError = true;
+        }
+        if (!name) {
+            $nameError.text('Please enter Name!').show();
+            hasError = true;
+        }
+
+                // If there are errors, stop execution
+        if (hasError) {
+            return;
+        }
+
+                // Toggle settings if all fields are filled
+        isVisible = !isVisible;
+        $settingsElements.each(function() {
+            $(this).toggle(isVisible);
+        });
+
+        $toggleButton.text(isVisible ? 'Hide Additional Settings' : 'Show Additional Settings');
+    });
+
+
+    $('.site-show-hide-password-ed>label, .site-show-hide-password-ed').on('click', function() {
+        var passwordInput = $('#password');
+        var passwordFieldType = passwordInput.attr('type');
+
+        if (passwordFieldType === 'password') {
+            passwordInput.attr('type', 'text');
+            $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
         }
     });
-});
 
-   $('.show-error-message-notice').hide();
-   $('#password').on('click', function() {
-    $('.show-error-message-notice').show();
-});
+    validatePassword($('#password').val());
 
-   $('#password').on('focusout', function() {
-    if ($('#password').val() === '') {
-        $('.show-error-message-notice').hide();
-    }
-});
-   toggleDownloadTextFields();
-   $("input[name='download[]']").change(function() {
+    $('#password').on('input', function() {
+        var password = $(this).val();
+        password = password.replace(/\s+/g, '');
+
+        if (password.length > 10) {
+            password = password.substring(0, 10);
+        }
+
+        $(this).val(password);
+        var hasErrors = validatePassword(password);
+        if (password.length === 0) {
+            toggleButtonState(false);
+        } else {
+            toggleButtonState(hasErrors);
+        }
+    });
+
+    toggleTemplateSelect();
+    $('#qrcode_url').on('input', function() {
+        toggleTemplateSelect();
+    });
+
+    $('#export-qrcode-report').on('click', function(event) {
+        const checkboxes = $('input[name="columns[]"]');
+        const errorMessageDiv = $('#error-message');
+        const anyChecked = checkboxes.is(':checked');
+
+                // If no checkbox is checked, show an error message
+        if (!anyChecked) {
+            event.preventDefault();
+            errorMessageDiv.text('Please select at least one column to export.');
+            errorMessageDiv.show();
+        } else {
+            errorMessageDiv.hide();
+        }
+    });
+
+    $("#copy-code-icon").on("click", function () {
+        var e = $("#shortcode-code").text(),
+        o = $("<textarea>").val(e).appendTo("body");
+        o.select(), document.execCommand("copy"), o.remove(), $("#copy-message").show().fadeOut(2e3);
+    });
+
+    $('#qr-listing-details').on('submit', function(e) {
+        if ($('select[name="action"]').val() === 'delete') {
+            if (!confirm('Are you sure you want to delete the selected QR codes?')) {
+                e.preventDefault();
+            }
+        }
+    });
+
+    const requiredColumns = ['id', 'user_id', 'name', 'qr_code', 'url'];
+    requiredColumns.forEach(function(column) {
+        jQuery('input[name="columns[]"][value="' + column + '"]').prop('disabled', true);
+    });
+
+    $('#wwt-qrcode-generate-form').on('submit', function(event) {
+        $('#qrcode-loader').show();
+        tinyMCE.triggerSave();
+    });
+
+    $('#submit_qrcode_setting').on('click', function() {
+            // Ensure that content from TinyMCE is saved, even when in Visual mode.
+        tinyMCE.triggerSave();
+
+        var formData = $('#wwt-qrcode-setting-form').serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: wwtQrCodeGenerator.ajax_url,
+            data: formData + '&action=cqrc_save_settings',
+            success: function(response) {
+                    // Clear previous messages
+                $('#response-message').empty();
+
+                if (response.success) {
+                    $('#response-message').html('<div class="notice notice-success is-dismissible"><p>' + response.data + '</p></div>');
+                } else {
+                    $('#response-message').html('<div class="notice notice-error is-dismissible"><p>' + response.data + '</p></div>');
+                }
+
+                        // Add dismiss functionality to the notification
+                $('.is-dismissible').on('click', function() {
+                    $(this).fadeOut();
+                });
+            },
+            error: function() {
+                $('#response-message').html('<div class="notice notice-error is-dismissible"><p>An error occurred. Please try again.</p></div>');
+
+                    // Add dismiss functionality to the notification
+                $('.is-dismissible').on('click', function() {
+                    $(this).fadeOut();
+                });
+            }
+        });
+    });
+
+    $('.show-error-message-notice').hide();
+
+    $('#password').on('click', function() {
+        $('.show-error-message-notice').show();
+    });
+
+    $('#password').on('focusout', function() {
+        if ($('#password').val() === '') {
+            $('.show-error-message-notice').hide();
+        }
+    });
+
     toggleDownloadTextFields();
-});
-   $(document).on("click", ".shortcode", function() {
-    var shortcodeText = $(this).data("clipboard-text"),
-    $textarea = $("<textarea>").val(shortcodeText).appendTo("body");
-    
-    $textarea.select();
-    document.execCommand("copy");
-    $textarea.remove();
 
-    // Hide all previous messages
-    $(".copy-message").hide();
+    $("input[name='download[]']").change(function() {
+        toggleDownloadTextFields();
+    });
 
-    // Get the ID of the clicked element
-    var elementId = $(this).attr('id');
-    
-    // Ensure the element ID is defined and has the expected format
-    if (elementId && elementId.indexOf('-') !== -1) {
-        var messageId = "#copy-message-" + elementId.split('-').pop();
-        $(messageId).show().fadeOut(2000);
-    }
-});
-   $("input[name='download_text_pdf']").on('focusout change', function() {
-    validateInput(this, "#download_text_pdf_error");
-    checkAllFields();
-});
+    $(document).on("click", ".shortcode", function() {
+        var shortcodeText = $(this).data("clipboard-text"),
+        $textarea = $("<textarea>").val(shortcodeText).appendTo("body");
 
-   $("input[name='download_text_jpg']").on('focusout change', function() {
-    validateInput(this, "#download_text_jpg_error");
-    checkAllFields();
-});
+        $textarea.select();
+        document.execCommand("copy");
+        $textarea.remove();
 
-   $("input[name='download_text_png']").on('focusout change', function() {
-    validateInput(this, "#download_text_png_error");
-    checkAllFields();
-});
+            // Hide all previous messages
+        $(".copy-message").hide();
+        $( this ).find( 'span.message' ).show().fadeOut( 2000 );
+    });
 
-   checkAllFields();
+    $("input[name='download_text_pdf']").on('focusout change', function() {
+        validateInput(this, "#download_text_pdf_error");
+        checkAllFields();
+    });
+
+    $("input[name='download_text_jpg']").on('focusout change', function() {
+        validateInput(this, "#download_text_jpg_error");
+        checkAllFields();
+    });
+
+    $("input[name='download_text_png']").on('focusout change', function() {
+        validateInput(this, "#download_text_png_error");
+        checkAllFields();
+    });
 });
