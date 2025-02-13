@@ -4,7 +4,7 @@
  */
 
 .wwt-qrcode-container .download-qr-code-column a { text-align: center; font-weight: 500; background: #2271b1; border-color: #2271b1; color: #fff; text-shadow: none; display: inline-block; text-decoration: none; font-size: 13px; line-height: 2.15384615; min-height: 30px; margin: 0; padding: 0 10px; cursor: pointer; border-width: 1px; border-style: solid; -webkit-appearance: none; border-radius: 3px; white-space: nowrap; box-sizing: border-box; }
-.wwt-qrcode-container { text-align: center; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); max-width: 400px !important; }
+.wwt-qrcode-container { margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); max-width: 400px !important; }
 .qr-code-showing-preview-image-fronted { margin-bottom: 20px; padding: 10px; border: 2px solid #0073aa; border-radius: 8px; background-color: #fff; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
 .qr-code-showing-preview-image-fronted img { max-width: 100%; height: auto; border-radius: 8px; transition: transform 0.3s ease; }
 .qr-code-showing-preview-image-fronted img:hover { transform: scale(1.05); }
@@ -14,3 +14,28 @@
 .download-qr-code-column { display: flex; justify-content: center; gap: 10px; }
 .download-buttons-qrcode { text-decoration: none; padding: 10px 20px; font-size: 1em; border: none; border-radius: 4px; color: #fff; background-color: #0073aa; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease; }
 .download-buttons-qrcode:hover { background-color: #005a87; transform: scale(1.05); }
+.qrcode-form-container { max-width: 700px;width:45%; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, .1); overflow: hidden;}
+body.password-page.page.page-password-form .site-branding { width: 100%; text-align: center; }
+.qrcode-form-container h2 { text-align: center; margin-bottom: 20px; }
+.qrcode-form-container form { display: flex; flex-direction: column; }
+.qrcode-form-container label { margin-bottom: 8px; }
+.qrcode-form-container input[type="password"], .qrcode-form-container input[type="submit"] { padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-weight: 600; }
+.qrcode-form-container a.button { color: #fff; background-color: #0d6efd; border-color: #0d6efd; padding: .5rem 1rem; font-size: 1.25rem; border-radius: .3rem; cursor: pointer; text-align: center; text-decoration: none; }
+p.qrcode-not-found-error-wrap { text-align: center; font-weight: 600; }
+/* body.password-page.page-password-form { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+.qrcode-form-container { text-align: center; } */
+.qrcode-form-container form .submit-btn{color: #fff;background-color: #0d6efd;border-color: #0d6efd;padding: .5rem 1rem;font-size: 1.25rem;border-radius: .3rem;cursor: pointer;text-align: center;text-decoration: none;}
+.cqrc-site-container{height: 100vh;display: flex;align-items: center;justify-content: center; overflow: hidden;}
+img.previous-view-design { width: 500px; height: auto; }
+.qr-code-main-title h2.title { text-align: center; }
+
+@media only screen and (max-width: 991px) {
+	.page-password-form{ width:100%; max-width:100%; overflow:hidden; }
+	.cqrc-site-container{padding:0 50px; height: 95vh !important; }
+	.qrcode-form-container{max-width:80%;padding: 40px;margin: 0 auto;}
+	.qrcode-form-container a.button,
+	.qrcode-form-container form .submit-btn{padding: 15px 0;}
+	.qrcode-form-container label{font-size: 24px;padding-bottom: 10px;}
+	.qrcode-form-container h2{margin-bottom: 50px; margin-top: 20px;}
+	.qrcode-form-container form { line-height: 60px; } 
+}

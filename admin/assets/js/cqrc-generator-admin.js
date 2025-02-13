@@ -1,43 +1,32 @@
-    "use strict";
+"use strict";
 
-    // Validate Name field
-    function validateInputsName() {
-        var isValid = true;
-        var name = jQuery('#qrcode_name').val();
-        var nameRegex = /^[A-Za-z\s]+$/;
+var nonce = wwtQrCodeGenerator.nonce;
 
-        if (name === '') {
-            jQuery('#name_error').text("Please enter Name.").show();
-            isValid = false;
-        } else if (name.length > 30) {
-            jQuery('#name_error').text("Name should not exceed 30 characters.").show();
-            isValid = false;
-        } else if (!nameRegex.test(name)) {
-            jQuery('#name_error').text("Please enter only alphabetic characters and spaces.").show();
-            isValid = false;
-        } else {
-            jQuery('#name_error').hide();
-        }
+// Validate Name field
+function validateInputsName() {
+    var isValid = true;
+    var name = jQuery('#qrcode_name').val();
+    var nameRegex = /^[A-Za-z\s]+$/;
 
-        // Disable or enable button based on validation
-        jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', !isValid);
+    if (name === '') {
+        jQuery('#name_error').text("Please enter Name.").show();
+        isValid = false;
+    } else if (name.length > 30) {
+        jQuery('#name_error').text("Name should not exceed 30 characters.").show();
+        isValid = false;
+    } else if (!nameRegex.test(name)) {
+        jQuery('#name_error').text("Please enter only alphabetic characters and spaces.").show();
+        isValid = false;
+    } else {
+        jQuery('#name_error').hide();
     }
 
-    // Function to Validate Name field on Load
-    function validateInputsNameLoad() {
-        if (name === '') {
-            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-        } else if (name.length > 30) {
-            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-        } else if (!nameRegex.test(name)) {
-            jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', true);
-        } else {
-         jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', false);
-     }
- }
+    // Disable or enable button based on validation
+    jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', !isValid);
+}
 
-    // Function to validate the Logo
- function toggleLogoFields() {
+// Function to validate the Logo
+function toggleLogoFields() {
     var $customLogoOption = jQuery('#custom_logo_option');
     var $uploadLogoOption = jQuery('#upload_logo_option');
     var $defaultLogoSelect = jQuery('#default_logo');
@@ -53,7 +42,6 @@
         }
         else {
             updateLogoPreview();
-                // $logoPreview.show();
         }
     } else if ($uploadLogoOption.is(':checked')) {
         $defaultLogoSelect.hide();
@@ -76,7 +64,7 @@
     }
 }
 
-    // Function to Preview the Logo
+// Function to Preview the Logo
 function updateLogoPreview() {
     var selectedLogo = jQuery('#default_logo').val();
     var $imgPreview = jQuery('#logo_preview');
@@ -110,7 +98,7 @@ function updateLogoPreview() {
     }
 }
 
-    // Function to validate the Template
+// Function to validate the Template
 function updateTemplatePreview() {
     var selectedTemplate = jQuery('#template_name').val();
     var $templatePreview = jQuery('#template_preview');
@@ -131,7 +119,7 @@ function updateTemplatePreview() {
     $templatePreview.attr('src', pluginTemplateImagePath + templateFileName).toggle(templateFileName !== '');
 }
 
-    // Function to validate the QR Frames
+// Function to validate the QR Frames
 function updateFramePreview() {
     var selectedFrame = jQuery('#default_frame').val();
     var $framePreview = jQuery('#frame_preview');
@@ -159,7 +147,7 @@ function updateFramePreview() {
     $framePreview.attr('src', pluginFrameImagePath + frameFileName).toggle(frameFileName !== '');
 }
 
-    // Function to validate the Eye Frames
+// Function to validate the Eye Frames
 function updateEyeFramePreview() {
     var selectedEyeFrame = jQuery('#eye_frame_name').val();
     var $eyeFramePreview = jQuery('#eye_frame_preview');
@@ -188,7 +176,7 @@ function updateEyeFramePreview() {
     $eyeFramePreview.attr('src', pluginEyeFrameImagePath + eyeFrameFileName).toggle(selectedEyeFrame !== 'default');
 }
 
-    // Function to validate the Eye Balls
+// Function to validate the Eye Balls
 function updateEyeBallsPreview() {
     var selectedEyeBall = jQuery('#eye_balls_name').val();
     var $eyeBallsPreview = jQuery('#eye_balls_preview');
@@ -224,7 +212,7 @@ function updateEyeBallsPreview() {
     $eyeBallsPreview.attr('src', pluginEyeBallsImagePath + eyeBallsFileName).toggle(selectedEyeBall !== 'default');
 }
 
-    // Function to limit.
+// Function to limit.
 function debounce(func, wait) {
     var timeout;
     return function() {
@@ -236,8 +224,8 @@ function debounce(func, wait) {
     };
 }
 
-    // Function to QR Template Preview
-function WwtPreviousQrcodeTemplate() {
+// Function to QR Template Preview
+function WwtPreviousQrcodeTemplate( prevent_default_logo_auto_change = false ) {
     var loader = jQuery('#qrcode-loader');
     var qrcode_name = jQuery('#qrcode_name').val();
     var logo_option = jQuery('input[name="logo_option"]:checked').val();
@@ -254,17 +242,15 @@ function WwtPreviousQrcodeTemplate() {
     var qr_eye_frame_color = jQuery('.qr_color_picker_2').val();
     var qr_eye_color = jQuery('.qr_color_picker_3').val();
 
-        // if url value is empty then return true.
-    if (url == '') {
-        return true;
-    }
-
-    if ( default_logo === 'default' && template_name !== '' && template_name !== 'default' && logo_option === 'default' ) {
+    if ( prevent_default_logo_auto_change === false && default_logo === 'default' && template_name !== '' && template_name !== 'default' && logo_option === 'default' ) {
         var template_settings = getQRCodeSettingByTemplate( template_name );
         jQuery( 'select[name="default_logo"]' ).val( template_settings.default_logo ).trigger( 'change' );
     }
 
-    var nonce = wwtQrCodeGenerator.nonce;
+    if( prevent_default_logo_auto_change === true && default_logo === 'default' && logo_option === 'default' ) {
+        jQuery( '#logo_preview' ).prop( 'src', '' ).hide();
+    }
+
     if (template_name.length > 0) {
         loader.show();
         jQuery.ajax({
@@ -287,6 +273,7 @@ function WwtPreviousQrcodeTemplate() {
                 qr_eye_color: qr_eye_color,
                 qr_eye_frame_color: qr_eye_frame_color,
                 qrcode_level: qrcode_level,
+                is_form_submitted: false,
                 _ajax_nonce: nonce
             },
             success: function(response) {
@@ -309,23 +296,19 @@ function WwtPreviousQrcodeTemplate() {
     }
 }
 
-    // Function to get the download URL
+// Function to get the download URL
 function getDownloadUrl(id, type) {
     return `${wwtQrCodeGenerator.downloadUrl}?action=download_qr&id=${id}&type=${type}&custom=custom_popup`;
 }
 
-    // Function to remove the popup
+// Function to remove the popup
 function closePopup() {
     jQuery('#download-popup, #download-popup-overlay').remove();
 }
 
-function countWords(str) {
-    return str.trim().split(/\s+/).length;
-}
-
-    // Function to validate the Password Field
+// Function to validate the Password Field
 function validatePassword(password) {
-        // Reset colors and icons
+    // Reset colors and icons
     jQuery('#password-error-uppercase, #password-error-lowercase, #password-error-digit, #password-error-special').css('color', 'red');
     jQuery('#icon-uppercase, #icon-lowercase, #icon-digit, #icon-special').removeClass('fa-check').addClass('fa-times').css('color', 'red');
 
@@ -374,16 +357,16 @@ function validatePassword(password) {
     return hasErrors;
 }
 
-    // Function to Disable for Required Field.
+// Function to Disable for Required Field.
 function toggleButtonState(isDisabled) {
     jQuery('.form-buttons p.submit input#submit').prop('disabled', isDisabled);
 }
 
-    // Function to Disable the Template Option.
+// Function to Disable the Template Option.
 function toggleTemplateSelect() {
     var urlValue = jQuery('#qrcode_url').val();
 
-        // Ensure urlValue is a string before calling .trim(), and check if it's empty
+    // Ensure urlValue is a string before calling .trim(), and check if it's empty
     if (String(urlValue).trim() === '') {
         jQuery('#template_name').prop('disabled', true);
     } else {
@@ -391,7 +374,7 @@ function toggleTemplateSelect() {
     }
 }
 
-    // Use jQuery to select checkboxes and set the checked status
+// Use jQuery to select checkboxes and set the checked status
 function toggleCheckboxes(selectAllCheckbox) {
     jQuery('input[name="columns[]"]').each(function() {
         if (!jQuery(this).prop('disabled')) {
@@ -400,7 +383,7 @@ function toggleCheckboxes(selectAllCheckbox) {
     });
 }
 
-    // Use jQuery to check if all checkboxes are checked
+// Use jQuery to check if all checkboxes are checked
 function updateSelectAll() {
     const allChecked = jQuery('input[name="columns[]"]:not(:disabled)').length === jQuery('input[name="columns[]"]:not(:disabled):checked').length;
     jQuery('#select-all').prop('checked', allChecked);
@@ -426,7 +409,7 @@ function toggleDownloadTextFields() {
     }
 }
 
-    // URL validation function using regex
+// URL validation function using regex
 function validateUrl(url) {
     var urlPattern = /^(https?:\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;%=]*)?$/;
     return urlPattern.test(url);
@@ -467,102 +450,102 @@ function checkAllFields() {
 function getQRCodeSettingByTemplate( template_name = 'default' ) {
     var settings = {};
     switch ( template_name ) {
-        case 'facebook':
-            settings = {
-                default_logo: 'facebook',
-                default_frame: 'default',
-                eye_frame_name: 'frame14',
-                eye_balls_name: 'ball16',
-                qr_code_color: '#2c4270',
-                qr_eye_color: '#2c4270',
-                qr_eye_frame_color: '#2c4270',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'youtube-circle':
-            settings = {
-                default_logo: 'youtube-circle',
-                default_frame: 'default',
-                eye_frame_name: 'frame13',
-                eye_balls_name: 'ball14',
-                qr_code_color: '#BF2626',
-                qr_eye_color: '#EE0F0F',
-                qr_eye_frame_color: '#EE0F0F',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'twitter-circle':
-            settings = {
-                default_logo: 'twitter-circle',
-                default_frame: 'default',
-                eye_frame_name: 'frame5',
-                eye_balls_name: 'ball11',
-                qr_code_color: '#55ACEE',
-                qr_eye_color: '#55ACEE',
-                qr_eye_frame_color: '#55ACEE',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'instagram-circle':
-            settings = {
-                default_logo: 'instagram-circle',
-                default_frame: 'default',
-                eye_frame_name: 'frame5',
-                eye_balls_name: 'ball4',
-                qr_code_color: '#0d1766',
-                qr_eye_color: '#0d1766',
-                qr_eye_frame_color: '#8224e3',
-                qrcode_level: 'QR_ECLEVEL_H'
-            };
-            break;
-        case 'whatsapp-circle':
-            settings = {
-                default_logo: 'whatsapp-circle',
-                default_frame: 'default',
-                eye_frame_name: 'frame2',
-                eye_balls_name: 'ball2',
-                qr_code_color: '#2ebd38',
-                qr_eye_color: '#2ebd38',
-                qr_eye_frame_color: '#2ebd38',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'gmail':
-            settings = {
-                default_logo: 'gmail',
-                default_frame: 'default',
-                eye_frame_name: 'frame14',
-                eye_balls_name: 'ball14',
-                qr_code_color: '#e4594c',
-                qr_eye_color: '#e4594c',
-                qr_eye_frame_color: '#e4594c',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'linkedin-circle':
-            settings = {
-                default_logo: 'linkedin-circle',
-                default_frame: 'default',
-                eye_frame_name: 'frame0',
-                eye_balls_name: 'ball0',
-                qr_code_color: '#005881',
-                qr_eye_color: '#005881',
-                qr_eye_frame_color: '#005881',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'default':
-            settings = {
-                default_logo: 'default',
-                default_frame: 'default',
-                eye_frame_name: 'default',
-                eye_balls_name : 'default',
-                qr_code_color: '#000000',
-                qr_eye_color: '#000000',
-                qr_eye_frame_color: '#000000',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
+    case 'facebook':
+        settings = {
+            default_logo: 'facebook',
+            default_frame: 'default',
+            eye_frame_name: 'frame14',
+            eye_balls_name: 'ball16',
+            qr_code_color: '#2c4270',
+            qr_eye_color: '#2c4270',
+            qr_eye_frame_color: '#2c4270',
+            qrcode_level: 'QR_ECLEVEL_M'
+        };
+        break;
+    case 'youtube-circle':
+        settings = {
+            default_logo: 'youtube-circle',
+            default_frame: 'default',
+            eye_frame_name: 'frame13',
+            eye_balls_name: 'ball14',
+            qr_code_color: '#BF2626',
+            qr_eye_color: '#EE0F0F',
+            qr_eye_frame_color: '#EE0F0F',
+            qrcode_level: 'QR_ECLEVEL_Q'
+        };
+        break;
+    case 'twitter-circle':
+        settings = {
+            default_logo: 'twitter-circle',
+            default_frame: 'default',
+            eye_frame_name: 'frame5',
+            eye_balls_name: 'ball11',
+            qr_code_color: '#55ACEE',
+            qr_eye_color: '#55ACEE',
+            qr_eye_frame_color: '#55ACEE',
+            qrcode_level: 'QR_ECLEVEL_Q'
+        };
+        break;
+    case 'instagram-circle':
+        settings = {
+            default_logo: 'instagram-circle',
+            default_frame: 'default',
+            eye_frame_name: 'frame5',
+            eye_balls_name: 'ball4',
+            qr_code_color: '#0d1766',
+            qr_eye_color: '#0d1766',
+            qr_eye_frame_color: '#8224e3',
+            qrcode_level: 'QR_ECLEVEL_H'
+        };
+        break;
+    case 'whatsapp-circle':
+        settings = {
+            default_logo: 'whatsapp-circle',
+            default_frame: 'default',
+            eye_frame_name: 'frame2',
+            eye_balls_name: 'ball2',
+            qr_code_color: '#2ebd38',
+            qr_eye_color: '#2ebd38',
+            qr_eye_frame_color: '#2ebd38',
+            qrcode_level: 'QR_ECLEVEL_M'
+        };
+        break;
+    case 'gmail':
+        settings = {
+            default_logo: 'gmail',
+            default_frame: 'default',
+            eye_frame_name: 'frame14',
+            eye_balls_name: 'ball14',
+            qr_code_color: '#e4594c',
+            qr_eye_color: '#e4594c',
+            qr_eye_frame_color: '#e4594c',
+            qrcode_level: 'QR_ECLEVEL_Q'
+        };
+        break;
+    case 'linkedin-circle':
+        settings = {
+            default_logo: 'linkedin-circle',
+            default_frame: 'default',
+            eye_frame_name: 'frame0',
+            eye_balls_name: 'ball0',
+            qr_code_color: '#005881',
+            qr_eye_color: '#005881',
+            qr_eye_frame_color: '#005881',
+            qrcode_level: 'QR_ECLEVEL_M'
+        };
+        break;
+    case 'default':
+        settings = {
+            default_logo: 'default',
+            default_frame: 'default',
+            eye_frame_name: 'default',
+            eye_balls_name : 'default',
+            qr_code_color: '#000000',
+            qr_eye_color: '#000000',
+            qr_eye_frame_color: '#000000',
+            qrcode_level: 'QR_ECLEVEL_M'
+        };
+        break;
     }
     return settings;
 }
@@ -593,116 +576,18 @@ jQuery(document).ready(function($) {
         var settings = {};
         var uploadLogoUrl = jQuery('#upload_logo_url').val();
 
-            // Check if the "logo_option" radio button is checked and get its value
+        // Check if the "logo_option" radio button is checked and get its value
         var logoOption = jQuery('input[name="logo_option"]:checked').val();
 
-            // If "default" is selected, set uploadLogoUrl to an empty string
+        // If "default" is selected, set uploadLogoUrl to an empty string
         if (logoOption === 'default') {
             uploadLogoUrl = '';
             jQuery('#upload_logo_url').val('');
             jQuery('#logo_preview').attr('src', '' );
         }
 
-        switch (value) {
-        case 'facebook':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'facebook' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame14',
-                eye_balls_name: 'ball16',
-                qr_code_color: '#2c4270',
-                qr_eye_color: '#2c4270',
-                qr_eye_frame_color: '#2c4270',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'youtube-circle':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'youtube-circle' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame13',
-                eye_balls_name: 'ball14',
-                qr_code_color: '#BF2626',
-                qr_eye_color: '#EE0F0F',
-                qr_eye_frame_color: '#EE0F0F',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'twitter-circle':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'twitter-circle' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame5',
-                eye_balls_name: 'ball11',
-                qr_code_color: '#55ACEE',
-                qr_eye_color: '#55ACEE',
-                qr_eye_frame_color: '#55ACEE',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'instagram-circle':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'instagram-circle' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame5',
-                eye_balls_name: 'ball4',
-                qr_code_color: '#0d1766',
-                qr_eye_color: '#0d1766',
-                qr_eye_frame_color: '#8224e3',
-                qrcode_level: 'QR_ECLEVEL_H'
-            };
-            break;
-        case 'whatsapp-circle':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'whatsapp-circle' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame2',
-                eye_balls_name: 'ball2',
-                qr_code_color: '#2ebd38',
-                qr_eye_color: '#2ebd38',
-                qr_eye_frame_color: '#2ebd38',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'gmail':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'gmail' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame14',
-                eye_balls_name: 'ball14',
-                qr_code_color: '#e4594c',
-                qr_eye_color: '#e4594c',
-                qr_eye_frame_color: '#e4594c',
-                qrcode_level: 'QR_ECLEVEL_Q'
-            };
-            break;
-        case 'linkedin-circle':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'linkedin-circle' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'frame0',
-                eye_balls_name: 'ball0',
-                qr_code_color: '#005881',
-                qr_eye_color: '#005881',
-                qr_eye_frame_color: '#005881',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        case 'default':
-            settings = {
-                default_logo: (uploadLogoUrl === '') ? 'default' : 'default',
-                default_frame: 'default',
-                eye_frame_name: 'default',
-                eye_balls_name : 'default',
-                qr_code_color: '#000000',
-                qr_eye_color: '#000000',
-                qr_eye_frame_color: '#000000',
-                qrcode_level: 'QR_ECLEVEL_M'
-            };
-            break;
-        }
-
-            // Apply settings
+        var settings = getQRCodeSettingByTemplate(value);
+        // Apply settings
         $.each(settings, function(key, value) {
             var element = jQuery(`select[name="${key}"], input[name="${key}"]`);
             element.val(value).trigger('change');
@@ -713,7 +598,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-        // Bind validation to focusout event on inputs
+    // Bind validation to focusout event on inputs
     jQuery('#qrcode_url').on('focusout', function() {
         var url = jQuery(this).val();
 
@@ -739,7 +624,7 @@ jQuery(document).ready(function($) {
         validateInputsName();
     });
 
-        // Bind the functions to the relevant events
+    // Bind the functions to the relevant events
     jQuery('#custom_logo_option, #upload_logo_option').change(toggleLogoFields);
     jQuery('#default_logo').change(updateLogoPreview);
     jQuery('#template_name').change(updateTemplatePreview);
@@ -747,25 +632,24 @@ jQuery(document).ready(function($) {
     jQuery('#eye_frame_name').change(updateEyeFramePreview);
     jQuery('#eye_balls_name').change(updateEyeBallsPreview);
 
-        // Initialize visibility and preview
+    // Initialize visibility and preview
     toggleLogoFields();
     updateLogoPreview();
     updateTemplatePreview();
     updateFramePreview();
     updateEyeFramePreview();
     updateEyeBallsPreview();
-        // validateInputsNameLoad();
 
     var loader = $('#qrcode-loader');
     $('#qrcode_default').show();
 
-        // Debounced version of WwtPreviousQrcodeTemplate
+    // Debounced version of WwtPreviousQrcodeTemplate
     var debouncedWwtPreviousQrcodeTemplate = debounce(WwtPreviousQrcodeTemplate, 500);
 
     jQuery('input[name="qrcode_url"]').on('focusout', debouncedWwtPreviousQrcodeTemplate);
     jQuery('select[name="template_name"]').on('change', debouncedWwtPreviousQrcodeTemplate);
     jQuery('select[name="qrcode_level"]').on('change', debouncedWwtPreviousQrcodeTemplate);
-    jQuery('#default_logo').on('change', debouncedWwtPreviousQrcodeTemplate);
+    jQuery('#default_logo').on('change', function() { debouncedWwtPreviousQrcodeTemplate(true); });
     jQuery('#default_frame').on('change', debouncedWwtPreviousQrcodeTemplate);
     jQuery('#eye_frame_name').on('change', debouncedWwtPreviousQrcodeTemplate);
     jQuery('#eye_balls_name').on('change', debouncedWwtPreviousQrcodeTemplate);
@@ -780,13 +664,13 @@ jQuery(document).ready(function($) {
     jQuery('#upload_logo_button').click(function(e) {
         e.preventDefault();
 
-                // If the media uploader already exists, open it.
+        // If the media uploader already exists, open it.
         if (mediaUploader) {
             mediaUploader.open();
             return;
         }
 
-                // Create a new media uploader instance
+        // Create a new media uploader instance
         mediaUploader = wp.media({
             title: 'Select or Upload Logo',
             button: {
@@ -795,7 +679,7 @@ jQuery(document).ready(function($) {
             multiple: false
         });
 
-                // Handle the media selection
+        // Handle the media selection
         mediaUploader.on('select', function() {
             var attachment = mediaUploader.state().get('selection').first().toJSON();
             var fileSize = attachment.filesizeInBytes;
@@ -804,26 +688,26 @@ jQuery(document).ready(function($) {
 
             var allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-                    // Validate file type
+            // Validate file type
             if (!allowedMimeTypes.includes(fileType)) {
                 alert('Only JPG, PNG and WebP files are allowed.');
                 return;
             }
 
-                    // Validate file size
+            // Validate file size
             if (fileSize > maxFileSize) {
                 alert('Maximum file size exceeded (5MB).');
                 return;
             }
-                // Check if the file is a WebP image and validate if it's animated
-            var nonce = wwtQrCodeGenerator.nonce;
+            
+            // Check if the file is a WebP image and validate if it's animated
             if (fileType === 'image/webp') {
                 $.ajax({
                     url: wwtQrCodeGenerator.ajax_url,
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        action: 'check_animated_webp',
+                        action: 'cqrc_check_animated_webp',
                         image_url: attachment.url,
                         _ajax_nonce: nonce
                     },
@@ -842,7 +726,7 @@ jQuery(document).ready(function($) {
                     }
                 });
             } else {
-                    // If it's not a WebP image, proceed with the normal flow
+                // If it's not a WebP image, proceed with the normal flow
                 jQuery('#upload_logo_url').val(attachment.url);
                 jQuery('#logo_preview').attr('src', attachment.url).show();
                 WwtPreviousQrcodeTemplate();
@@ -851,7 +735,7 @@ jQuery(document).ready(function($) {
         mediaUploader.open();
     });
 
-        // Handle the click event on download links
+    // Handle the click event on download links
     $(document).on('click', '.qrcode-download-link-trigger', function(e) {
         e.preventDefault();
 
@@ -859,38 +743,49 @@ jQuery(document).ready(function($) {
         var qrId = $this.data('id');
         var qrName = $this.data('name');
 
-                // Create the popup HTML
+        // Create the popup HTML
         var popupHtml = `
-            <div id="download-popup-overlay"></div>
-            <div id="download-popup">
+        <div id="download-popup-overlay"></div>
+        <div id="download-popup">
             <div id="qrcode-loader" style="display: none;"></div>
             <button id="close-popup" class="button button-secondary">X</button>
             <h2>Download QR Code: ${qrName}</h2>
             <div class="download-buttons">
-            <a class="button button-primary" id="download-pngimage" href="${getDownloadUrl(qrId, 'png')}" download="qrcode.png">PNG</a>
-            <a class="button button-primary" id="download-jpgimage" href="${getDownloadUrl(qrId, 'jpg')}" download="qrcode.jpg">JPG</a>
-            <a class="button button-primary" id="download-pdfimage" href="${getDownloadUrl(qrId, 'pdf')}" download="qrcode.pdf">PDF</a>
+                <a class="button button-primary download-link" href="${getDownloadUrl(qrId, 'png')}" download>PNG</a>
+                <a class="button button-primary download-link" href="${getDownloadUrl(qrId, 'jpg')}" download>JPG</a>
+                <a class="button button-primary download-link" href="${getDownloadUrl(qrId, 'pdf')}" download>PDF</a>
             </div>
-            </div>
+        </div>
         `;
 
-                // Append the popup HTML to the body
+        // Append the popup HTML to the body
         $('body').append(popupHtml);
-                // Handle the close button click
+
+        // Handle the close button click
         $(document).on('click', '#close-popup', function() {
             closePopup();
         });
 
-                // Close popup when clicking outside the popup
+        // Close popup when clicking outside the popup
         $(document).on('click', '#download-popup-overlay', function() {
             closePopup();
         });
 
-                // Close popup when pressing the Escape key
+        // Close popup when pressing the Escape key
         $(document).on('keydown', function(e) {
             if (e.key === 'Escape') {
                 closePopup();
             }
+        });
+
+        $(document).on('click', '.download-link', function(e) {
+            e.preventDefault();
+            var downloadUrl = $(this).attr('href');
+            $('#qrcode-loader').show();
+            setTimeout(function() {
+                $('#qrcode-loader').hide();
+                window.location.href = downloadUrl;
+            }, 2000);
         });
     });
 
@@ -899,25 +794,25 @@ jQuery(document).ready(function($) {
     var isVisible = false;
 
     $toggleButton.on('click', function() {
-            // Validate the input fields
+        // Validate the input fields
         var url = $('#qrcode_url').val().trim();
         var name = $('#qrcode_name').val().trim();
 
-            // Error message elements
+        // Error message elements
         var $urlError = $('#url_error');
         var $nameError = $('#name_error');
 
-            // Clear previous error messages
+        // Clear previous error messages
         $urlError.hide();
         $nameError.hide();
 
-            // Reset error texts
+        // Reset error texts
         $urlError.text('');
         $nameError.text('');
 
         var hasError = false;
 
-            // Check for empty fields
+        // Check for empty fields
         if (!url) {
             $urlError.text('Please enter URL!').show();
             hasError = true;
@@ -927,12 +822,12 @@ jQuery(document).ready(function($) {
             hasError = true;
         }
 
-                // If there are errors, stop execution
+        // If there are errors, stop execution
         if (hasError) {
             return;
         }
 
-                // Toggle settings if all fields are filled
+        // Toggle settings if all fields are filled
         isVisible = !isVisible;
         $settingsElements.each(function() {
             $(this).toggle(isVisible);
@@ -940,7 +835,6 @@ jQuery(document).ready(function($) {
 
         $toggleButton.text(isVisible ? 'Hide Additional Settings' : 'Show Additional Settings');
     });
-
 
     $('.site-show-hide-password-ed>label, .site-show-hide-password-ed').on('click', function() {
         var passwordInput = $('#password');
@@ -1019,7 +913,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#submit_qrcode_setting').on('click', function() {
-            // Ensure that content from TinyMCE is saved, even when in Visual mode.
+        // Ensure that content from TinyMCE is saved, even when in Visual mode.
         tinyMCE.triggerSave();
 
         var formData = $('#wwt-qrcode-setting-form').serialize();
@@ -1029,7 +923,7 @@ jQuery(document).ready(function($) {
             url: wwtQrCodeGenerator.ajax_url,
             data: formData + '&action=cqrc_save_settings',
             success: function(response) {
-                    // Clear previous messages
+                // Clear previous messages
                 $('#response-message').empty();
 
                 if (response.success) {
@@ -1038,7 +932,7 @@ jQuery(document).ready(function($) {
                     $('#response-message').html('<div class="notice notice-error is-dismissible"><p>' + response.data + '</p></div>');
                 }
 
-                        // Add dismiss functionality to the notification
+                // Add dismiss functionality to the notification
                 $('.is-dismissible').on('click', function() {
                     $(this).fadeOut();
                 });
@@ -1046,7 +940,7 @@ jQuery(document).ready(function($) {
             error: function() {
                 $('#response-message').html('<div class="notice notice-error is-dismissible"><p>An error occurred. Please try again.</p></div>');
 
-                    // Add dismiss functionality to the notification
+                // Add dismiss functionality to the notification
                 $('.is-dismissible').on('click', function() {
                     $(this).fadeOut();
                 });
@@ -1080,7 +974,7 @@ jQuery(document).ready(function($) {
         document.execCommand("copy");
         $textarea.remove();
 
-            // Hide all previous messages
+        // Hide all previous messages
         $(".copy-message").hide();
         $( this ).find( 'span.message' ).show().fadeOut( 2000 );
     });
@@ -1098,5 +992,8 @@ jQuery(document).ready(function($) {
     $("input[name='download_text_png']").on('focusout change', function() {
         validateInput(this, "#download_text_png_error");
         checkAllFields();
+    });
+	$('#cqrc-import-process-form, #cqrc-export-process-form').on('submit', function() {
+        $('#qrcode-loader').show();
     });
 });

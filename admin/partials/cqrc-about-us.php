@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * About .
  *
@@ -6,12 +9,6 @@
  * @subpackage Cqrc_Generator/admin
  */
 
-/**
- * Exit if accessed directly.
- */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 ?>
 
 <div class="wrap">

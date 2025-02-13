@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -34,10 +37,8 @@ class Cqrc_Generator_Public {
 	 * @param      string    $version    The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
-
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
 	}
 
 	/**
@@ -45,11 +46,10 @@ class Cqrc_Generator_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function cqrc_enqueue_styles() {
 		global $post;
-		if (has_shortcode($post->post_content, 'cqrc_gen_qrcode_view')) {
-			$style_url = add_query_arg( 'ver', $this->version, CQRCGEN_PUBLIC_URL . '/assets/css/cqrc-generator-public.css' );
-			wp_enqueue_style( $this->plugin_name, $style_url, array(), time(), 'all' );
+		if ( get_query_var('qrcode_scan') || ( ! empty( $post->post_content ) && has_shortcode( $post->post_content, 'cqrc_gen_qrcode_view' ) ) ) {
+			wp_enqueue_style( $this->plugin_name, CQRCGEN_PUBLIC_URL . '/assets/css/cqrc-generator-public.css', array(), $this->version, 'all' );
 		}
 	}
 
@@ -58,111 +58,97 @@ class Cqrc_Generator_Public {
 	 * @since 1.0.0
 	 */
 	public function cqrc_handle_qr_code_download() {
-		if ( !empty($_GET['action']) && $_GET['action'] === 'download_qr' ) {
-			
-			if(empty($_GET['custom'])) {
+		if ( ! empty( $_GET['action'] ) && $_GET['action'] === 'download_qr' ) {
+			if( empty( $_GET['custom'] ) ) {
 				// Verify the nonce before processing further
-				if (empty($_GET['download_qr_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['download_qr_nonce'])), 'download_qr_nonce')) {
-					wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator'));
+				if ( empty( $_GET['download_qr_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['download_qr_nonce'] ) ), 'download_qr_nonce' ) ) {
+					wp_die( esc_html__( 'Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator' ) );
 				}
 			}
 			
-			$id = !empty($_GET['id']) ? absint($_GET['id']) : 0;
-			$type = !empty($_GET['type']) ? sanitize_text_field(wp_unslash($_GET['type'])) : '';
+			$id   = ! empty( $_GET['id'] ) ? sanitize_text_field( wp_unslash( $_GET['id'] ) ) : 0;
+			$type = ! empty( $_GET['type'] ) ? sanitize_text_field( wp_unslash( $_GET['type'] ) ) : '';
 
         	// Validate file type
 			if ( ! in_array( $type, array( 'png', 'jpg', 'pdf' ), true ) ) {
-				wp_die( esc_html__('Invalid file type.', 'custom-qr-code-generator' ) );
+				wp_die( esc_html__( 'Invalid file type.', 'custom-qr-code-generator' ) );
 			}
 			
 			global $wpdb;
-			$table_name = QRCODE_GENERATOR_TABLE;
+			$table_name  = QRCODE_GENERATOR_TABLE;
 
         	// Retrieve QR Code URL
-			$qr_code_row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE ID = %d", $id ) );// phpcs:ignore
+			$qr_code_query = $wpdb->prepare( "SELECT `name`, `description`, `qr_code`, `download_content` FROM `$table_name` WHERE `id` = %d", $id ); // phpcs:ignore
+			$qr_code_row   = $wpdb->get_row( $qr_code_query ); // phpcs:ignore
 
-			if ( ! $qr_code_row ) {
-				wp_die( esc_html__('QR code not found.', 'custom-qr-code-generator') );
+			if ( empty( $qr_code_row ) ) {
+				/* translators: %s is the QR code ID. */
+				$message = esc_html__( 'We couldn\'t find a QR code associated with the ID "%s".', 'custom-qr-code-generator' );
+				$message = sprintf( $message, $id );
+				wp_die( esc_html( $message ) );
 			}
 
-			$qr_code_url = esc_url($qr_code_row->qr_code);
-			$qr_code_name = esc_html($qr_code_row->name);
-			$unserialize_desc = esc_html(sanitize_textarea_field($qr_code_row->description));
-			$download_content = json_decode($qr_code_row->download_content, true);
-			$show_desc_in_pdf = isset($download_content['show_desc_in_pdf']) ? $download_content['show_desc_in_pdf'] : '';
+			$qr_code_url = esc_url( $qr_code_row->qr_code );
+			$response    = wp_remote_get( $qr_code_url );
 
+			if ( is_wp_error( $response ) ) {
+				wp_die( esc_html__( 'Error fetching image.', 'custom-qr-code-generator' ) );
+			}
+			
+			// Retrieve the body of the response
+			$image = wp_remote_retrieve_body( $response );
+			if ( empty( $image ) ) {
+				wp_die( esc_html__( 'QR Code image could not be fetch.', 'custom-qr-code-generator' ) );
+			}
 
-			$file_extension = esc_html($type);
+			$qr_code_name     = $qr_code_row->name;
+			$unserialize_desc =  wp_kses_post( $qr_code_row->description ); // phpcs:ignore
+			$download_content = json_decode( $qr_code_row->download_content, true );
+			$show_desc_in_pdf = !empty( $download_content['show_desc_in_pdf'] ) ? $download_content['show_desc_in_pdf'] : '';
+			$file_extension   = ( 'pdf' === $type ) ? 'pdf' : esc_html( $type );
+			$file_name        = 'qrcode-' . sanitize_title( $qr_code_name ) . '-' . $id . '.' . $file_extension;
 			if ( is_serialized( $unserialize_desc ) && is_serialized_string( $unserialize_desc ) ) {
 				$unserialize_desc = maybe_unserialize( $unserialize_desc );
 			}
-
-		    // Strip HTML tags to get plain text
-			$description = wp_strip_all_tags( $unserialize_desc );
-
+			
 			// Generate PDF using FPDF
-			if ( $type === 'pdf' ) {
-
-				if ( !class_exists( '\\Dompdf\\Dompdf' ) ) {
+			if ( 'pdf' === $type ) {
+				if ( ! class_exists( '\\Dompdf\\Dompdf' ) ) {
 					return;
 				}
-
-				$dompdf = new \Dompdf\Dompdf();
-				$response = wp_remote_get( $qr_code_url );
 				
-				if ( is_wp_error( $response ) ) {
-					wp_die( esc_html__('Error fetching image.', 'custom-qr-code-generator' ) );
-				}
-				
-				// Retrieve the body of the response
-				$image = wp_remote_retrieve_body( $response );
-				
+				$dompdf       = new \Dompdf\Dompdf();
 				// Encode the image to Base64
-				$base64_image = 'data:image/png;base64,' . base64_encode($image);
+				$base64_image = 'data:image/png;base64,' . base64_encode( $image );
+				$html         = '<h1>Title - ' . esc_html( $qr_code_name ) . '</h1><img src="' . $base64_image . '" width="700" height="830"><br>'; // phpcs:ignore
 
-				$html = '<h1>Title - ' . esc_html($qr_code_row->name) . '</h1><img src="' . $base64_image . '" width="700" height="830"><br>'; // phpcs:ignore
-
-				if ($show_desc_in_pdf === 'yes') {
-					$html .= '<p><b>Description - </b>' . esc_html($description) . '</p>'; // phpcs:ignore
+				if ( $show_desc_in_pdf === 'yes' ) {
+					$html .= '<p><b>Description - </b>' . $unserialize_desc . '</p>'; // phpcs:ignore
 				}
 
-				$dompdf->loadHtml($html);
+				$dompdf->loadHtml( $html );
 				
 				// Set paper size and orientation
-				$dompdf->setPaper('A4', 'portrait');
+				$dompdf->setPaper( 'A4', 'portrait' );
 				
 				// Render the PDF
 				$dompdf->render();
 				
 				// Output the generated PDF (force download)
-				$filename = 'qrcode-' . $qr_code_name . '-' . $id . '.pdf'; 
-				$dompdf->stream($filename, array("Attachment" => true));
+				$dompdf->stream( $file_name, array( "Attachment" => true ) );
 				exit;
 			}
-
-			// Construct the file name
-			$file_name = 'qrcode-'.strtolower(str_replace(' ','-',$qr_code_name)).'-' . $id .'.'. $file_extension;
-			
-			// Set headers
-			header( 'Content-Type: image/' . esc_attr($file_extension) );
-			header( 'Content-Disposition: attachment; filename="' . esc_attr($file_name) . '"' );
-			header( 'Pragma: no-cache' );
-			header( 'Expires: 0' );
-			
-			// Fetch image content
-			$response = wp_remote_get( $qr_code_url );
-			
-			// Check for errors
-			if ( is_wp_error( $response ) ) {
-				wp_die( esc_html__('Error fetching image.', 'custom-qr-code-generator' ) );
+			else {
+				// Set headers
+				header( 'Content-Type: image/' . esc_attr( $file_extension ) );
+				header( 'Content-Disposition: attachment; filename="' . esc_attr( $file_name ) . '"' );
+				header( 'Pragma: no-cache' );
+				header( 'Expires: 0' );
+				
+				// Output the image content
+				echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				wp_die();
 			}
-			
-			// Retrieve the body of the response
-			$image = wp_remote_retrieve_body( $response );
-			
-			// Output the image content
-			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			wp_die();
 		}
 	}
 
@@ -173,246 +159,14 @@ class Cqrc_Generator_Public {
 	/**
 	 * Handle the Generated QR Code custom URL request
 	 */
-	public function cqrc_qrcode_template_redirect() {
-		if ( get_query_var('qrcode_scan') ) {
-
-			// Verify the nonce before processing further
-			if ( empty( $_REQUEST['qrcode_wpnonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['qrcode_wpnonce'] ) ), 'qrcode_scan_nonce') ) {
-				wp_die(esc_html__('Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator'));
-			}
-
-			global $wpdb;
-			$generator_table = QRCODE_GENERATOR_TABLE;
-			$table_name = QRCODE_INSIGHTS_TABLE; 
-
-			// Get decrypted query parameters
-			$new_url = !empty($_GET['url']) ? sanitize_text_field(wp_unslash($_GET['url'])) : '';
-			$new_qrid = !empty($_GET['qrid']) ? sanitize_text_field(wp_unslash($_GET['qrid'])) : '';
-			$previd = !empty($_GET['previd']) ? sanitize_text_field(wp_unslash($_GET['previd'])) : '';
-			$token = !empty($_GET['token']) ? sanitize_text_field(wp_unslash($_GET['token'])) : '';
-			$message = '';
-			$url = hex2bin($new_url);
-			$qrid = absint(substr($new_qrid, 0, -3));   
-			$user_ip = !empty($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
-			$device_type = cqrc_get_device_type();
-			$location = cqrc_get_user_location($user_ip);
-
-			$request_method = !empty($_SERVER['REQUEST_METHOD']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_METHOD'])) : '';
-
-			if (!empty($token) && !empty($_GET['qrcode_wpnonce'])) {
-				$plugins_page_url = site_url();
-
-				if ($request_method === 'POST' && !empty($_POST['password'])) {
-					$password = sanitize_text_field(wp_unslash($_POST['password']));
-		        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND password = %s", $token, $password); // phpcs:ignore
-		        $qr_exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE id = %s", $qrid)); // phpcs:ignore
-
-		        if ($qr_exists != 0) { // phpcs:ignore
-			        if ($wpdb->get_var($query)) { // phpcs:ignore
-			        	$data = array(
-			        		'user_ip_address' => $user_ip,
-			        		'device_type'     => $device_type,
-			                'location'        => json_encode($location), // phpcs:ignore
-			                'qrid'            => $qrid,
-			                'created_at'      => current_time('mysql'),
-			                'qr_usage_count'  => 1
-			            );
-			        	$format = array('%s', '%s', '%s', '%d', '%s', '%d');
-
-			            // Check if the same QRID and IP address exist in the insights table
-			            $existing_record = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-
-			            if ($existing_record == 0) {
-			                // If no record exists, insert the new record
-			                $inserted = $wpdb->insert($table_name, $data, $format); // phpcs:ignore
-			                if ($inserted !== false) {
-			                    // Get the total scans for the QRID
-			                    $scan_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE qrid = %d", $qrid)); // phpcs:ignore
-			                    // Update the total_scans in the generator table
-			                    $update = $wpdb->update($generator_table, array('total_scans' => $scan_count), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-			                    if ($update !== false) {
-			                    	wp_redirect($url);
-			                    	exit;
-			                    } else {
-			                    	cqrc_display_error_message();
-			                    }
-			                } else {
-			                	cqrc_display_error_message();
-			                }
-			            } else {
-			                // Record exists, increment qr_usage_count
-			                $current_usage_count = $wpdb->get_var($wpdb->prepare("SELECT qr_usage_count FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-			                $new_usage_count = absint($current_usage_count + 1);
-
-			                // Update the usage count
-			                $wpdb->update($table_name, array('qr_usage_count' => $new_usage_count), array('user_ip_address' => $user_ip, 'qrid' => $qrid), array('%d'), array('%s', '%d')); // phpcs:ignore
-
-			                // Update the total_scans in the generator table
-			                $scan_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE qrid = %d", $qrid)); // phpcs:ignore
-			                $update = $wpdb->update($generator_table, array('total_scans' => $new_usage_count), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-			                // Redirect to the URL
-			                wp_redirect($url);
-			                exit;
-			            }
-				        } else {
-				        	$message = '<p style="color: red;">Invalid password. Please try again.</p>';
-				        }
-				    }else{
-				    	cqrc_display_error_message();
-				    	wp_die();
-				    }
-				}
-				cqrc_display_password_form($message);
-				wp_die();
-			}
-
-			$query = $wpdb->prepare("SELECT token FROM $generator_table WHERE id = %d", $qrid); // phpcs:ignore
-			$qrixists = $wpdb->get_var($query); // phpcs:ignore
-
-			if (!empty($qrixists)) {
-				$plugins_page_url = site_url();
-				if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['password'])) {
-					$password = sanitize_text_field(wp_unslash($_POST['password']));
-			        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND password = %s", $qrixists, $password); // phpcs:ignore
-
-			        if ($wpdb->get_var($query)) { // phpcs:ignore
-			        	$data = array(
-			        		'user_ip_address' => $user_ip,
-			        		'device_type'     => $device_type,
-			                'location'        => json_encode($location), // phpcs:ignore
-			                'qrid'            => $qrid,
-			                'created_at'      => current_time('mysql'),
-			                'qr_usage_count'  => 1
-			            );
-			        	$format = array('%s', '%s', '%s', '%d', '%s', '%d');
-
-			            // Check if the same QRID and IP address exist in the insights table
-			            $existing_record = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-
-			            if ($existing_record == 0) {
-			                // If no record exists, insert the new record
-			                $inserted = $wpdb->insert($table_name, $data, $format); // phpcs:ignore
-			                if ($inserted !== false) {
-			                    // Get the total scans for the QRID
-			                    $scan_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE qrid = %d", $qrid)); // phpcs:ignore
-			                    // Update the total_scans in the generator table
-			                    $update = $wpdb->update($generator_table, array('total_scans' => $scan_count), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-			                    if ($update !== false) {
-			                    	wp_redirect($url);
-			                    	exit;
-			                    } else {
-			                    	cqrc_display_error_message();
-			                    }
-			                } else {
-			                	cqrc_display_error_message();
-			                }
-			            } else {
-			                // Record exists, increment qr_usage_count
-			                $current_usage_count = $wpdb->get_var($wpdb->prepare("SELECT qr_usage_count FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-			                $new_usage_count = absint($current_usage_count + 1);
-
-			                // Update the usage count
-			                $wpdb->update($table_name, array('qr_usage_count' => $new_usage_count), array('user_ip_address' => $user_ip, 'qrid' => $qrid), array('%d'), array('%s', '%d')); // phpcs:ignore
-
-			                // Update the total_scans in the generator table
-			                $scan_count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE qrid = %d", $qrid)); // phpcs:ignore
-			                $update = $wpdb->update($generator_table, array('total_scans' => $new_usage_count), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-			                // Redirect to the URL
-			                wp_redirect($url);
-			                exit;
-			            }
-			        } else {
-			        	$message = '<p style="color: red;">Invalid password. Please try again.</p>';
-			        }
-			    }
-			    cqrc_display_password_form($message);
-			    wp_die();
-			}
-			
-			// Check if Previous option disable
-			if (!empty($previd) && $previd !== '') {
-				cqrc_display_previous_error_message();
-			}
-
-			// Check if QRID is empty
-			if ($qrid == '') {
-				cqrc_display_error_message();
-			}
-
-			// Check if QRID exists in the generator table
-			$qrid_exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE id = %d", $qrid)); // phpcs:ignore
-			
-			if ($qrid_exists == 0) {
-				cqrc_display_error_message();
-			}
-
-			// Check if the same QRID and IP address exist in the insights table
-			$existing_record = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-
-			if ($existing_record == 0) {
-			    // If no record exists, insert the new record
-				$data = array(
-					'user_ip_address' => $user_ip,
-					'device_type'     => $device_type,
-			        'location'        => json_encode($location), // phpcs:ignore
-			        'qrid'            => $qrid,
-			        'created_at'      => current_time('mysql'),
-			        'qr_usage_count'  => 1
-			    );
-				$format = array('%s', '%s', '%s', '%d', '%s', '%d');
-
-			    // Insert data and update scan count
-			    $inserted = $wpdb->insert($table_name, $data, $format); // phpcs:ignore
-			    if ($inserted !== false) {
-					        $current_total_scans = $wpdb->get_var($wpdb->prepare("SELECT total_scans FROM $generator_table WHERE id = %d", $qrid)); // phpcs:ignore
-
-	        				// If it exists, increment the total_scans by 1
-					        if ($current_total_scans !== null) {
-					        	$new_total_scans = absint($current_total_scans + 1);
-					        } else {
-	            				// If it doesn't exist, start with 1
-					        	$new_total_scans = 1;
-					        }
-
-			        // Update the total_scans in the generator table
-			        $update = $wpdb->update($generator_table, array('total_scans' => $new_total_scans), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-			        if ($update !== false) {
-			        	wp_redirect($url);
-			        	exit;
-			        } else {
-			        	cqrc_display_error_message();
-			        }
-			    } else {
-			    	cqrc_display_error_message();
-			    }
-			} else {
-			    // Record exists, increment qr_usage_count
-			    $current_usage_count = $wpdb->get_var($wpdb->prepare("SELECT qr_usage_count FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
-			    $new_usage_count = absint($current_usage_count + 1);
-
-			    // Update the usage count
-			    $wpdb->update($table_name, array('qr_usage_count' => $new_usage_count), array('user_ip_address' => $user_ip, 'qrid' => $qrid), array('%d'), array('%s', '%d')); // phpcs:ignore
-			    
-			    // Update the total_scans in the generator table
-			    $current_total_scans = $wpdb->get_var($wpdb->prepare("SELECT total_scans FROM $generator_table WHERE id = %d", $qrid)); // phpcs:ignore
-			    if ($current_total_scans !== null) {
-			    	$new_total_scans = absint($current_total_scans + 1);
-			    } else {
-			    	$new_total_scans = 1;
-			    }
-
-			    $update = $wpdb->update($generator_table, array('total_scans' => $new_total_scans), array('id' => $qrid), array('%d'), array('%d')); // phpcs:ignore
-
-					    // Redirect to the URL
-			    wp_redirect($url);
-			    exit;
+	public function cqrc_qrcode_template_redirect( $template ) {
+		if ( get_query_var( 'qrcode_scan' ) ) {
+			$custom_template = CQRCGEN_DIR. '/template-parts/content-cqrc-password-form.php';
+			if ( file_exists( $custom_template ) ) {
+				return $custom_template;
 			}
 		}
+		return $template;
 	}
 
 	/**
@@ -422,6 +176,7 @@ class Cqrc_Generator_Public {
 		$vars[] = 'qrcode_scan';
 		return $vars;
 	}
+
 	// Handle the QR code shortcode output
 	public function cqrc_qrcode_shortcode_handler( $atts ) {
 		global $wpdb;
@@ -433,74 +188,82 @@ class Cqrc_Generator_Public {
 
     	// Nonce for download QR functionality
 		$download_qr_nonce = wp_create_nonce( 'download_qr_nonce' );
-		$id = absint( $atts['id'] );
+		$id                = absint( $atts['id'] );
 
     	// Fetch QR code settings from the database
-		$general_table = esc_sql( QRCODE_GENERATOR_TABLE );
-		$general_settings = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $general_table WHERE id = %d LIMIT 1", $id ) );  // phpcs:ignore
+		$general_table     = esc_sql( QRCODE_GENERATOR_TABLE );
+		$general_settings  = $wpdb->get_row( $wpdb->prepare( "SELECT `name`, `description`, `qr_code`, `download`, `download_content` FROM `$general_table` WHERE `id` = %d LIMIT 1", $id ) );  // phpcs:ignore
 
 		if ( ! $general_settings ) {
-			return '<p>' . esc_html__( 'QR code not found.', 'custom-qr-code-generator' ) . '</p>';
+			/* translators: %s is the QR code ID. */
+			$message = esc_html__( 'We couldn\'t find a QR code associated with the ID "%s".', 'custom-qr-code-generator' );
+			$message = sprintf( $message, $id );
+			return '<p class="qrcode-not-found-error-wrap">' . $message . '</p>';
 		}
 
     	// Extract relevant data
-		$title = !empty( $general_settings->name ) ? $general_settings->name : '';
-		$description = !empty( $general_settings->description ) ? maybe_unserialize( $general_settings->description ) : '';
-		$download_options = !empty( $general_settings->download ) ? $general_settings->download : '';
-		$download_content = json_decode( $general_settings->download_content, true );
-		$download_text_png = isset( $download_content['png'] ) ? $download_content['png'] : '';
-		$download_text_jpg = isset( $download_content['jpg'] ) ? $download_content['jpg'] : '';
-		$download_text_pdf = isset( $download_content['pdf'] ) ? $download_content['pdf'] : '';
+		$title                  = ! empty( $general_settings->name ) ? $general_settings->name : '';
+		$description            = ! empty( $general_settings->description ) ? maybe_unserialize( $general_settings->description ) : '';
+		$download_options       = ! empty( $general_settings->download ) ? $general_settings->download : '';
+		$download_content       = json_decode( $general_settings->download_content, true );
+		$download_text_png      = !empty( $download_content['png'] ) ? $download_content['png'] : '';
+		$download_text_jpg      = !empty( $download_content['jpg'] ) ? $download_content['jpg'] : '';
+		$download_text_pdf      = !empty( $download_content['pdf'] ) ? $download_content['pdf'] : '';
 		$download_options_array = is_array( $download_options ) ? $download_options : explode( ',', $download_options );
+		$download_qr_code_url   = home_url( '/download-qr/' );
+		$download_png_url       = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'png', 'download_qr_nonce' => $download_qr_nonce ), $download_qr_code_url ) );
+		$download_jpg_url       = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'jpg', 'download_qr_nonce' => $download_qr_nonce ), $download_qr_code_url ) );
+		$download_pdf_url       = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'pdf', 'download_qr_nonce' => $download_qr_nonce ), $download_qr_code_url ) );
+		$qr_code_url            = esc_url( $general_settings->qr_code );
+		$attachment_id 			= ( $qr_code_url !== '' ) ? attachment_url_to_postid( $qr_code_url ) : '';
+		
+		ob_start();
+		if ( $attachment_id !== '' ) {
+			?>
+			<div class="wwt-qrcode-container">
+				<div class="qr-code-showing-preview-image-fronted">
+					<?php echo wp_get_attachment_image( $attachment_id, 'full', false, array( 'alt' => esc_attr__( 'QR Code', 'custom-qr-code-generator' ) ) ); ?>
+				</div>
 
-		$download_png_url = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'png', 'download_qr_nonce' => $download_qr_nonce ), home_url( '/download-qr/' ) ) );
-		$download_jpg_url = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'jpg', 'download_qr_nonce' => $download_qr_nonce ), home_url( '/download-qr/' ) ) );
-		$download_pdf_url = esc_url( add_query_arg( array( 'action' => 'download_qr', 'id' => $id, 'type' => 'pdf', 'download_qr_nonce' => $download_qr_nonce ), home_url( '/download-qr/' ) ) );
+				<?php if ( ! empty( $title ) ) : ?>
+					<div class="qr-code-main-title">
+						<h2 class="title"><?php echo esc_attr( $title ); ?></h2>
+					</div>
+				<?php endif; ?>
 
-		$qr_code_url = $this->cqrc_generate_qr_code_url( $id );
+				<?php if ( ! empty( $description ) ) : ?>
+					<div class="qr-code-description">
+						<?php echo wp_kses_post( $description ); ?>
+					</div>
+				<?php endif; ?>
 
-		if ( ! $qr_code_url ) {
-			return '<p>' . esc_html__( 'QR code not found.', 'custom-qr-code-generator' ) . '</p>';
+				<?php if ( in_array( 'png', $download_options_array ) || in_array( 'jpg', $download_options_array ) || in_array( 'pdf', $download_options_array ) ) : ?>
+						<div class="download-qr-code-column">
+							<?php if ( in_array( 'png', $download_options_array ) && ! empty( $download_text_png ) ) : ?>
+							<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php echo esc_html( $download_text_png ); ?></a>
+						<?php endif; ?>
+
+						<?php if ( in_array( 'jpg', $download_options_array ) && ! empty( $download_text_jpg ) ) : ?>
+						<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php echo esc_html( $download_text_jpg ); ?></a>
+					<?php endif; ?>
+
+					<?php if ( in_array( 'pdf', $download_options_array ) && ! empty( $download_text_pdf ) ) : ?>
+					<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php echo esc_html( $download_text_pdf ); ?></a>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+		</div>
+		<?php
+		}
+		else {
+			/* translators: %s is the QR code ID. */
+			$message = esc_html__( 'We couldn\'t find a QR code associated with the ID "%s".', 'custom-qr-code-generator' );
+			$message = sprintf( $message, $id );
+			return '<p class="qrcode-not-found-error-wrap">' . esc_html( $message ) . '</p>';
 		}
 
-		ob_start();
-		?>
-		<div class="wwt-qrcode-container">
-			<div class="qr-code-showing-preview-image-fronted">
-				<img src="<?php echo esc_url( $qr_code_url );  // phpcs:ignore ?>" alt="<?php esc_attr_e( 'QR Code', 'custom-qr-code-generator' ); ?>">
-			</div>
-
-			<?php if ( ! empty( $title ) ) : ?>
-				<div class="qr-code-main-title">
-					<h2 class="title"><?php echo esc_attr( $title ); ?></h2>
-				</div>
-			<?php endif; ?>
-
-			<?php if ( ! empty( $description ) ) : ?>
-				<div class="qr-code-description">
-					<?php echo wp_kses_post( $description ); ?>
-				</div>
-			<?php endif; ?>
-
-			<?php if ( in_array( 'png', $download_options_array ) || in_array( 'jpg', $download_options_array ) || in_array( 'pdf', $download_options_array ) ) : ?>
-			<div class="download-qr-code-column">
-				<?php if ( in_array( 'png', $download_options_array ) && ! empty( $download_text_png ) ) : ?>
-				<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php echo esc_html( $download_text_png ); ?></a>
-			<?php endif; ?>
-
-			<?php if ( in_array( 'jpg', $download_options_array ) && ! empty( $download_text_jpg ) ) : ?>
-			<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php echo esc_html( $download_text_jpg ); ?></a>
-		<?php endif; ?>
-
-		<?php if ( in_array( 'pdf', $download_options_array ) && ! empty( $download_text_pdf ) ) : ?>
-		<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php echo esc_html( $download_text_pdf ); ?></a>
-	<?php endif; ?>
-</div>
-<?php endif; ?>
-</div>
-<?php
-return ob_get_clean();
-}
+		return ob_get_clean();
+	}
 
 	// Function to generate the QR code URL from the database
 public function cqrc_generate_qr_code_url( $id ) {
@@ -508,10 +271,10 @@ public function cqrc_generate_qr_code_url( $id ) {
 	$generator_table = esc_sql( QRCODE_GENERATOR_TABLE );
 
 	if ( ! empty( $id ) ) {
-			$qrcode_image_path = $wpdb->get_var( $wpdb->prepare( "SELECT `qr_code` FROM $generator_table WHERE id = %d", $id ) );  // phpcs:ignore
+			$qrcode_image_path = $wpdb->get_var( $wpdb->prepare( "SELECT `qr_code` FROM `$generator_table` WHERE id = %d", $id ) );  // phpcs:ignore
 
 			if ( ! empty( $qrcode_image_path ) ) {
-				return $qrcode_image_path;
+				return esc_url( $qrcode_image_path );
 			}
 		}
 		return false;

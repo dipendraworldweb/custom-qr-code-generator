@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Plugin Name:       Custom QR Code Generator
  * Plugin URI:        https://loancalc.worldwebtechnology.com/custom-qr-code-generator-document/
@@ -15,11 +18,6 @@
  * @since             1.0.0
  * @package           Cqrc_Generator
  */
-
-// If this file is called directly, abort.
-if ( ! defined( 'ABSPATH' ) ) {
-	wp_die();
-}
 
 global $wpdb;
 
@@ -111,7 +109,7 @@ function cqrc_generator_uninstall() {
 
 register_activation_hook( __FILE__, 'cqrc_activate_cqrc_generator' );
 register_deactivation_hook( __FILE__, 'cqrc_deactivate_cqrc_generator' );
-register_uninstall_hook(__FILE__, 'cqrc_generator_uninstall');
+register_uninstall_hook( __FILE__, 'cqrc_generator_uninstall' );
 
 /**
  * This Code is Generate the view part for Generated QR Code.

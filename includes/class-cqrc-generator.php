@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * The file that defines the core plugin class
  * @link       https://www.worldwebtechnology.com/
@@ -8,11 +10,6 @@
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>
  */
-
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 class Cqrc_Generator {
 
@@ -142,7 +139,7 @@ class Cqrc_Generator {
 	 */
 	private function set_locale() {
 		$plugin_i18n = new Cqrc_Generator_i18n();
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'init', $plugin_i18n, 'cqrc_load_plugin_textdomain' );
 	}
 
 	/**
@@ -156,12 +153,12 @@ class Cqrc_Generator {
 		$plugin_admin = new Cqrc_Generator_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'cqrc_admin_menu' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'cqrc_enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'cqrc_enqueue_scripts' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_generator_form_handle' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_handle_qr_code_delete_action' );
 		$this->loader->add_action( 'wp_ajax_cqrc_handle_qrurl_insert_record', $plugin_admin, 'cqrc_handle_qrurl_insert_record' );
-		$this->loader->add_action( 'wp_ajax_check_animated_webp', $plugin_admin, 'check_animated_webp' );
+		$this->loader->add_action( 'wp_ajax_cqrc_check_animated_webp', $plugin_admin, 'cqrc_check_animated_webp' );
 	}
 
 	/**
@@ -176,8 +173,8 @@ class Cqrc_Generator {
 
 		$this->loader->add_action( 'init', $plugin_public, 'cqrc_handle_qr_code_download' );
 		$this->loader->add_action( 'init', $plugin_public, 'cqrc_register_qrcode_shortcode' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'template_redirect', $plugin_public, 'cqrc_qrcode_template_redirect' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'cqrc_enqueue_styles' );
+		$this->loader->add_action( 'template_include', $plugin_public, 'cqrc_qrcode_template_redirect' );
 		$this->loader->add_filter( 'query_vars', $plugin_public, 'cqrc_qrcode_query_vars' );
 	}
 

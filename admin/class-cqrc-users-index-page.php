@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Showing the users details list for scanned QR code. 
  * @link       https://www.worldwebtechnology.com/
@@ -6,13 +9,6 @@
  *
  * @package    Cqrc_Generator
  */
-
-/**
- * Exit if accessed directly.
- */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 
 // Define the main class
 class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
@@ -30,30 +26,40 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'            => '<input type="checkbox" />',
-			'user_ip_address' => __('User IP Address', 'custom-qr-code-generator'),
-			'device_type'   => __('Device Type', 'custom-qr-code-generator'),
-			'location'      => __('Location', 'custom-qr-code-generator'),
-			'qrid'          => __('QR Code ID', 'custom-qr-code-generator'),
-			'qr_usage_count'   => __('QR Scan Count', 'custom-qr-code-generator'),
-			'created_at'    => __('Created At', 'custom-qr-code-generator'),
+			'user_ip_address' => esc_html__('User IP Address', 'custom-qr-code-generator'),
+			'device_type'   => esc_html__('Device Type', 'custom-qr-code-generator'),
+			'location'      => esc_html__('Location', 'custom-qr-code-generator'),
+			'qrid'          => esc_html__('QR Code ID', 'custom-qr-code-generator'),
+			'qr_usage_count'   => esc_html__('QR Scan Count', 'custom-qr-code-generator'),
+			'created_at'    => esc_html__('Created At', 'custom-qr-code-generator'),
+			'updated_at'    => esc_html__('Updated At', 'custom-qr-code-generator'),
 		);
 	}
 
 	public function get_bulk_actions() {
 		return array(
-			'delete' => __('Delete', 'custom-qr-code-generator'),
+			'delete' => esc_html__('Delete', 'custom-qr-code-generator'),
 		);
 	}
 
-	public function process_bulk_action() {
+	private function cqrc_process_bulk_action() {
 		if ( 'delete' === $this->current_action() ) {
 			if ( empty($_REQUEST['_wpnonce']) && ! wp_verify_nonce(sanitize_text_field( wp_unslash($_REQUEST['_wpnonce'], '_wpnonce'))) ) {
-				wp_die( esc_html__('Security check failed.', 'custom-qr-code-generator' ) );
+				wp_die( esc_html__('Nonce verification failed. Please refresh and try again', 'custom-qr-code-generator' ) );
 			}
 			
-			$delete_ids = !empty( $_POST['id'] ) ? array_map( 'absint', $_POST['id'] ) : array();
-			foreach ( $delete_ids as $id ) {
-				self::cqrc_delete_qr( $id );
+			// Check if 'id' is set in the POST request
+			if ( ! empty( $_POST['id'] ) && is_array( $_POST['id'] ) ) {
+				$delete_ids = array_map( 'absint', $_POST['id'] );
+
+            	// Proceed to delete the IDs
+				if ( ! empty( $delete_ids ) ) {
+					foreach ( $delete_ids as $id ) {
+						$this->cqrc_delete_qr( $id );
+					}
+				}
+			} else {
+				wp_die( esc_html__( 'No IDs provided for deletion.', 'custom-qr-code-generator' ) );
 			}
 		}
 	}
@@ -65,15 +71,16 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 			case 'qrid':
 			case 'qr_usage_count':
 			case 'created_at':
+			case 'updated_at':
 			return esc_html($item[$column_name]);
 			case 'location':
-			return $this->format_location($item['location']);
+			return $this->cqrc_format_location($item['location']);
 			default:
 			return '';
 		}
 	}
 
-	private function format_location($location_data) {
+	private function cqrc_format_location($location_data) {
     	// Decode the JSON data into an associative array
 		$data_array = json_decode($location_data, true);
 
@@ -99,7 +106,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 		return esc_html__('Error decoding JSON.', 'custom-qr-code-generator');
 	}
 	
-	public function cqrc_get_custom_data_from_database($search_term = '') {
+	private function cqrc_get_custom_data_from_database($search_term = '') {
 		global $wpdb;
 		$table_name = esc_sql( QRCODE_INSIGHTS_TABLE ); 
 		// phpcs:disable
@@ -110,14 +117,14 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 
         	// Prepare the SQL query with placeholders
 			$query = $wpdb->prepare(
-				"SELECT * FROM {$table_name} WHERE user_ip_address LIKE %s OR device_type LIKE %s OR location LIKE %s",
+				"SELECT * FROM `{$table_name}` WHERE `user_ip_address` LIKE %s OR `device_type` LIKE %s OR `location` LIKE %s",
 				$search_term,
 				$search_term,
 				$search_term
 			);
 			$data = $wpdb->get_results($query, ARRAY_A); // phpcs:ignore
 		} else {
-			$data = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A ); // phpcs:ignore
+			$data = $wpdb->get_results( "SELECT * FROM `$table_name`", ARRAY_A ); // phpcs:ignore
 		}
 		
 		// phpcs:enable
@@ -129,7 +136,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 	}
 
 	public function prepare_items() {
-		$this->process_bulk_action();
+		$this->cqrc_process_bulk_action();
 
     	// Get custom data from the database, with optional search term
 		$search_term = !empty( $_REQUEST['s'] ) ? sanitize_text_field(wp_unslash( trim( $_REQUEST['s'] ) ) ) : ''; // phpcs:ignore
@@ -164,7 +171,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 
 	public function usort_reorder( $a, $b ) {
     	// If no sort, default to sorting by ID.
-		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'id'; // phpcs:ignore
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'created_at'; // phpcs:ignore
 		$order = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'asc'; // phpcs:ignore
 
     	// If columns are date fields or other special fields, ensure proper comparison.
@@ -187,7 +194,7 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 	public function column_cb($item) {
 		return sprintf(
 			'<input type="checkbox" name="id[]" value="%s" />',
-			esc_attr( __( $item['id'], 'custom-qr-code-generator' ) ) // phpcs:ignore.
+			absint( $item['id'] )
 		);
 	}
 
@@ -198,20 +205,21 @@ class Cqrc_Scanned_QR_List_Table extends WP_List_Table {
 			'qrid'            => array('qrid', false),
 			'qr_usage_count'  => array('qr_usage_count', false),
 			'created_at'      => array('created_at', false),
+			'updated_at'      => array('updated_at', false),
 		);
 	}
 
-	public static function cqrc_delete_qr($id) {
+	private function cqrc_delete_qr( $id ) {
 		global $wpdb;
 		$generator_table = esc_sql( QRCODE_GENERATOR_TABLE );
-		$insights_table = esc_sql( QRCODE_INSIGHTS_TABLE );
-        $qr_info = $wpdb->get_row($wpdb->prepare("SELECT qrid FROM {$insights_table} WHERE id = %d", $id));  // phpcs:ignore
+		$insights_table  = esc_sql( QRCODE_INSIGHTS_TABLE );
+        $qr_info         = $wpdb->get_row( $wpdb->prepare( "SELECT `qrid` FROM {$insights_table} WHERE id = %d", $id ) );  // phpcs:ignore
         
         // phpcs:ignore
-        if ($qr_info) {
+        if ( $qr_info ) {
         	$qrid = $qr_info->qrid;
-            $wpdb->delete($insights_table, array('id' => $id)); // phpcs:ignore
-            $wpdb->query($wpdb->prepare("UPDATE $generator_table SET total_scans = total_scans - 1 WHERE id = %d", $qrid )); // phpcs:ignore
+            $wpdb->delete( $insights_table, array( 'id' => $id ) ); // phpcs:ignore
+            $wpdb->query( $wpdb->prepare( "UPDATE `$generator_table` SET `total_scans` = `total_scans` - 1 WHERE `id` = %d", $qrid ) ); // phpcs:ignore
         }
     }
 }

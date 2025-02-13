@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Define the internationalization functionality
  *
@@ -11,13 +13,12 @@
  */
 class Cqrc_Generator_i18n {
 
-
 	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since    1.0.0
 	 */
-	public function load_plugin_textdomain() {
+	public function cqrc_load_plugin_textdomain() {
 		load_plugin_textdomain(
 			'custom-qr-code-generator',
 			false,

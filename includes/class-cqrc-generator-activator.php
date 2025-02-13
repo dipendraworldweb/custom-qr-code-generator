@@ -1,4 +1,7 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 /**
  * Fired during plugin activation.
  *
@@ -9,6 +12,7 @@
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>
  */
+
 class Cqrc_Generator_Activator {
     public static function cqrc_plugin_activate() {
         // Start output buffering to prevent any unexpected output
@@ -23,7 +27,7 @@ class Cqrc_Generator_Activator {
         $table_name2 = QRCODE_INSIGHTS_TABLE; 
 
         // Check if the table exists and create it if not
-        if (self::table_exists($table_name1) === false) {
+        if (self::cqrc_table_exists($table_name1) === false) {
             $sql1 = "CREATE TABLE $table_name1 (
                 id int(10) NOT NULL AUTO_INCREMENT,
                 user_id varchar(255) NULL,
@@ -47,8 +51,8 @@ class Cqrc_Generator_Activator {
                 download_content longtext NULL,
                 token varchar(255) NULL,
                 password varchar(255) NULL,
-                created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                created_at datetime NOT NULL,
+                updated_at datetime NULL,
                 UNIQUE KEY id (id)
             ) $charset_collate;";
 			// Include WordPress upgrade functions
@@ -56,7 +60,7 @@ class Cqrc_Generator_Activator {
             dbDelta($sql1);
         }
 
-        if (self::table_exists($table_name2) === false) {
+        if (self::cqrc_table_exists($table_name2) === false) {
             $sql2 = "CREATE TABLE $table_name2 (
                 id int(10) NOT NULL AUTO_INCREMENT,
                 user_ip_address varchar(255) NULL,
@@ -64,8 +68,8 @@ class Cqrc_Generator_Activator {
                 location longtext NULL,
                 qrid varchar(255) NULL,
 				qr_usage_count varchar(255) NULL,
-                created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                updated_at timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                created_at datetime NOT NULL,
+                updated_at datetime NULL,
                 UNIQUE KEY id (id)
             ) $charset_collate;";
 			// Include WordPress upgrade functions
@@ -125,7 +129,7 @@ class Cqrc_Generator_Activator {
     }
 
     // Method to check if the table exists
-    private static function table_exists($table_name) {
+    private static function cqrc_table_exists($table_name) {
         global $wpdb;
         if (!empty($table_name)) {
             $escaped_table_name = esc_sql($table_name);
