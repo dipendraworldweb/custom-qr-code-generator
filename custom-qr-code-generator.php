@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Plugin Name:       Custom QR Code Generator
- * Plugin URI:        https://loancalc.worldwebtechnology.com/custom-qr-code-generator-document/
+ * Plugin URI:        https://wordpress.org/plugins/custom-qr-code-generator
  * Description:       The "Custom QR Code Generator" plugin for WordPress is a useful tool that allows users to create QR codes for their website or specific content. With this plugin, users can generate QR codes for various purposes, such as sharing links, promoting products, or providing website information.
  * Version:           1.0.0
  * Author:            World Web Technology
