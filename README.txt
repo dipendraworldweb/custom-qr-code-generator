@@ -8,16 +8,16 @@ Author URI:        https://www.worldwebtechnology.com/
 Requires at least: 5.6
 Requires PHP:      7.4
 Tested up to:      6.7
-Stable tag:        1.0.0
+Stable tag:        1.0.1
 License:           GPLv2 or later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
-Version:           1.0.0
+Version:           1.0.1
 
 Easily generate customizable QR codes for websites, products, and events with this user-friendly WordPress plugin.
 
 == Description ==
 
-[Docs](https://loancalc.worldwebtechnology.com/custom-qr-code-generator-document/)  |  [Support](mailto:help.worldweb@gmail.com)  | [Website](https://www.worldwebtechnology.com/)
+[Demo](https://qrcode.worldwebtechnology.com/) | [Docs](https://qrcode.worldwebtechnology.com/custom-qr-code-generator-document/)  |  [Support](mailto:help.worldweb@gmail.com)  | [Website](https://www.worldwebtechnology.com/)
 
 The "Custom QR Code Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
 
@@ -51,14 +51,15 @@ Replace "32" with the ID of the QR code you want to display.
    - The plugin uses the PHP QR Code generator library. [GIT](https://github.com/chillerlan/php-qrcode).
 
 == Screenshots ==
-1. QR Code Generator Options
-2. QR Code Generator Options more
-3. QR Codes Listing
-4. Scanned Data Overview
-5. Export QR Code Table Records
-6. Import QR Codes
-7. About QR Code Generator Plugin
-8. Generated QR Code Prview
+1. Generated QR Code Prview
+2. QR Code Generator Options
+3. QR Code Generator Options more
+4. QR Codes Listing
+5. Scanned Data Overview
+6. Export QR Code Table Records
+7. Import QR Codes
+8. About QR Code Generator Plugin
+
 
 == Frequently Asked Questions ==
 
@@ -123,6 +124,9 @@ This plugin utilizes the following external services for analytics and user info
    - To determine the type of device (Mobile or Desktop) that the user is using.
 
 == Changelog ==
+
+= 1.0.1 (Mar 24, 2025) =
+* Resolved QR code scan password form visible issue.
 
 = 1.0.0 (Feb 19, 2025) =
 * Initial release.

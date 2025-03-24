@@ -31,7 +31,7 @@ if ( ! empty( $token ) && ! empty( sanitize_text_field( wp_unslash( $_GET['qrcod
     if ( $request_method === 'POST' && ! empty( $_POST['password'] ) ) {
         $password = sanitize_text_field(wp_unslash($_POST['password']));
 
-        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND password = %s", $token, $password); // phpcs:ignore
+        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND BINARY password = %s", $token, $password); // phpcs:ignore
         $qr_exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE id = %s", $qrid)); // phpcs:ignore
 
         if ($qr_exists !== 0 && $qr_exists !== '') { // phpcs:ignore
@@ -99,15 +99,15 @@ $query    = $wpdb->prepare( "SELECT `token` FROM `$generator_table` WHERE `id` =
 $qrixists = $wpdb->get_var( $query ); // phpcs:ignore
 
 if ( ! empty( $qrixists ) ) {
+    $message ='';
     $plugins_page_url = site_url();
     if ( $request_method === 'POST' && ! empty( $_POST['password'] ) ) {
         $password = sanitize_text_field(wp_unslash($_POST['password']));
-        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND password = %s", $qrixists, $password); // phpcs:ignore
+        $query = $wpdb->prepare("SELECT COUNT(*) FROM $generator_table WHERE token = %s AND BINARY password = %s", $qrixists, $password); // phpcs:ignore
 
         if ($wpdb->get_var($query)) { // phpcs:ignore
             $data = cqrc_create_qr_data_array($user_ip, $device_type, $location, $qrid, $current_time);
             $format = array('%s', '%s', '%s', '%d', '%s', '%s', '%d');
-
             // Check if the same QRID and IP address exist in the insights table
             $existing_record = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE user_ip_address = %s AND qrid = %d", $user_ip, $qrid)); // phpcs:ignore
 
@@ -149,9 +149,10 @@ if ( ! empty( $qrixists ) ) {
             $message = '<p style="color: red;">Invalid password. Please try again.</p>';
         }
     }
-
-    cqrc_display_password_form( $message );
-    exit;
+    if ( !empty ( $message )) {
+        cqrc_display_password_form( $message );
+        exit;
+    }
 }
 
 // Check if Previous option disable
