@@ -14,7 +14,7 @@ class Cqrc_Generator_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -23,7 +23,7 @@ class Cqrc_Generator_Public {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -32,7 +32,7 @@ class Cqrc_Generator_Public {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
@@ -44,18 +44,28 @@ class Cqrc_Generator_Public {
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_enqueue_styles() {
 		global $post;
 		if ( get_query_var('qrcode_scan') || ( ! empty( $post->post_content ) && has_shortcode( $post->post_content, 'cqrc_gen_qrcode_view' ) ) ) {
 			wp_enqueue_style( $this->plugin_name, CQRCGEN_PUBLIC_URL . '/assets/css/cqrc-generator-public.css', array(), $this->version, 'all' );
 		}
+		// Register and Enqueue JavaScript
+		wp_enqueue_script( $this->plugin_name . '-embed', CQRCGEN_PUBLIC_URL . '/assets/js/embed-qrcode.js', array('jquery'), $this->version, true );
+
+		// Localize the script with new data
+		wp_localize_script( $this->plugin_name . '-embed', 'website_url', array(
+			'site_url' => get_home_url(),
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => wp_create_nonce( 'qr_code_nonce' ),
+		));
+		
 	}
 
 	/**
 	 * QRCode Download Option handle.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_handle_qr_code_download() {
 		if ( ! empty( $_GET['action'] ) && $_GET['action'] === 'download_qr' ) {
@@ -102,7 +112,7 @@ class Cqrc_Generator_Public {
 			}
 
 			$qr_code_name     = $qr_code_row->name;
-			$unserialize_desc =  wp_kses_post( $qr_code_row->description ); // phpcs:ignore
+			$unserialize_desc = wp_kses_post( $qr_code_row->description ); // phpcs:ignore
 			$download_content = json_decode( $qr_code_row->download_content, true );
 			$show_desc_in_pdf = !empty( $download_content['show_desc_in_pdf'] ) ? $download_content['show_desc_in_pdf'] : '';
 			$file_extension   = ( 'pdf' === $type ) ? 'pdf' : esc_html( $type );
@@ -192,7 +202,7 @@ class Cqrc_Generator_Public {
 
     	// Fetch QR code settings from the database
 		$general_table     = esc_sql( QRCODE_GENERATOR_TABLE );
-		$general_settings  = $wpdb->get_row( $wpdb->prepare( "SELECT `name`, `description`, `qr_code`, `download`, `download_content` FROM `$general_table` WHERE `id` = %d LIMIT 1", $id ) );  // phpcs:ignore
+		$general_settings  = $wpdb->get_row( $wpdb->prepare( "SELECT `name`, `description`, `qr_code`,`download`, `download_content` FROM `$general_table` WHERE `id` = %d LIMIT 1", $id ) );  // phpcs:ignore
 
 		if ( ! $general_settings ) {
 			/* translators: %s is the QR code ID. */
@@ -238,45 +248,89 @@ class Cqrc_Generator_Public {
 				<?php endif; ?>
 
 				<?php if ( in_array( 'png', $download_options_array ) || in_array( 'jpg', $download_options_array ) || in_array( 'pdf', $download_options_array ) ) : ?>
-						<div class="download-qr-code-column">
-							<?php if ( in_array( 'png', $download_options_array ) && ! empty( $download_text_png ) ) : ?>
-							<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php echo esc_html( $download_text_png ); ?></a>
-						<?php endif; ?>
-
-						<?php if ( in_array( 'jpg', $download_options_array ) && ! empty( $download_text_jpg ) ) : ?>
-						<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php echo esc_html( $download_text_jpg ); ?></a>
-					<?php endif; ?>
-
-					<?php if ( in_array( 'pdf', $download_options_array ) && ! empty( $download_text_pdf ) ) : ?>
-					<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php echo esc_html( $download_text_pdf ); ?></a>
+				<div class="download-qr-code-column">
+					<?php if ( in_array( 'png', $download_options_array ) && ! empty( $download_text_png ) ) : ?>
+					<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_png_url ); ?>"><?php echo esc_html( $download_text_png ); ?></a>
 				<?php endif; ?>
-			</div>
+
+				<?php if ( in_array( 'jpg', $download_options_array ) && ! empty( $download_text_jpg ) ) : ?>
+				<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_jpg_url ); ?>"><?php echo esc_html( $download_text_jpg ); ?></a>
+			<?php endif; ?>
+
+			<?php if ( in_array( 'pdf', $download_options_array ) && ! empty( $download_text_pdf ) ) : ?>
+			<a class="button button-primary download-buttons-qrcode download-button" href="<?php echo esc_url( $download_pdf_url ); ?>"><?php echo esc_html( $download_text_pdf ); ?></a>
 		<?php endif; ?>
-		</div>
-		<?php
-		}
-		else {
-			/* translators: %s is the QR code ID. */
-			$message = esc_html__( 'We couldn\'t find a QR code associated with the ID "%s".', 'custom-qr-code-generator' );
-			$message = sprintf( $message, $id );
-			return '<p class="qrcode-not-found-error-wrap">' . esc_html( $message ) . '</p>';
+	</div>
+<?php endif; ?>
+</div>
+<?php
+}
+else {
+	/* translators: %s is the QR code ID. */
+	$message = esc_html__( 'We couldn\'t find a QR code associated with the ID "%s".', 'custom-qr-code-generator' );
+	$message = sprintf( $message, $id );
+	return '<p class="qrcode-not-found-error-wrap">' . esc_html( $message ) . '</p>';
+}
+
+return ob_get_clean();
+}
+
+	/**
+	 * Retrieves the QR code URL from the database based on the secure code.
+	 * @since 1.0.2	 
+	 */
+	public function cqrc_get_qr_code_by_secure_code($hash) {
+		global $wpdb;
+
+	    // Validate parameter
+		if ( empty($hash) || !is_string($hash) ) {
+			return false;
 		}
 
-		return ob_get_clean();
+	    // Ensure table name is safe
+		$table_name = esc_sql(QRCODE_GENERATOR_TABLE);
+
+	    // Prepare the query to get the QR code URL where secure_code matches the given hash
+	    $query = $wpdb->prepare("SELECT `qr_code` FROM `{$table_name}` WHERE `secure_code` = %s", $hash); // phpcs:ignore
+	    return $wpdb->get_var($query); // phpcs:ignore
 	}
 
-	// Function to generate the QR code URL from the database
-public function cqrc_generate_qr_code_url( $id ) {
-	global $wpdb;
-	$generator_table = esc_sql( QRCODE_GENERATOR_TABLE );
-
-	if ( ! empty( $id ) ) {
-			$qrcode_image_path = $wpdb->get_var( $wpdb->prepare( "SELECT `qr_code` FROM `$generator_table` WHERE id = %d", $id ) );  // phpcs:ignore
-
-			if ( ! empty( $qrcode_image_path ) ) {
-				return esc_url( $qrcode_image_path );
-			}
-		}
-		return false;
+	public function cqrc_register_rest_api_routes() {
+    // Register the custom REST API route
+		register_rest_route('cqrc/v1', '/get-qr-code/', array(
+			'methods' => 'POST',
+			'callback' => array($this,'cqrc_get_qr_code_by_hash_callback'),
+			'permission_callback' => '__return_true',
+		));
 	}
+
+	/**
+	 * Handles the AJAX request to retrieve a QR code URL by its hash.
+	 * @since 1.0.2
+	 */
+	public function cqrc_get_qr_code_by_hash_callback(WP_REST_Request $request) {
+
+		if (empty($request['_ajax_nonce']) && !wp_verify_nonce($request['_ajax_nonce'], 'qr_code_nonce')) {
+			return new WP_REST_Response('Nonce verification failed. Please refresh and try again.', 400);
+		}
+
+    	// Check if 'hash' is provided in the request (GET or POST)
+		$hash = sanitize_text_field($request->get_param('hash'));
+
+		if (empty($hash)) {
+			return new WP_REST_Response(['message' => 'Invalid request'], 400);
+		}
+
+    	// Retrieve the QR code URL using the new function
+		$qrcode_url = $this->cqrc_get_qr_code_by_secure_code($hash);
+
+    	// If no QR code URL is found, return an error response
+		if (!$qrcode_url) {
+			return new WP_REST_Response(['message' => 'QR Code not found'], 404);
+		}
+
+    	// Return the QR code URL as a JSON response
+		return new WP_REST_Response(['qrcode_url' => $qrcode_url], 200);
+	}
+	
 }

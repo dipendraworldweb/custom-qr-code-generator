@@ -51,12 +51,12 @@ hr.site-hr-tag { margin: 30px 0; border: 1px solid #ddd; }
 form#wwt-qrcode-generate-form .form-table td div#wp-description-wrap { width: 25em; }
 @media screen and (max-width: 782px) { form#wwt-qrcode-generate-form .form-table td div#wp-description-wrap { width: 100%; } }
 @media screen and (min-width: 1024px) {
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#qrcode {width: 100%;max-width: 8%;}
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#name {width: 100%;max-width: 12%;}
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#description {width: 100%;max-width: 14%;}
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#url {width: 100%;max-width: 15%;}
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#total_scans {width: 100%;max-width: 8%;}
-.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#created_at {width: 100%;max-width: 8%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#qrcode {width: 100%;max-width: 8%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#name {width: 100%;max-width: 12%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#description {width: 100%;max-width: 14%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#url {width: 100%;max-width: 15%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#total_scans {width: 100%;max-width: 8%;}
+	.toplevel_page_custom-qr-code-generator form#qr-listing-form table th#created_at {width: 100%;max-width: 8%;}
 }
 .shortcode-list-cqrc { background-color: #fff; border: 1px solid #ddd; padding-left: 15px; border-radius: 5px; font-family: monospace; display: inline-block;}
 td.shortcode.column-shortcode span.shortcode pre#shortcode-code code { padding: 10px 40px 10px 10px; border-radius: 5px; display: inline-block; }
@@ -71,3 +71,17 @@ span#copy-code-icons { position: relative; top: 22px; }
 .site-show-error-msg ul { list-style-type: disc; padding-left: 20px; margin-top: 10px; }
 .site-show-error-msg ul li { margin-bottom: 5px; }
 span.copy-code-icons-list-wrap { display: none; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+body.toplevel_page_custom-qr-code-generator .popup-content { background: #fff; padding: 20px; border-radius: 10px; text-align: center; width: 350px; box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3); position: relative; animation: fadeIn 0.3s ease-in-out; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content h3 { font-size: 18px; margin-bottom: 15px; font-weight: bold; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content textarea#embedCodeText { width: 100%; height: 60px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; resize: none; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content button { display: inline-block; width: 40%; margin: 10px 5px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content #copyEmbedCode { background: #007bff; color: white; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content #copyEmbedCode:hover { background: #0056b3; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content #closePopup { background: #dc3545; color: white; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content #closePopup:hover { background: #b52a37; }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content #copyMessage { display: none; color: green; font-size: 14px; margin-top: 5px; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content { position: relative; animation: fadeIn 0.3s ease-in-out;}
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content .close-popup-btn { padding: 0px 0 5px 0; border: none; border-radius: 4px; background-color: #ff0000; color: #fff; cursor: pointer; position: absolute; top: -23px; right: -18px; border-radius: 60px; width: 30px; height: 30px; z-index: 9999; font-size: 16px;}
+body.toplevel_page_custom-qr-code-generator .popup-overlay .popup-content .close-popup-btn:hover { color: #dc3545;}

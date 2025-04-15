@@ -4,9 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 /**
  * Plugin Name:       Custom QR Code Generator
- * Plugin URI:        https://wordpress.org/plugins/custom-qr-code-generator
+ * Plugin URI:        https://loancalc.worldwebtechnology.com/custom-qr-code-generator-document/
  * Description:       The "Custom QR Code Generator" plugin for WordPress is a useful tool that allows users to create QR codes for their website or specific content. With this plugin, users can generate QR codes for various purposes, such as sharing links, promoting products, or providing website information.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Author:            World Web Technology
  * Author URI:        https://www.worldwebtechnology.com/
  * License:           GPL-2.0+
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * Domain Path:       /languages
  *
  * @link              https://www.worldwebtechnology.com/
- * @since             1.0.1
+ * @since             1.0.2
  * @package           Cqrc_Generator
  */
 
@@ -73,8 +73,9 @@ if ( ! defined( 'QRCODE_INSIGHTS_TABLE' ) ) {
 /**
  * The code that runs during plugin activation.
  */
-add_action( 'init', 'cqrc_rewrite_rule' );
-function cqrc_rewrite_rule() {
+add_action('init', 'cqrc_add_rewrite_rules');
+
+function cqrc_add_rewrite_rules() {
     add_rewrite_rule(
         '^qrcode_scan/?$',
         'index.php?qrcode_scan=1',
@@ -88,7 +89,7 @@ function cqrc_rewrite_rule() {
 function cqrc_activate_cqrc_generator() {
     require_once CQRCGEN_INCLUDES_DIR. '/class-cqrc-generator-activator.php';
     Cqrc_Generator_Activator::cqrc_plugin_activate();
-    cqrc_rewrite_rule();
+    cqrc_add_rewrite_rules();
     flush_rewrite_rules();
 }
 
@@ -120,7 +121,7 @@ require CQRCGEN_INCLUDES_DIR. '/class-cqrc-generator.php';
 
 /**
  * Begins execution of the plugin.
- * @since    1.0.1
+ * @since    1.0.2
  */
 function cqrc_generator_run() {
 	$plugin = new Cqrc_Generator();

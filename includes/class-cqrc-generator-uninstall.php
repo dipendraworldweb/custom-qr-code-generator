@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Fired when the plugin is uninstalled.
  *
- * @since      1.0.0
+ * @since      1.0.2
  * @package    Cqrc_Generator
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>

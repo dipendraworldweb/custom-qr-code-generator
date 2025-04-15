@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * Showing the users details list for scanned QR code. 
  * @link       https://www.worldwebtechnology.com/
- * @since      1.0.0
+ * @since      1.0.2
  *
  * @package    Cqrc_Generator
  */

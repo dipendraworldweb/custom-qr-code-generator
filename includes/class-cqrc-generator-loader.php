@@ -16,7 +16,7 @@ class Cqrc_Generator_Loader {
 	/**
 	 * The array of actions registered with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   protected
 	 * @var      array    $actions    The actions registered with WordPress to fire when the plugin loads.
 	 */
@@ -25,7 +25,7 @@ class Cqrc_Generator_Loader {
 	/**
 	 * The array of filters registered with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   protected
 	 * @var      array    $filters    The filters registered with WordPress to fire when the plugin loads.
 	 */
@@ -34,7 +34,7 @@ class Cqrc_Generator_Loader {
 	/**
 	 * Initialize the collections used to maintain the actions and filters.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function __construct() {
 		$this->actions = array();
@@ -59,7 +59,7 @@ class Cqrc_Generator_Loader {
 	 * A utility function that is used to register the actions and hooks into a single
 	 * collection.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
@@ -76,7 +76,7 @@ class Cqrc_Generator_Loader {
 	/**
 	 * Register the filters and actions with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function run() {
 		foreach ( $this->filters as $hook ) {
