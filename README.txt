@@ -17,6 +17,8 @@ Easily generate customizable QR codes for websites, products, and events with th
 
 == Description ==
 
+[Demo](https://qrcode.worldwebtechnology.com/) | [Docs](https://qrcode.worldwebtechnology.com/custom-qr-code-generator-document/)  |  [Support](mailto:help.worldweb@gmail.com)  | [Website](https://www.worldwebtechnology.com/)
+
 The "Custom QR Code Generator" plugin for WordPress is a powerful tool that allows users to easily create customizable QR codes for various purposes, including sharing links, promoting products, and providing essential information about events or social media profiles.
 
 This plugin uses the Chillerlan PHP QR Code library.
