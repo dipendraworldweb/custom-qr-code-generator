@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 * Handle listing
 *
 * @package Generate QR Code
-* @since 1.0.0
+* @since 1.0.2
 */
 /**
 * Cqrc_Custom_List_Table
@@ -135,16 +135,22 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
                 absint( $item['id'] ),
                 esc_attr( $item['name'] )
             ),
+            'embed_code' => sprintf(
+                '<a href="#" class="embed-code-btn" data-id="%d">%s</a>',
+                absint( $item['id'] ),
+                esc_html__('Get Embed Code', 'custom-qr-code-generator')
+            ),
         );
 
         // Add actions HTML after the name.
         return sprintf(
-            /* translators: %1$s: The name of the item; %2$s: The actions available for the item*/
+            /* translators: %1$s: The name of the item; %2$s: The actions available for the item */
             __( '%1$s<br><div class="row-actions">%2$s</div>', 'custom-qr-code-generator' ),
             $name,
             implode( ' | ', $actions )
         );
     }
+
     
     public function column_description( $item ) {
         $unserialize_desc = $item['description'];
@@ -203,7 +209,7 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
             'name'       => 'Name',
             'description'=> 'Description',
             'url'        => 'Destination URL',
-            'total_scans' => 'Total Scan',
+            'total_scans'=> 'Total Scan',
             'shortcode'  => 'Shortcode',
             'created_at' => 'Created',
         );
@@ -234,7 +240,7 @@ class Cqrc_Custom_List_Table extends WP_List_Table {
             absint( $item['id'] ),
             esc_attr( $shortcode ),
             esc_html( $translatable_shortcode ),
-            esc_html( $copy_text )
+            esc_html( $copy_text ),
         );
     }
 

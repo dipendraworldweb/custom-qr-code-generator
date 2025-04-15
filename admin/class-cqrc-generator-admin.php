@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * The admin-specific functionality of the plugin.
  *
  * @link       https://https://www.worldwebtechnology.com/
- * @since      1.0.0
+ * @since      1.0.2
  * @package    Cqrc_Generator
  * @subpackage Cqrc_Generator/admin
  * @author     World Web Technology <biz@worldwebtechnology.com>
@@ -20,7 +20,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
@@ -29,7 +29,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
@@ -38,7 +38,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @param      string $plugin_name       The name of this plugin.
 	 * @param      string $version    The version of this plugin.
 	 */
@@ -50,7 +50,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * Register the stylesheets for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_enqueue_styles($hook) {
 		wp_enqueue_style( $this->plugin_name, CQRCGEN_ADMIN_URL . '/assets/css/cqrc-generator-admin.css', array(), $this->version, 'all' );
@@ -62,7 +62,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * Register the JavaScript for the admin area.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_enqueue_scripts($hook) {
 		if ( 'toplevel_page_custom-qr-code-generator' == $hook || 'qr-code_page_custom-qrcode-generate-form' == $hook || 'qr-code_page_custom-qrcode-export' == $hook || 'qr-code_page_custom-qrcode-about' == $hook || 'qr-code_page_custom-qrcode-users' == $hook || 'qr-code_page_custom-qrcode-import' == $hook || 'qr-code_page_custom-qrcode-default-setting' == $hook) {
@@ -95,7 +95,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * Add Top Level Menu Page
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_admin_menu() {
     	// Main menu page.
@@ -163,7 +163,7 @@ class Cqrc_Generator_Admin {
 	 * Listing Page html
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_generator_index_menu_page() {
 		require_once CQRCGEN_ADMIN_DIR . '/class-cqrc-index-page.php';
@@ -173,7 +173,7 @@ class Cqrc_Generator_Admin {
 	 * About Numbers of users QR Code Records Page html
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 
 	public function cqrc_qrcode_users_page() {
@@ -184,7 +184,7 @@ class Cqrc_Generator_Admin {
 	 * About Plugin Page html
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 
 	public function cqrc_about_page() {
@@ -195,7 +195,7 @@ class Cqrc_Generator_Admin {
 	 * Export the QR code table record
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 
 	public function cqrc_export_qr_codes() {
@@ -264,7 +264,7 @@ class Cqrc_Generator_Admin {
 			echo '<div id="qrcode-loader" style="display: none;"></div>';
 			echo '<h2>' . esc_html__( 'Export QR Codes', 'custom-qr-code-generator' ) . '</h2>';
 			echo '<p>' . esc_html__( 'Your CSV file has been created. Click the link below to download:', 'custom-qr-code-generator' ) . '</p>';
-			echo '<a href="' . esc_url( $export_file_url ) . '" class="button button-primary">' . esc_html__( 'Download CSV', 'custom-qr-code-generator' ) . '</a>';
+			echo '<a href="' . esc_url($export_file_url) . '" class="button button-primary" download="' . esc_attr($file_name) . '">' . esc_html__('Download CSV', 'custom-qr-code-generator') . '</a>';
 			return;
 		}
 		?>
@@ -299,7 +299,7 @@ class Cqrc_Generator_Admin {
 	 * Import the QR code table record
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 
 	public function cqrc_import_qr_codes() {
@@ -320,7 +320,7 @@ class Cqrc_Generator_Admin {
 				<p><?php esc_html_e('To make the import process easier, please download the sample CSV file below to understand the required format:', 'custom-qr-code-generator'); ?></p>
 			</div>
 			<div class="cqrc-sample-download">
-				<a href="<?php echo esc_url( $sample_csv_file_url ); ?>" class="button button-secondary" download>
+				<a href="<?php echo esc_url( $sample_csv_file_url ); ?>" class="button button-secondary" download="sample_csv_file.csv">
 					<?php esc_html_e('Download Sample CSV', 'custom-qr-code-generator'); ?>
 				</a>
 			</div>
@@ -559,6 +559,7 @@ class Cqrc_Generator_Admin {
 
 					// Initialize an array to store errors for this line
 					$line_errors = [];
+					$temp_options = ["default", "facebook", "youtube-circle", "twitter-circle", "instagram-circle", "whatsapp-circle", "gmail", "linkedin-circle"];
 
 					$name = trim($data['name']);
 					if (empty($name)) {
@@ -569,16 +570,16 @@ class Cqrc_Generator_Admin {
 						$line_errors[] = esc_html__('Name should not exceed 30 characters.', 'custom-qr-code-generator');
 					}
 
-				    // Trim and validate the URL
+					// Trim and validate the URL
 					$url = trim($data['url']);
 					if (empty($url)) {
-						$line_errors[] = esc_html__('Please enter a URL.', 'custom-qr-code-generator');
-					} elseif (!filter_var($url, FILTER_VALIDATE_URL)) {
-						$line_errors[] = esc_html__('Please enter a valid URL.', 'custom-qr-code-generator');
+					    $line_errors[] = esc_html__('Please enter a URL.', 'custom-qr-code-generator');
+					} elseif (!filter_var($url, FILTER_VALIDATE_URL) || !preg_match('/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i', $url)) {
+					    $line_errors[] = esc_html__('Please enter a valid URL (e.g., https://example.com).', 'custom-qr-code-generator');
 					} elseif (strlen($url) < 16 || strlen($url) > 80) {
-						$line_errors[] = esc_html__('URL must be between 16 and 80 characters.', 'custom-qr-code-generator');
+					    $line_errors[] = esc_html__('URL must be between 16 and 80 characters.', 'custom-qr-code-generator');
 					} else {
-						$data['url'] = esc_url_raw($url);
+					    $data['url'] = esc_url_raw($url);
 					}
 
 					$password = $data['password'];
@@ -597,15 +598,29 @@ class Cqrc_Generator_Admin {
 						}
 					}
 
+					// Validate template_name field
+					$template_name = strtolower($data['template_name']);
+					if (!empty($template_name)) {
+						if (!in_array($template_name, $temp_options)) {
+							$line_errors[] = esc_html__('Invalid template name. Please select a valid option.', 'custom-qr-code-generator');
+						}
+					}
+
 					// Assuming this is within the foreach loop where you process each line
 					$download_content = $data['download_content'];
 					$download = $data['download'];
 					$staticData = array("png", "jpg", "pdf");
 
+					// Check if one is set and the other is not
+					if (!empty($download) && empty($download_content)){
+						$line_errors[] = esc_html__('Both download and download content must either be provided together or not provided at all.', 'custom-qr-code-generator');
+					}
+					if (empty($download) && !empty($download_content)) {
+						$line_errors[] = esc_html__('Both download and download content must either be provided together or not provided at all.', 'custom-qr-code-generator');
+					}
+
 					if (!empty($download_content)) {
 						$download_items = array_map('trim', explode(',', $download_content));
-						// $line_errors = [];
-
 						foreach ($download_items as $index => $item) {
 						    // Check length
 							if ( strlen( $item ) > 15 ) {
@@ -642,9 +657,14 @@ class Cqrc_Generator_Admin {
 						}
 					}
 
+			        // // If the logo URL is empty, add an error message
+					// if (!empty($data['logo_option']) && $data['logo_option'] === 'upload' && empty($data['default_logo'])) {
+					// 	$line_errors[] = esc_html__('Please enter a valid logo image URL when using the "upload" option.', 'custom-qr-code-generator');
+					// }
 
                     // Check if default_logo is set to 'upload' and if default_logo_name is a valid URL
-					if ($data['logo_option'] === 'upload' && !empty($data['default_logo'])) {
+					if ( !empty($data['logo_option']) && $data['logo_option'] == 'upload' && !empty($data['default_logo'])) {
+
 						$image_url = $data['default_logo'];
                         // Validate the URL
 						if (!filter_var($image_url, FILTER_VALIDATE_URL)) {
@@ -809,7 +829,7 @@ class Cqrc_Generator_Admin {
 
 					if ( $existing_entry ) {
 						$data['id'] = $row[0];
-						$this->cqrc_generator_handle_data( $data, true, true );
+						$this->cqrc_generator_handle_data( $data, true, true, true );
 						$updated_records++;
 					}
 					else {
@@ -859,7 +879,7 @@ class Cqrc_Generator_Admin {
 								$data['description'] = maybe_unserialize( $data['description'] );
 							}
 
-							$this->cqrc_generator_handle_data( $data, true, true );
+							$this->cqrc_generator_handle_data( $data, true, true, true );
 							$new_records++; 
 						}
 					}
@@ -897,7 +917,7 @@ class Cqrc_Generator_Admin {
 	 * CB function to generate the copy message from the shortcode called.
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 
 	private function cqrc_generate_shortcode_html( $tp, $option_value, $label ) {
@@ -917,7 +937,7 @@ class Cqrc_Generator_Admin {
 	 * CB function to check if the WebP image is animated.
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_check_animated_webp() {
 		if (empty($_REQUEST['_ajax_nonce']) && !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_ajax_nonce'])), 'qr_code_nonce')) {
@@ -944,7 +964,7 @@ class Cqrc_Generator_Admin {
 	 * Listing Page html
 	 *
 	 * @package Generate QR Code
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_form_page() {
 		require_once CQRCGEN_ADMIN_DIR . '/partials/cqrc-generate-form.php';
@@ -953,7 +973,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode Helper function to handle the qrcode previour data.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_handle_qrurl_insert_record() {
 		// Verify the nonce before processing further
@@ -1042,12 +1062,13 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode Helper function to get qrcode settings data.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	private function cqrc_get_qrcode_settings($template_name) {
 		$settings = [
 			'facebook' => [
 				'default_logo' => esc_html__('facebook', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame14', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball18', 'custom-qr-code-generator'),
@@ -1058,6 +1079,7 @@ class Cqrc_Generator_Admin {
 			],
 			'youtube-circle' => [
 				'default_logo' => esc_html__('youtube-circle', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame13', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball14', 'custom-qr-code-generator'),
@@ -1068,6 +1090,7 @@ class Cqrc_Generator_Admin {
 			],
 			'twitter-circle' => [
 				'default_logo' => esc_html__('twitter-circle', 'custom-qr-code-generator' ),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator' ),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator' ),
 				'eye_frame_name' => esc_html__('frame5', 'custom-qr-code-generator' ),
 				'eye_balls_name' => esc_html__('ball11', 'custom-qr-code-generator' ),
@@ -1078,6 +1101,7 @@ class Cqrc_Generator_Admin {
 			],
 			'instagram-circle' => [
 				'default_logo' => esc_html__('instagram-circle', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame5', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball4', 'custom-qr-code-generator'),
@@ -1088,6 +1112,7 @@ class Cqrc_Generator_Admin {
 			],
 			'whatsapp-circle' => [
 				'default_logo' => esc_html__('whatsapp-circle', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame2', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball2', 'custom-qr-code-generator'),
@@ -1098,6 +1123,7 @@ class Cqrc_Generator_Admin {
 			],
 			'gmail' => [
 				'default_logo' => esc_html__('gmail', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame14', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball14', 'custom-qr-code-generator'),
@@ -1108,6 +1134,7 @@ class Cqrc_Generator_Admin {
 			],
 			'linkedin-circle' => [
 				'default_logo' => esc_html__('linkedin-circle', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('frame0', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('ball0', 'custom-qr-code-generator'),
@@ -1118,6 +1145,7 @@ class Cqrc_Generator_Admin {
 			],
 			'default' => [
 				'default_logo' => esc_html__('default', 'custom-qr-code-generator'),
+				'logo_option' => esc_html__('default', 'custom-qr-code-generator'),
 				'default_frame' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_frame_name' => esc_html__('default', 'custom-qr-code-generator'),
 				'eye_balls_name' => esc_html__('default', 'custom-qr-code-generator'),
@@ -1133,7 +1161,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode Helper function to get file paths based on input data.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	private function cqrc_get_file_paths($data, $settings) {
 		$paths = [
@@ -1149,7 +1177,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode Helper function to get the logo path.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	private function cqrc_get_logo_path($data, $settings) {
 		if ('default' === $data['logo_option']) {
@@ -1163,7 +1191,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode Helper function to process QR code creation and database update.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	private function cqrc_qr_code_generate_process($table_name, $data, $paths, $site_url, $qrid = null) {
 		global $wpdb;
@@ -1243,7 +1271,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * QRCode generation form submission handle.
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_handle_qr_code_generate_action($url, $id, $logo_url, $frame_image, $eye_frame_image, $eye_image, $qr_eye_color, $qr_eye_frame_color, $qr_code_color, $qrcode_level, $is_form_submitted = true) {
 		return $this->cqrc_generate_qr_code_image($url, $id, $logo_url, $frame_image, $eye_frame_image, $eye_image, $qr_eye_color, $qr_eye_frame_color, $qr_code_color, $qrcode_level, $is_form_submitted = true);
@@ -1252,7 +1280,7 @@ class Cqrc_Generator_Admin {
 	/**
 	 * QRCode generation form submission handle.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function cqrc_generator_form_handle() {
 		global $wpdb;
@@ -1292,16 +1320,17 @@ class Cqrc_Generator_Admin {
 			);
 
 	        // Call the common function with the prepared data
-			return $this->cqrc_generator_handle_data( $data );
+			return $this->cqrc_generator_handle_data( $data, $redirect_case = false, $is_image_url = false, $is_form_submit = false );
 		}
 	}
 
 	/**
 	 * handle the QRCode data  function PHPQRCODE.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
-	private function cqrc_generator_handle_data( $data, $redirect_case = false, $is_image_url = false ) {
+	private function cqrc_generator_handle_data( $data, $redirect_case = false, $is_image_url = false, $is_form_submit = false ) {
 		global $wpdb;
+		
 		$table_name = esc_sql( QRCODE_GENERATOR_TABLE );
 
 	    // Initialize variables
@@ -1314,15 +1343,40 @@ class Cqrc_Generator_Admin {
 		$description = maybe_unserialize( ! empty( $data['description'] ) ? $data['description'] : '' );
 
 		$template_record = $this->cqrc_get_qrcode_settings($data['template_name']);
-		$data['default_logo'] = !empty( $data['default_logo'] ) ? $data['default_logo'] : $template_record['default_logo'];
-		$data['default_frame'] = !empty( $data['default_frame'] ) ? $data['default_frame'] : $template_record['default_frame'];
-		$data['eye_frame_name'] = !empty( $data['eye_frame_name'] ) ? $data['eye_frame_name'] : $template_record['eye_frame_name'];
-		$data['eye_balls_name'] = !empty( $data['eye_balls_name'] ) ? $data['eye_balls_name'] : $template_record['eye_balls_name'];
-		$data['qr_code_color'] = !empty( $data['qr_code_color'] ) ? $data['qr_code_color'] : $template_record['qr_code_color'];
-		$data['qr_eye_color'] = !empty( $data['qr_eye_color'] ) ? $data['qr_eye_color'] : $template_record['qr_eye_color'];
-		$data['qr_eye_frame_color'] = !empty( $data['qr_eye_frame_color'] ) ? $data['qr_eye_frame_color'] : $template_record['qr_eye_frame_color'];
-		$data['qrcode_level'] = !empty( $data['qrcode_level'] ) ? $data['qrcode_level'] : $template_record['qrcode_level'];
-		
+
+		//customize as per import and form submit data managed.
+		if ($is_form_submit == true) {
+			// Check if both $data['template_name'] and $data['logo_option'] are not 'default'
+			$data['default_logo'] = 
+			($data['template_name'] !== 'default' && $data['logo_option'] !== 'default' && $data['logo_option'] !== '') ? $data['default_logo'] : (!empty($template_record['default_logo']) ? $template_record['default_logo'] : '');
+
+			$data['logo_option'] = 
+			($data['template_name'] !== 'default' && $data['logo_option'] !== '') ? $data['logo_option'] : (!empty($template_record['logo_option']) ? $template_record['logo_option'] : '');
+
+			$data['default_frame'] = ($data['template_name'] !== 'default' && !empty($template_record['default_frame'])) ? $template_record['default_frame'] : (!empty($data['default_frame']) ? $data['default_frame'] : '');
+
+			$data['eye_frame_name'] = ($data['template_name'] !== 'default' && !empty($template_record['eye_frame_name'])) ? $template_record['eye_frame_name'] : (!empty($data['eye_frame_name']) ? $data['eye_frame_name'] : '');
+
+			$data['eye_balls_name'] = ($data['template_name'] !== 'default' && !empty($template_record['eye_balls_name'])) ? $template_record['eye_balls_name'] : (!empty($data['eye_balls_name']) ? $data['eye_balls_name'] : '');
+
+			$data['qr_code_color'] = ($data['template_name'] !== 'default' && !empty($template_record['qr_code_color'])) ? $template_record['qr_code_color'] : (!empty($data['qr_code_color']) ? $data['qr_code_color'] : '');
+
+			$data['qr_eye_color'] = ($data['template_name'] !== 'default' && !empty($template_record['qr_eye_color'])) ? $template_record['qr_eye_color'] : (!empty($data['qr_eye_color']) ? $data['qr_eye_color'] : '');
+
+			$data['qr_eye_frame_color'] = ($data['template_name'] !== 'default' && !empty($template_record['qr_eye_frame_color'])) ? $template_record['qr_eye_frame_color'] : (!empty($data['qr_eye_frame_color']) ? $data['qr_eye_frame_color'] : '');
+
+			$data['qrcode_level'] = ($data['template_name'] !== 'default' && !empty($template_record['qrcode_level'])) ? $template_record['qrcode_level'] : (!empty($data['qrcode_level']) ? $data['qrcode_level'] : '');
+		}else{
+			$data['default_logo'] = !empty( $data['default_logo'] ) ? $data['default_logo'] : $template_record['default_logo'];
+			$data['default_frame'] = !empty( $data['default_frame'] ) ? $data['default_frame'] : $template_record['default_frame'];
+			$data['eye_frame_name'] = !empty( $data['eye_frame_name'] ) ? $data['eye_frame_name'] : $template_record['eye_frame_name'];
+			$data['eye_balls_name'] = !empty( $data['eye_balls_name'] ) ? $data['eye_balls_name'] : $template_record['eye_balls_name'];
+			$data['qr_code_color'] = !empty( $data['qr_code_color'] ) ? $data['qr_code_color'] : $template_record['qr_code_color'];
+			$data['qr_eye_color'] = !empty( $data['qr_eye_color'] ) ? $data['qr_eye_color'] : $template_record['qr_eye_color'];
+			$data['qr_eye_frame_color'] = !empty( $data['qr_eye_frame_color'] ) ? $data['qr_eye_frame_color'] : $template_record['qr_eye_frame_color'];
+			$data['qrcode_level'] = !empty( $data['qrcode_level'] ) ? $data['qrcode_level'] : $template_record['qrcode_level'];
+		}
+
 	    // Handle frame paths
 		if ('default' == $data['default_frame']) {
 			$framepath = '';
@@ -1356,7 +1410,9 @@ class Cqrc_Generator_Admin {
 				$logopath = $data['default_logo'];
 			}
 		}else{
-			$logopath = CQRCGEN_ADMIN_DIR . '/assets/qrcode/logos/' . basename($data['default_logo']) . '.png';
+			if (basename($data['default_logo']) !== 'default') {
+				$logopath = CQRCGEN_ADMIN_DIR . '/assets/qrcode/logos/' . basename($data['default_logo']) . '.png';
+			}
 		}
 
 	    // Prepare download content
@@ -1380,7 +1436,7 @@ class Cqrc_Generator_Admin {
 		if (!empty($data['show_desc_in_pdf'])) {
 			$download_content['show_desc_in_pdf'] = esc_html($data['show_desc_in_pdf']);
 		}
-		
+
 	    // Set default values if empty
 		$qr_code_color = !empty($data['qr_code_color']) ? $data['qr_code_color'] : '#000000';
 		$qrcode_level = !empty($data['qrcode_level']) ? $data['qrcode_level'] : 'QR_ECLEVEL_M';
@@ -1420,7 +1476,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * QRCode handle insert update callback function.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	private function cqrc_handle_insert_update_cb( $wpdb, $table_name, $data, $logopath, $framepath, $eye_framepath, $eye_balls_path, $qr_code_color, $qrcode_level, $redirect_case) {
 		
@@ -1494,7 +1550,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * QRCode generate function PHPQRCODE.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_generator_create_qr_code($url, $id, $logo_url, $frame_image, $eye_frame_image, $eye_image, $qr_eye_color, $qr_eye_frame_color, $qr_code_color, $qrcode_level, $password, $is_form_submitted = false, $remove_existing = true) {
 		return $this->cqrc_generate_qr_code_image($url, $id, $logo_url, $frame_image, $eye_frame_image, $eye_image, $qr_eye_color, $qr_eye_frame_color, $qr_code_color, $qrcode_level, $password, $is_form_submitted = false, $remove_existing = true);
@@ -1502,7 +1558,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * Helper method for generate the qrcode image process.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	private function cqrc_generate_qr_code_image($url, $id, $logo_url, $frame_image, $eye_frame_image, $eye_image, $qr_eye_color, $qr_eye_frame_color, $qr_code_color, $qrcode_level, $password = '', $is_form_submitted = true, $remove_existing = false) {
 		global $wpdb;
@@ -1644,36 +1700,36 @@ class Cqrc_Generator_Admin {
 	    		foreach ( $eyeAreas as $eyeArea ) {
 	    			if ( $x >= $eyeArea['x'] && $x < $eyeArea['x'] + $eyeArea['size'] * 15 &&
 	    				$y >= $eyeArea['y'] && $y < $eyeArea['y'] + $eyeArea['size'] * 15 ) {
-		    				$inEyeArea = true;
-		    			break;
-		    		}
-		    	}
-		    	if ( $inEyeArea && $currentColor == 0 ) {
-		    		imagesetpixel( $qr_image_resource, $x, $y, $whiteColor );
-		    	} elseif ( !$inEyeArea && $currentColor == 0 ) {
-		    		imagesetpixel( $qr_image_resource, $x, $y, $fgColor );
-		    	}
-		    }
-		}
+	    				$inEyeArea = true;
+	    			break;
+	    		}
+	    	}
+	    	if ( $inEyeArea && $currentColor == 0 ) {
+	    		imagesetpixel( $qr_image_resource, $x, $y, $whiteColor );
+	    	} elseif ( !$inEyeArea && $currentColor == 0 ) {
+	    		imagesetpixel( $qr_image_resource, $x, $y, $fgColor );
+	    	}
+	    }
+	}
 
 			    // Eye frame processing
-		$eyeFrame = !empty( $eye_frame_image ) ? imagecreatefrompng( $eye_frame_image ) : imagecreatefrompng( CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-frames/frame0.png' );
-		$eyeFrameWidth = imagesx( $eyeFrame );
-		$eyeFrameHeight = imagesy( $eyeFrame );
-		$scaleFactor = 2.1;
-		$scaledEyeFrameWidth = $eyeFrameWidth * $scaleFactor;
-		$scaledEyeFrameHeight = $eyeFrameHeight * $scaleFactor;
-		$scaledEyeFrame = imagecreatetruecolor( $scaledEyeFrameWidth, $scaledEyeFrameHeight );
-		imagealphablending( $scaledEyeFrame, false );
-		imagesavealpha( $scaledEyeFrame, true );
-		imagecopyresampled( $scaledEyeFrame, $eyeFrame, 0, 0, 0, 0, $scaledEyeFrameWidth, $scaledEyeFrameHeight, $eyeFrameWidth, $eyeFrameHeight );
-		imagefilter( $scaledEyeFrame, IMG_FILTER_COLORIZE, $qr_eye_frame_color['r'], $qr_eye_frame_color['g'], $qr_eye_frame_color['b'], 0 );
+	$eyeFrame = !empty( $eye_frame_image ) ? imagecreatefrompng( $eye_frame_image ) : imagecreatefrompng( CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-frames/frame0.png' );
+	$eyeFrameWidth = imagesx( $eyeFrame );
+	$eyeFrameHeight = imagesy( $eyeFrame );
+	$scaleFactor = 2.1;
+	$scaledEyeFrameWidth = $eyeFrameWidth * $scaleFactor;
+	$scaledEyeFrameHeight = $eyeFrameHeight * $scaleFactor;
+	$scaledEyeFrame = imagecreatetruecolor( $scaledEyeFrameWidth, $scaledEyeFrameHeight );
+	imagealphablending( $scaledEyeFrame, false );
+	imagesavealpha( $scaledEyeFrame, true );
+	imagecopyresampled( $scaledEyeFrame, $eyeFrame, 0, 0, 0, 0, $scaledEyeFrameWidth, $scaledEyeFrameHeight, $eyeFrameWidth, $eyeFrameHeight );
+	imagefilter( $scaledEyeFrame, IMG_FILTER_COLORIZE, $qr_eye_frame_color['r'], $qr_eye_frame_color['g'], $qr_eye_frame_color['b'], 0 );
 
 			    // Eyeball processing
-		$eyeImage = !empty( $eye_image ) ? imagecreatefrompng( $eye_image ) : imagecreatefrompng( CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-balls/ball0.png' );
-		imagefilter( $eyeImage, IMG_FILTER_COLORIZE, $qr_eye_rgb['r'], $qr_eye_rgb['g'], $qr_eye_rgb['b'], 0 );
-		$eyeImageWidth = imagesx( $eyeImage );
-		$eyeImageHeight = imagesy( $eyeImage );
+	$eyeImage = !empty( $eye_image ) ? imagecreatefrompng( $eye_image ) : imagecreatefrompng( CQRCGEN_ADMIN_DIR . '/assets/qrcode/eye-balls/ball0.png' );
+	imagefilter( $eyeImage, IMG_FILTER_COLORIZE, $qr_eye_rgb['r'], $qr_eye_rgb['g'], $qr_eye_rgb['b'], 0 );
+	$eyeImageWidth = imagesx( $eyeImage );
+	$eyeImageHeight = imagesy( $eyeImage );
 
 			    // Define the rotation values for each eye frame image name
 			    $eyeRotations = [0, 0, 0]; // Default rotations
@@ -1844,21 +1900,21 @@ class Cqrc_Generator_Admin {
 			);
 
 			// Optionally, load and add the logo image.
-		    if ( ! empty( $logo_url ) && $logo_url !== 'default' && $logo_url !== 'no' ) {
+			    if ( ! empty( $logo_url ) && $logo_url !== 'default' && $logo_url !== 'no' ) {
 			// Determine file extension and load the appropriate image.
-		    	$file_extension = pathinfo($logo_url, PATHINFO_EXTENSION);
-		    	switch (strtolower($file_extension)) {
-		    		case 'png':
-		    		$logo_image_resource = imagecreatefrompng($logo_url);
-		    		break;
-		    		case 'jpg':
-		    		case 'jpeg':
-		    		$logo_image_resource = imagecreatefromjpeg($logo_url);
-		    		break;
-		    		case 'webp':
-		    		$logo_image_resource = imagecreatefromwebp($logo_url);
-		    		break;
-		    		default:
+			    	$file_extension = pathinfo($logo_url, PATHINFO_EXTENSION);
+			    	switch (strtolower($file_extension)) {
+			    		case 'png':
+			    		$logo_image_resource = imagecreatefrompng($logo_url);
+			    		break;
+			    		case 'jpg':
+			    		case 'jpeg':
+			    		$logo_image_resource = imagecreatefromjpeg($logo_url);
+			    		break;
+			    		case 'webp':
+			    		$logo_image_resource = imagecreatefromwebp($logo_url);
+			    		break;
+			    		default:
 					return; // Unsupported file type, return early.
 				}
 
@@ -2026,7 +2082,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * QRCode Delete Option handle.
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	public function cqrc_handle_qr_code_delete_action() {
 		if ( ! empty( $_GET['action'] ) && $_GET['action'] === 'delete' && ! empty( $_GET['id'] ) ) {
@@ -2052,7 +2108,7 @@ class Cqrc_Generator_Admin {
 
 	/**
 	 * Helper method for deleting media posts and associated files
-	 * @since 1.0.0
+	 * @since 1.0.2
 	 */
 	private function cqrc_delete_media_posts( $qr_code, $default_logo_name ) {
 		global $wpdb;
@@ -2083,5 +2139,116 @@ class Cqrc_Generator_Admin {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Retrieves the QR code URL associated with the given embed code ID.
+	 * @since 1.0.2
+	 */
+	private function cqrc_url_by_embed_code( $id ) {
+		global $wpdb;
+
+    	// Sanitize the table name to prevent SQL injection
+		$table_name = esc_sql( QRCODE_GENERATOR_TABLE ); 
+
+	    // Prepare and execute the query to fetch both 'qr_code' and 'name' fields
+	    $query = $wpdb->prepare("SELECT `qr_code`, `name` FROM `{$table_name}` WHERE `id` = %d", $id); // phpcs:ignore
+	    $result = $wpdb->get_row($query, ARRAY_A); // phpcs:ignore
+
+	    // Check if data is retrieved and return both fields
+	    return [
+	    	'qr_code' => esc_url( $result['qr_code'] ),
+	    	'name' => sanitize_text_field( $result['name'] ),
+	    ];
+	}
+
+	/**
+	 * Stores the secure hash value in the database for a given ID.
+	 * @since 1.0.2
+	 */
+	private function cqrc_store_secure_code($id, $hash) {
+		global $wpdb;
+
+	    // Validate parameters
+		if ( empty($id) || !is_numeric($id) || empty($hash) || !is_string($hash) ) {
+			return false;
+		}
+
+	    // Ensure table name is safe
+		$table_name = esc_sql(QRCODE_GENERATOR_TABLE);
+
+	    // Update the 'secure_code' field for the given ID
+	    // phpcs:disable
+		$result = $wpdb->update(
+			$table_name,
+			['secure_code' => $hash],
+			['id' => $id],
+			['%s'],
+			['%d']
+		); 
+		// phpcs:enable
+
+		return ( $result !== false );
+	}
+
+	/**
+	 * Handles the callback function for generate the embedded code with secure script.
+	 * @since 1.0.2
+	 */
+	public function cqrc_get_embed_code_callback() {
+
+    	// Verify the AJAX nonce to prevent CSRF attacks
+		if ( empty( $_POST['_ajax_nonce'] ) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_ajax_nonce'] ) ), 'qr_code_nonce' ) ) {
+			wp_die( esc_html__( 'Nonce verification failed. Please refresh and try again.', 'custom-qr-code-generator' ) );
+		}
+
+    	// Check if 'id' is provided in the request
+		if ( empty($_POST['id']) ) {
+			wp_send_json_error(['message' => 'Invalid request']);
+		}
+
+    	// Sanitize and convert 'id' to an integer for security
+		$id = absint( $_POST['id'] );
+
+    	// Get the site URL
+		$site_url = get_site_url();
+
+    	// Fetch the QR code URL and name associated with the given ID
+		$qrcode_data = $this->cqrc_url_by_embed_code($id);
+
+    	// Check if data exists
+		if ( !$qrcode_data || empty($qrcode_data['qr_code']) ) {
+			wp_send_json_error(['message' => 'QR Code not found']);
+		}
+
+		$qrcode_url = $qrcode_data['qr_code'];
+		$qrcode_name = $qrcode_data['name'];
+
+    	// Generate a short hash using md5
+		$hash = substr(md5($qrcode_url . wp_salt()), 0, 8);
+
+    	// Store the hash securely in the database
+		$this->cqrc_store_secure_code($id, $hash);
+
+    	// Get the site URL and create a nonce
+		$nonce = wp_create_nonce('qr_code_nonce');
+
+    	// Define the script URL that will handle the embedding logic
+		$script_url = CQRCGEN_PUBLIC_URL . '/assets/js/embed-qrcode.js';
+
+    	// Generate embed code
+    	// phpcs:disable
+		$embed_code = sprintf(
+			'<div class="custom-embed" data-nonce="%s"><a href="#" data-embed-code="%s" data-site-url="%s">%s</a></div><script src="%s"></script>',
+			esc_attr($nonce),
+			esc_attr($hash),
+			esc_attr($site_url),
+			esc_attr($qrcode_name),
+			esc_url($script_url)
+		);
+		// phpcs:enable
+		
+    	// Return the success response
+		wp_send_json_success(['embed_code' => $embed_code]);
 	}
 }

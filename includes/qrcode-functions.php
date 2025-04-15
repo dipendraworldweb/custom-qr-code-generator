@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * This Code is Generate the view part for Generated QR Code.
  * @link       https://www.worldwebtechnology.com/
- * @since      1.0.0
+ * @since      1.0.2
  *
  * @package    Cqrc_Generator
  */

@@ -25,6 +25,16 @@ function validateInputsName() {
     jQuery('#wwt-qrcode-generate-form p.submit input#submit').prop('disabled', !isValid);
 }
 
+function togglePasswordVisibility(isChecked) {
+    var passwordInput = jQuery('#password');
+    if (isChecked) {
+        passwordInput.attr('type', 'text');
+        jQuery('.site-show-hide-password-ed>label i').removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+        passwordInput.attr('type', 'password');
+        jQuery('.site-show-hide-password-ed>label i').removeClass('fa-eye-slash').addClass('fa-eye');
+    }
+}
 // Function to validate the Logo
 function toggleLogoFields() {
     var $customLogoOption = jQuery('#custom_logo_option');
@@ -579,6 +589,12 @@ jQuery(document).ready(function($) {
         // Check if the "logo_option" radio button is checked and get its value
         var logoOption = jQuery('input[name="logo_option"]:checked').val();
 
+        // If "upload_logo_url" is blank, change logo_option to "default"
+        if (uploadLogoUrl === '') {
+            jQuery('input[name="logo_option"][value="default"]').prop('checked', true).trigger('change');
+            logoOption = 'default';
+        }
+
         // If "default" is selected, set uploadLogoUrl to an empty string
         if (logoOption === 'default') {
             uploadLogoUrl = '';
@@ -587,14 +603,24 @@ jQuery(document).ready(function($) {
         }
 
         var settings = getQRCodeSettingByTemplate(value);
-        // Apply settings
         $.each(settings, function(key, value) {
             var element = jQuery(`select[name="${key}"], input[name="${key}"]`);
             element.val(value).trigger('change');
         });
 
-        if ( logoOption === 'upload' && uploadLogoUrl !== '' ) {
-            jQuery( '#logo_preview' ).attr( 'src', uploadLogoUrl ).show();
+        // Hide logo_preview if template_name is "default" and logoOption is "default"
+        if (value === 'default' && logoOption === 'default') {
+            jQuery('#logo_preview').hide();
+        } else if (logoOption === 'upload' && uploadLogoUrl !== '') {
+            jQuery('#logo_preview').attr('src', uploadLogoUrl).show();
+        }
+
+        // Toggle between "upload" and "default" if needed
+        if (logoOption === 'upload' && uploadLogoUrl !== '') {
+            jQuery('input[name="logo_option"][value="default"]').trigger('click');
+            setTimeout(function() {
+                jQuery('input[name="logo_option"][value="upload"]').trigger('click');
+            }, 50);
         }
     });
 
@@ -836,18 +862,17 @@ jQuery(document).ready(function($) {
         $toggleButton.text(isVisible ? 'Hide Additional Settings' : 'Show Additional Settings');
     });
 
-    $('.site-show-hide-password-ed>label, .site-show-hide-password-ed').on('click', function() {
-        var passwordInput = $('#password');
-        var passwordFieldType = passwordInput.attr('type');
+        $('.site-show-hide-password-ed>label').on('click', function(event) {
+            event.preventDefault(); // Prevent the default action of the label click
+            var checkbox = $('#site-show-hide-password');
+            checkbox.prop('checked', !checkbox.prop('checked')); // Toggle checkbox state
+            togglePasswordVisibility(checkbox.is(':checked'));
+        });
 
-        if (passwordFieldType === 'password') {
-            passwordInput.attr('type', 'text');
-            $(this).find('i').removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            passwordInput.attr('type', 'password');
-            $(this).find('i').removeClass('fa-eye-slash').addClass('fa-eye');
-        }
-    });
+        // Handle checkbox click
+        $('#site-show-hide-password').on('click', function() {
+            togglePasswordVisibility($(this).is(':checked'));
+        });
 
     validatePassword($('#password').val());
 
@@ -993,7 +1018,106 @@ jQuery(document).ready(function($) {
         validateInput(this, "#download_text_png_error");
         checkAllFields();
     });
-	$('#cqrc-import-process-form, #cqrc-export-process-form').on('submit', function() {
+    $('#cqrc-import-process-form, #cqrc-export-process-form').on('submit', function() {
         $('#qrcode-loader').show();
+    });
+
+    $('.embed-code-btn').on('click', function(event) {
+        event.preventDefault();
+
+        var button = $(this);
+        var id = button.data('id');
+
+        // Check if id is blank or undefined
+        if (!id) {
+            alert('Invalid ID. Please try again.');
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: wwtQrCodeGenerator.ajax_url,
+            dataType: 'json',
+            data: {
+                action: 'cqrc_get_embed_code_callback',
+                id: id,
+                _ajax_nonce: nonce
+            },
+            beforeSend: function() {
+                button.text('Loading...');
+            },
+            success: function(response) {
+                if (response.success) {
+                    var embedCode = response.data.embed_code;
+
+                    // Remove existing popup if it exists
+                    $('#embedPopup').remove();
+
+                    // Create popup modal dynamically
+                    var popupHtml = `<div id="embedPopup" class="popup-overlay">
+                            <div class="popup-content">
+                                <button id="closePopupBtn" class="close-popup-btn">&times;</button>
+                                <h3>Embed Code</h3>
+                                <textarea id="embedCodeText" readonly>${embedCode}</textarea>
+                                <button id="copyEmbedCode">Copy Code</button>
+                                <span id="copyMessage" style="display: none; color: green; font-size: 14px; margin-top: 5px;">Copied!</span>
+                            </div>
+                    </div>`;
+
+                    // Append popup to body
+                    $('body').append(popupHtml);
+                    $('#embedPopup').fadeIn();
+
+                    // Close popup when clicking outside
+                    $(document).on('click', function(event) {
+                        if ($(event.target).closest('.popup-content').length === 0 && $('#embedPopup').is(':visible')) {
+                            $('#embedPopup').fadeOut(function() {
+                                $('#embedPopup').remove();
+                            });
+                        }
+                    });
+
+                    // Close popup on close button click
+                    $('#closePopupBtn').on('click', function() {
+                        $('#embedPopup').fadeOut(function() {
+                            $('#embedPopup').remove();
+                        });
+                    });
+
+                    // Close popup on 'Esc' key press
+                    $(document).on('keydown', function(event) {
+                        if (event.key === 'Escape' && $('#embedPopup').is(':visible')) {
+                            $('#embedPopup').fadeOut(function () {
+                                $('#embedPopup').remove();
+                            });
+                        }
+                    });
+
+                    // Copy to clipboard function
+                    $('#copyEmbedCode').on('click', function () {
+                        var copyText = document.getElementById("embedCodeText");
+                        copyText.select();
+                        document.execCommand("copy");
+
+                        // Show copied message
+                        $('#copyMessage').fadeIn();
+
+                        // Wait 1 second, then hide copied message and close popup
+                        setTimeout(function () {
+                            $('#copyMessage').fadeOut(function () {
+                                $('#embedPopup').fadeOut(function () {
+                                    // Remove popup after fade out
+                                    $(this).remove();
+                                });
+                            });
+                        }, 1000);
+                    });
+                }
+                button.text('Get Embed Code');
+            },
+            error: function() {
+                button.text('Get Embed Code');
+            }
+        });
     });
 });

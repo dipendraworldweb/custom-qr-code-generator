@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * The file that defines the core plugin class
  * @link       https://www.worldwebtechnology.com/
- * @since      1.0.0
+ * @since      1.0.2
  * @package    Cqrc_Generator
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>
@@ -17,7 +17,7 @@ class Cqrc_Generator {
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   protected
 	 * @var      Cqrc_Generator_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
@@ -26,7 +26,7 @@ class Cqrc_Generator {
 	/**
 	 * The unique identifier of this plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   protected
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
@@ -35,7 +35,7 @@ class Cqrc_Generator {
 	/**
 	 * The current version of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
@@ -44,13 +44,13 @@ class Cqrc_Generator {
 	/**
 	 * Define the core functionality of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function __construct() {
 		if ( defined( 'WWT_QRCODE_GENERATOR_VERSION' ) ) {
 			$this->version = WWT_QRCODE_GENERATOR_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '1.0.2';
 		}
 		$this->plugin_name = 'custom-qr-code-generator';
 		$this->load_dependencies();
@@ -73,7 +73,7 @@ class Cqrc_Generator {
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 */
 	private function load_dependencies() {
@@ -134,7 +134,7 @@ class Cqrc_Generator {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 */
 	private function set_locale() {
@@ -146,7 +146,7 @@ class Cqrc_Generator {
 	 * Register all of the hooks related to the admin area functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
@@ -159,13 +159,14 @@ class Cqrc_Generator {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'cqrc_handle_qr_code_delete_action' );
 		$this->loader->add_action( 'wp_ajax_cqrc_handle_qrurl_insert_record', $plugin_admin, 'cqrc_handle_qrurl_insert_record' );
 		$this->loader->add_action( 'wp_ajax_cqrc_check_animated_webp', $plugin_admin, 'cqrc_check_animated_webp' );
+		$this->loader->add_action( 'wp_ajax_cqrc_get_embed_code_callback', $plugin_admin, 'cqrc_get_embed_code_callback' );
 	}
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 * @access   private
 	 */
 	private function define_public_hooks() {
@@ -176,12 +177,14 @@ class Cqrc_Generator {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'cqrc_enqueue_styles' );
 		$this->loader->add_action( 'template_include', $plugin_public, 'cqrc_qrcode_template_redirect' );
 		$this->loader->add_filter( 'query_vars', $plugin_public, 'cqrc_qrcode_query_vars' );
+		$this->loader->add_action( 'rest_api_init', $plugin_public, 'cqrc_register_rest_api_routes' );
+
 	}
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
-	 * @since    1.0.0
+	 * @since    1.0.2
 	 */
 	public function run() {
 		$this->loader->run();
@@ -191,7 +194,7 @@ class Cqrc_Generator {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0.2
 	 * @return    string    The name of the plugin.
 	 */
 	public function get_plugin_name() {
@@ -201,7 +204,7 @@ class Cqrc_Generator {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0.2
 	 * @return    Cqrc_Generator_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
@@ -211,7 +214,7 @@ class Cqrc_Generator {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
+	 * @since     1.0.2
 	 * @return    string    The version number of the plugin.
 	 */
 	public function get_version() {

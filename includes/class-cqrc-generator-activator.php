@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
+ * @since      1.0.2
  * @package    Cqrc_Generator
  * @subpackage Cqrc_Generator/includes
  * @author     World Web Technology <biz@worldwebtechnology.com>
@@ -50,6 +50,7 @@ class Cqrc_Generator_Activator {
                 download longtext NULL,
                 download_content longtext NULL,
                 token varchar(255) NULL,
+                secure_code varchar(255) NULL,
                 password varchar(255) NULL,
                 created_at datetime NOT NULL,
                 updated_at datetime NULL,
@@ -131,9 +132,10 @@ class Cqrc_Generator_Activator {
     // Method to check if the table exists
     private static function cqrc_table_exists($table_name) {
         global $wpdb;
+        
         if (!empty($table_name)) {
-            $escaped_table_name = esc_sql($table_name);
-            $query = $wpdb->prepare("SHOW TABLES LIKE {$escaped_table_name}"); // phpcs:ignore
+            $escaped_table_name = esc_sql($wpdb->prefix . $table_name);
+            $query = $wpdb->prepare("SHOW TABLES LIKE %s", $escaped_table_name); // phpcs:ignore
             return $wpdb->get_var($query) === $escaped_table_name; // phpcs:ignore
         }
         return false;
